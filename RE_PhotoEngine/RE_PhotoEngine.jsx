@@ -18,7 +18,8 @@ var pageHeightPx = inchToPx(pageHeightInches); // 3300 at 300 DPI, 8800 at 800 D
 var rows = layout === "vertical" ? 3 : 2;
 var cols = layout === "vertical" ? 3 : 4;
 var totalCards = rows * cols;
-var insetInches = 0.394;		// distance specified in Silhouette for Registration Mark Inset
+var silhouetteBleedAdjust = 2.2; 		// in MM – trim the outer edges of each card when using Silhouette by this much on each side. DEFAULT 2.2
+var insetInches = 0.394;			// distance specified in Silhouette for Registration Mark Inset
 var insetMM = insetInches * 25.4; // ≈ 10 mm
 var insetX = mmToPixels(insetMM); 		// distance from left edge to reg mark
 var insetY = mmToPixels(insetMM); 		// distance from top edge to reg mark
@@ -333,34 +334,36 @@ if (useSilhouette) {
     triangleLayer.name = "Detection Triangle";
 
     // Triangle color (white)
-    var yellow = new SolidColor();
-    yellow.rgb.red = 255;
-    yellow.rgb.green = 255;
-    yellow.rgb.blue = 255;
-    app.foregroundColor = yellow;
+    var white = new SolidColor();
+    white.rgb.red = 255;
+    white.rgb.green = 255;
+    white.rgb.blue = 255;
+    app.foregroundColor = white;
 
     // Find position of lower-left card
     var leftCardX = cardStartX;
     var leftCardY = cardStartY + (rows - 1) * cardHhome;
 
     // Triangle size (in pixels)
-    var triangleSize = mmToPixels(2.5);  // Adjust as needed
+    var triangleSize = mmToPixels(2.75);
+    var offset = 2;
 
-    // Define triangle path (bottom-left corner of card)
-    var triangle = [
-        [leftCardX, leftCardY + cardHhome],                                      // bottom-left corner
-        [leftCardX + triangleSize, leftCardY + cardHhome],                      // right of bottom-left
-        [leftCardX, leftCardY + cardHhome - triangleSize]                       // up from bottom-left
-    ];
+    // Triangle points (offset slightly outside card edge)
+    var p1 = [leftCardX - offset, leftCardY + cardHhome + offset];	 // bottom-left
+    var p2 = [p1[0] + triangleSize, p1[1]];                                          		// bottom-right
+    var p3 = [p1[0], p1[1] - triangleSize];				// top-left
 
-    doc.selection.select(triangle);
+    // Draw filled triangle
+    doc.selection.select([p1, p2, p3]);
     doc.selection.fill(app.foregroundColor);
     doc.selection.deselect();
+
 }
 
 // === Add Note Layer in Lower Right ===
 if(notesOn) {
-    var noteText = "Brightness: " + bright +
+    var noteText = "DPI: " + dpi +
+               " | Brightness: " + bright +
                " | Contrast: " + contr +
                " | Vibrance: " + vib +
                " | Saturation: " + sat +
