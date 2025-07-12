@@ -44,18 +44,18 @@ Each of the Configuration script files can be edited.  At the top of the script 
 
 ### 2025-07-10 - Version 3.30
 
-Divided the scripting into multiple files, separating the jsx code from the configuration files
-Further developed support for Silhoutte Cameo Cutting Machines and tested on a Silhoutte Cameo 5
-Added Note functionality to allow for tracking settings of specific print jobs to help with dialing in print configurations
-Added a *Regen Silhouette Studio Cutting Template v3.3.studio3* file as a Silhoutte Cameo studio file for cutting.
+\* Divided the scripting into multiple files, separating the jsx code from the configuration files
+\* Further developed support for Silhoutte Cameo Cutting Machines and tested on a Silhoutte Cameo 5
+\* Added Note functionality to allow for tracking settings of specific print jobs to help with dialing in print configurations
+\* Added a *Regen Silhouette Studio Cutting Template v3.3.studio3* file as a Silhoutte Cameo studio file for cutting.
 
 ### 2025-07-07 - Version 2.50
 
-Added (theoretical) support for Silhoutte Cameo Cutting Machine
-Added Page sizing controls and automatic centering
-Added additional templates with Silhoutte option selected and for no-brightness adjustment
+\* Added (theoretical) support for Silhoutte Cameo Cutting Machine
+\* Added Page sizing controls and automatic centering
+\* Added additional templates with Silhoutte option selected and for no-brightness adjustment
 
 ### 2025-07-06 - Version 2.00
 
-Added ability to change between vertical and horizontal layout
-Changed from a single overlay template for the entire page to Cut Marks being placed at each corner of each card by the script to allow for multiple formats
+\* Added ability to change between vertical and horizontal layout
+\* Changed from a single overlay template for the entire page to Cut Marks being placed at each corner of each card by the script to allow for multiple formats
