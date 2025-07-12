@@ -2,7 +2,7 @@
 Regen Photoshop Print Layout
 
 ## How to install
-1. Extract the directories into a folder on your computer.  Most of the directories will contain *.jsx* script files.  The RE_PhotoEngine folder contains the primary script file that is referenced by the configuration files along with .png files for overlays.  It is important that you export all of the folders.
+1. Extract the directories into a folder on your computer.  Most of the directories will contain *.jsx* script files.  The RE_PhotoEngine folder contains the primary script file that is referenced by the configuration files.  It is important that you export all of the folders.
 
 ## How to use Script
 1. Run the .*jsx* scripts contained in the *DEFAULT*, *PrinterName* (ie, *EPSON_ET8500*), or *Silhouette* folder in Photoshop by either double-clicking the script or going to File > Scripts > Browse and selecting the script.  The script files in these locations are Configuration Files and contain the parameters of the script.  Each script will reference the RE_PhotoEngine.jsx code file.
@@ -14,6 +14,10 @@ Each of the Configuration script files can be edited.  At the top of the script 
 
 
 ## Version History
+
+### 2025-07-10 - Version 4.00
+* Added support for Back printing Offsets. This is controlled by cardBack, backOffsetXmm, and backOffsetYmm in the config files.  This allows you to place an offset to adjust for printer alignment variance.
+* A "[EPSON ET8500 - CARD BACKS - Silhoutte] [-2.0 +0.1 mm Offset] Koala Double-Sided Matte Paper 48 lb.jsx" config file has been added to the Config_EPSON_ET8500 with an example adjustment for back printing.
 
 ### 2025-07-11 - Version 4.00
 * Added RE_HelperFunctions.jsx to break out functions into a separate file to improve code management.

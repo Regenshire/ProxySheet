@@ -1,4 +1,4 @@
-// === REGEN PHOTOSHOP MTG PRINT LAYOUT ENGINE v4.0 ===
+// === REGEN PHOTOSHOP MTG PRINT LAYOUT ENGINE v4.1 ===
 // --- This file contains the code for the script.  The Config scripts must use an #include to this script to operate
 
 // === SAFETY: Fallback Defaults for Missing Config Variables ===
@@ -7,6 +7,9 @@ if (typeof pageWidthInches === "undefined") pageWidthInches = 8.5;
 if (typeof pageHeightInches === "undefined") pageHeightInches = 11;
 if (typeof layout === "undefined") layout = "horizontal";
 if (typeof cardFormat === "undefined") cardFormat = "MPC";
+if (typeof cardBack === "undefined") cardBack = false;
+if (typeof backOffsetXmm === "undefined") backOffsetXmm = 0.0;
+if (typeof backOffsetYmm === "undefined") backOffsetYmm = 0.0;
 
 // === Apply Format Presets If cardFormat is Specified ===
 if (cardFormat === "MPC") {
@@ -480,6 +483,10 @@ if (notesOn) {
         " | blackpoint: " +
         blackpoint;
 
+    if (cardBack && (backOffsetXmm != 0 || backOffsetYmm != 0)) {
+        noteText += " | Offset: " + backOffsetXmm + " / " + backOffsetYmm;
+    }
+
     var fullNoteText = noteText;
     if (manualNote && manualNote.length > 0) {
         fullNoteText += "\r" + manualNote;
@@ -510,3 +517,11 @@ if (notesOn) {
 
     textItem.position = [textPosX, textPosY];
 }
+
+if (cardBack && (backOffsetXmm !== 0 || backOffsetYmm !== 0)) {
+    var xShift = mmToPixels(backOffsetXmm);
+    var yShift = mmToPixels(backOffsetYmm);
+    shiftEntireDocumentByOffset(xShift, yShift);
+}
+
+

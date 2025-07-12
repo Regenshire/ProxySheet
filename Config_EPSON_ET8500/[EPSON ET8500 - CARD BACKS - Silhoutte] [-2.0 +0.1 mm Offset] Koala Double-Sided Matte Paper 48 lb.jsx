@@ -14,8 +14,8 @@ var noteFontSize = 8;			// font size to use for notes;  10 is the default;
 var manualNote = "EPSON ET-85XX | Koala Double-Sided Matte Paper | Premium Photo Paper Semi-Gloss - HIGH | ICC: ET-8500 - Koala Double Side Photo Paper Matte";			// Enter a Manual Note you want to display on the sheet - For example you could list the printer model, or other setting you want to display
 
 var cardBack = true;			// true - card back; If true, it applies any cardBack adjustments specified in the config
-var backOffsetXmm = 0.0;   		// horizontal shift in mm
-var backOffsetYmm = 0.0;   		// vertical shift in mm
+var backOffsetXmm = -2.0;   		// horizontal shift in mm
+var backOffsetYmm = 0.1;   		// vertical shift in mm
 
 var cardWidthMM = 69;
 var cardHeightMM = 94;

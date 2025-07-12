@@ -346,3 +346,41 @@ function drawCardBackground(
 
     return layer;
 }
+
+function shiftEntireDocumentByOffset(xOffsetPx, yOffsetPx) {
+    var doc = app.activeDocument;
+
+    // Move top-level artLayers, skipping background and adjustment layers
+    for (var i = 0; i < doc.artLayers.length; i++) {
+        var layer = doc.artLayers[i];
+        var name = layer.name.toLowerCase();
+
+        if (
+            !layer.isBackgroundLayer &&
+            name.indexOf("brightness/contrast for card") !== 0 &&
+            name.indexOf("vibrance for card") !== 0
+        ) {
+            try {
+                layer.translate(xOffsetPx, yOffsetPx);
+            } catch (e) {
+                // Skip on error
+            }
+        }
+    }
+
+    // Move top-level groups, skip "Sheet Adjustments"
+    for (var j = 0; j < doc.layerSets.length; j++) {
+        var group = doc.layerSets[j];
+        var groupName = group.name.toLowerCase();
+
+        if (groupName !== "sheet adjustments") {
+            try {
+                group.translate(xOffsetPx, yOffsetPx);
+            } catch (e) {
+                // Skip on error
+            }
+        }
+    }
+}
+
+
