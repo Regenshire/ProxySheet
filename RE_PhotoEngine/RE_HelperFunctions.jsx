@@ -456,7 +456,7 @@ function placeSilhouetteDetectionAid(doc, scriptFolder, x, y, dpi) {
 
         pastedLayer.translate(
             x - pastedLayer.bounds[0].as("px"),
-            y - pastedLayer.bounds[1].as("px") - (layerHeight / 2.15)
+            y - pastedLayer.bounds[1].as("px") - (layerHeight / 2.25)
         );
         pastedLayer.move(doc, ElementPlacement.PLACEATBEGINNING);
 
