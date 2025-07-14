@@ -1,4 +1,4 @@
-// === REGEN PHOTOSHOP MTG PRINT LAYOUT ENGINE v4.1 ===
+// === REGEN PHOTOSHOP MTG PRINT LAYOUT ENGINE v4.3 ===
 // --- This file contains the code for the script.  The Config scripts must use an #include to this script to operate
 
 // === SAFETY: Fallback Defaults for Missing Config Variables ===
@@ -55,8 +55,37 @@ if (typeof whitepoint === "undefined") whitepoint = 255;
 if (typeof blackpoint === "undefined") blackpoint = 0;
 if (typeof addPerCardAdjustLayer === "undefined") addPerCardAdjustLayer = true;
 
+// Export Functions
+if (typeof exportSingles === "undefined") exportSingles = false;
+if (typeof exportFormat === "undefined") exportFormat = "jpg";
+if (typeof exportAddBleed === "undefined") exportAddBleed = "";
+if (typeof debugOn === "undefined") debugOn = false;
+
 // HELPER FUNCTIONS
 #include "RE_HelperFunctions.jsx"
+
+function main() {
+// === Check for Export Singles Mode ===
+if (exportSingles) {
+    exportSinglesFromFolder({
+        dpi: dpi,
+        cardFormat: cardFormat,
+        cardWidthMM: cardWidthMM,
+        cardHeightMM: cardHeightMM,
+        silhouetteBleedAdjust: silhouetteBleedAdjust,
+        exportFormat: exportFormat,
+        bright: bright,
+        contr: contr,
+        vib: vib,
+        sat: sat,
+        gmm: gmm,
+        whitepoint: whitepoint,
+        blackpoint: blackpoint,
+        debugOn: debugOn,
+        noBleedAddBleed: exportAddBleed
+    });
+    return;
+}
 
 // === Page Size Calculations ===
 if (layout === "horizontal") {
@@ -82,11 +111,6 @@ var insetInches = 0.394; // distance specified in Silhouette for Registration Ma
 var insetMM = insetInches * 25.4; // ≈ 10 mm
 var insetX = mmToPixels(insetMM); // distance from left edge to reg mark
 var insetY = mmToPixels(insetMM); // distance from top edge to reg mark
-
-// === Convert MM to Pixels ===
-function mmToPixels(mm) {
-    return Math.round((mm / 25.4) * dpi);
-}
 
 var cardW = mmToPixels(cardWidthMM); // 69 mm
 var cardH = mmToPixels(cardHeightMM); // 94 mm
@@ -185,73 +209,7 @@ if (cardFiles && cardFiles.length > allowedImages) {
 
 // === Add Silhouette Cameo 5 registration marks ===
 if (useSilhouette) {
-    var regLineColor = new SolidColor();
-    regLineColor.rgb.red = 0;
-    regLineColor.rgb.green = 0;
-    regLineColor.rgb.blue = 0;
-
-    function drawSquareMark(x, y) {
-        var markLayer = doc.artLayers.add();
-        doc.selection.select([
-            [x, y],
-            [x + squareSize, y],
-            [x + squareSize, y + squareSize],
-            [x, y + squareSize],
-        ]);
-        doc.selection.fill(regLineColor);
-        doc.selection.deselect();
-        markLayer.name = "SilhouetteRegMarkSquare";
-    }
-
-    function drawLMark(x, y, corner) {
-        var markLayer = doc.artLayers.add();
-
-        if (corner === "topRight") {
-            // ┐ shape
-            doc.selection.select([
-                [x, y],
-                [x + regLength, y],
-                [x + regLength, y + regThickness],
-                [x, y + regThickness],
-            ]);
-            doc.selection.fill(regLineColor);
-            doc.selection.deselect();
-
-            doc.selection.select([
-                [x + regLength - regThickness, y],
-                [x + regLength, y],
-                [x + regLength, y + regLength],
-                [x + regLength - regThickness, y + regLength],
-            ]);
-            doc.selection.fill(regLineColor);
-            doc.selection.deselect();
-        } else if (corner === "bottomLeft") {
-            // └ shape
-            doc.selection.select([
-                [x, y + regLength - regThickness],
-                [x + regLength, y + regLength - regThickness],
-                [x + regLength, y + regLength],
-                [x, y + regLength],
-            ]);
-            doc.selection.fill(regLineColor);
-            doc.selection.deselect();
-
-            doc.selection.select([
-                [x, y],
-                [x + regThickness, y],
-                [x + regThickness, y + regLength],
-                [x, y + regLength],
-            ]);
-            doc.selection.fill(regLineColor);
-            doc.selection.deselect();
-        }
-
-        markLayer.name = "SilhouetteRegMarkL";
-    }
-
-    drawSquareMark(insetX, insetY); // top-left
-    drawLMark(pageWidthPx - insetX - regLength, insetY, "topRight"); // top-right ┐
-    drawLMark(insetX, pageHeightPx - insetY - regLength, "bottomLeft"); // bottom-left └
+    placeSilhouettePSDLayer(doc, scriptFolder);
 }
 
 // === Calculate card vertical offset ===
@@ -434,34 +392,16 @@ addLevelsAdjustmentLayer(blackpoint, whitepoint, gmm, sheetGroup);
 
 // === Silhouette Registration Improvement Triangle ===
 if (useSilhouette && cardFormat != "NoBleed") {
-    var triangleLayer = doc.artLayers.add();
-    triangleLayer.name = "Detection Triangle";
+    // Calculate bottom-left corner of slot 5
+    var slot5Index = 4; // zero-based index
+    var slot5Col = slot5Index % cols;
+    var slot5Row = Math.floor(slot5Index / cols);
+    var slot5X = cardStartX + slot5Col * cardDisplayW;
+    var slot5Y = cardStartY + slot5Row * cardDisplayH + cardHhome - mmToPixels(2); // nudge 2px inward
 
-    // Triangle color (white)
-    var white = new SolidColor();
-    white.rgb.red = 255;
-    white.rgb.green = 255;
-    white.rgb.blue = 255;
-    app.foregroundColor = white;
-
-    // Find position of lower-left card
-    var leftCardX = cardStartX;
-    var leftCardY = cardStartY + (rows - 1) * cardHhome;
-
-    // Triangle size (in pixels)
-    var triangleSize = mmToPixels(2.75);
-    var offset = 2;
-
-    // Triangle points (offset slightly outside card edge)
-    var p1 = [leftCardX - offset, leftCardY + cardHhome + offset]; // bottom-left
-    var p2 = [p1[0] + triangleSize, p1[1]]; // bottom-right
-    var p3 = [p1[0], p1[1] - triangleSize]; // top-left
-
-    // Draw filled triangle
-    doc.selection.select([p1, p2, p3]);
-    doc.selection.fill(app.foregroundColor);
-    doc.selection.deselect();
+    placeSilhouetteDetectionAid(doc, scriptFolder, slot5X, slot5Y, dpi);
 }
+
 
 // === Add Note Layer in Lower Right ===
 if (notesOn) {
@@ -524,4 +464,6 @@ if (cardBack && (backOffsetXmm !== 0 || backOffsetYmm !== 0)) {
     shiftEntireDocumentByOffset(xShift, yShift);
 }
 
+}
 
+main();

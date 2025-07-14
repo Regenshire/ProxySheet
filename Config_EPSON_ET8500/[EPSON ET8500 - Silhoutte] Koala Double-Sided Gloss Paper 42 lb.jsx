@@ -26,8 +26,8 @@ var showCropMarks = false;		// false to hide cut/crop marks
 var useSilhouette = true; 		// Add Silhouette Cameo 5 registration marks if true
 
 // BRIGHTNESS/CONTRAST/COLOR CORRECTION
-var bright = 18;
-var contr = 10;
+var bright = 15;
+var contr = 15;
 var vib = 0;
 var sat = 45;
 

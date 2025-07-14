@@ -14,8 +14,11 @@ Each of the Configuration script files can be edited.  At the top of the script 
 
 
 ## Version History
+### 2025-07-12 - Version 4.20
+* Added Card Export functionality that allows for a user to export individual Card files in a different format (JPG or PNG) and with or without Bleed (MPC, NoBleed).  This functionality allows a user to convert MPC cards into NoBleed cards and to convert NoBleed cards into MPC compatible cards.  It also allows a user to convert the DPI on cards.  For example, a user could convert a directory full of PNG 800 dpi MPC cards into JPG 300 DPI NoBleed cards.  Please see the new Config_Exports directory for a list of example scripts.
+* Silhouette Support updated - The Silhouette markings and template have been redesigned to improve location and registration to increase the accuracy and consistency cuts on the Silhouette cutting machine.
 
-### 2025-07-10 - Version 4.00
+### 2025-07-12 - Version 4.10
 * Added support for Back printing Offsets. This is controlled by cardBack, backOffsetXmm, and backOffsetYmm in the config files.  This allows you to place an offset to adjust for printer alignment variance.
 * A "[EPSON ET8500 - CARD BACKS - Silhoutte] [-2.0 +0.1 mm Offset] Koala Double-Sided Matte Paper 48 lb.jsx" config file has been added to the Config_EPSON_ET8500 with an example adjustment for back printing.
 

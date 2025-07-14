@@ -20,13 +20,23 @@ Each of the Configuration script files can be edited.  At the top of the script 
 
 ## Version History
 
-### 2025-07-10 - Version 4.10
+### 2025-07-14 - Version 4.20
+
+\* Added Card Export functionality that allows for a user to export individual Card files in a different format (JPG or PNG) and with or without Bleed (MPC, NoBleed).  This functionality allows a user to convert MPC cards into NoBleed cards and to convert NoBleed cards into MPC compatible cards.  It also allows a user to convert the DPI on cards.  For example, a user could convert a directory full of PNG 800 dpi MPC cards into JPG 300 DPI NoBleed cards.  Please see the new Config\_Exports directory for a list of example scripts.
+
+\* Silhouette Support updated - The Silhouette markings and template have been redesigned to improve location and registration to increase the accuracy and consistency cuts on the Silhouette cutting machine.
+
+
+
+### 2025-07-12 - Version 4.10
 
 \* Added support for Back printing Offsets. This is controlled by cardBack, backOffsetXmm, and backOffsetYmm in the config files.  This allows you to place an offset to adjust for printer alignment variance.
 
 \* A "\[EPSON ET8500 - CARD BACKS - Silhoutte] \[-2.0 +0.1 mm Offset] Koala Double-Sided Matte Paper 48 lb.jsx" config file has been added to the Config\_EPSON\_ET8500 with an example adjustment for back printing.
 
-### 2025-07-10 - Version 4.00
+
+
+### 2025-07-11 - Version 4.00
 
 \* Added RE\_HelperFunctions.jsx to break out functions into a separate file to improve code management.
 
@@ -42,12 +52,16 @@ Each of the Configuration script files can be edited.  At the top of the script 
 
 \* Added the ability to turn off the per Card Adjustment Layers by setting the variable \*addPerCardAdjustLayer\* to false.
 
+
+
 ### 2025-07-10 - Version 3.30
 
 \* Divided the scripting into multiple files, separating the jsx code from the configuration files
 \* Further developed support for Silhoutte Cameo Cutting Machines and tested on a Silhoutte Cameo 5
 \* Added Note functionality to allow for tracking settings of specific print jobs to help with dialing in print configurations
 \* Added a *Regen Silhouette Studio Cutting Template v3.3.studio3* file as a Silhoutte Cameo studio file for cutting.
+
+
 
 ### 2025-07-07 - Version 2.50
 
@@ -59,3 +73,4 @@ Each of the Configuration script files can be edited.  At the top of the script 
 
 \* Added ability to change between vertical and horizontal layout
 \* Changed from a single overlay template for the entire page to Cut Marks being placed at each corner of each card by the script to allow for multiple formats
+
