@@ -1,8 +1,7 @@
-// SILHOUETTE MPC SEVEN CARD - CARD BACK CONFIG
-
 // === CONFIG ===
 var pageWidthInches = 8.5;		// Page width in inches - Default 8.5
 var pageHeightInches = 11;		// Page height in inches - Default 11
+var cardFormat = "NoBleed"; 		// "MPC" for MPC formatted cards with 6 mm bleed or "NoBleed" for scryfall images with no bleed.  Do not mix the two card types.
 var layout = "SevenCard"; 		// "vertical" (3x3), "horizontal" (2x4), or "SevenCard" (designed for improved Silhouette detection)
 var notesOn = true;			// true - Show setting notes; false - dont show
 var noteFontSize = 10;			// font size to use for notes;  10 is the default;
@@ -10,7 +9,7 @@ var manualNote = "";			// Enter a Manual Note you want to display on the sheet -
 
 var cardWidthMM = 69;
 var cardHeightMM = 94;
-var dpi = 800;
+var dpi = 300;
 
 var cardBack = true;			// true - card back; If true, it applies any cardBack adjustments specified in the config. For seven card layout it ensures backs match fronts.
 var backOffsetXmm = 0.00;   		// horizontal shift in mm
@@ -27,10 +26,10 @@ var showCropMarks = false;		// false to hide cut/crop marks - Cropmarks are one 
 var useSilhouette = true; 		// Add Silhouette Cameo 5 registration marks if true
 
 // BRIGHTNESS/CONTRAST/COLOR CORRECTION
-var bright = 27;
-var contr = -3;
+var bright = 18;
+var contr = 10;
 var vib = 0;
-var sat = 0;
+var sat = 35;
 
 var gmm = 1.05;
 var whitepoint = 255;

@@ -1,4 +1,4 @@
-// === REGEN PHOTOSHOP MTG PRINT LAYOUT ENGINE v5.0 ===
+// === REGEN PHOTOSHOP MTG PRINT LAYOUT ENGINE v5.1 ===
 // --- This file contains the code for the script.  The Config scripts must use an #include to this script to operate
 
 // === SAFETY: Fallback Defaults for Missing Config Variables ===
@@ -10,6 +10,7 @@ if (typeof cardFormat === "undefined") cardFormat = "MPC";
 if (typeof cardBack === "undefined") cardBack = false;
 if (typeof backOffsetXmm === "undefined") backOffsetXmm = 0.0;
 if (typeof backOffsetYmm === "undefined") backOffsetYmm = 0.0;
+if (typeof selectEachCard === "undefined") selectEachCard = false;
 
 // === Apply Format Presets If cardFormat is Specified ===
 if (cardFormat === "MPC") {
@@ -59,6 +60,8 @@ if (typeof addPerCardAdjustLayer === "undefined") addPerCardAdjustLayer = true;
 if (typeof exportSingles === "undefined") exportSingles = false;
 if (typeof exportFormat === "undefined") exportFormat = "jpg";
 if (typeof exportAddBleed === "undefined") exportAddBleed = "";
+if (typeof outputPDF === "undefined") outputPDF = false;
+if (typeof pdfExportPreset === "undefined") pdfExportPreset = "High Quality Print";
 if (typeof debugOn === "undefined") debugOn = false;
 
 // Batch History
@@ -253,13 +256,39 @@ if (cardFiles === null) {
             ? Folder(batchImageDirectory)
             : undefined;
 
-    cardFiles = File.openDialog(
-        "Select up to " +
-            allowedImages +
-            " card images in order (left to right, top to bottom)",
-        undefined,
-        true
-    );
+    if (selectEachCard === true) {
+        // === Individual card selection per slot ===
+        cardFiles = [];
+
+        for (var i = 0; i < totalCards; i++) {
+            var slotNumber = i + 1;
+
+            // Skip excluded slots
+            if (excludedSlots[slotNumber] === true) {
+                cardFiles.push(null); // Preserve index alignment
+                continue;
+            }
+
+            var promptTitle = "Select image for Card Slot " + slotNumber;
+            var selectedFile = File.openDialog(promptTitle, "Images:*.jpg;*.jpeg;*.png");
+
+            if (selectedFile) {
+                cardFiles.push(selectedFile);
+            } else {
+                alert("Card slot " + slotNumber + " was skipped or canceled.");
+                cardFiles.push(null);
+            }
+        }
+
+    } else {
+        // === Original bulk select logic ===
+        cardFiles = File.openDialog(
+            "Select up to " + allowedImages + " card images in order (left to right, top to bottom)",
+            undefined,
+            true
+        );
+}
+
 }
 
 
@@ -370,8 +399,12 @@ if (layout === "SevenCard") {
         continue;
     }
 
-    if (cardFiles != null && imageIndex < cardFiles.length) {
-        var currentFile = cardFiles[imageIndex];
+    // if (cardFiles != null && imageIndex < cardFiles.length) {
+    if (cardFiles != null && cardFiles[i] != null) {
+
+        // var currentFile = cardFiles[imageIndex];
+        var currentFile = cardFiles[i];
+
 
         imageIndex++; // Only increment once
         var trimPx = useSilhouette ? mmToPixels(silhouetteBleedAdjust) : 0;
@@ -578,6 +611,31 @@ if (cardBack && (backOffsetXmm !== 0 || backOffsetYmm !== 0)) {
     var xShift = mmToPixels(backOffsetXmm);
     var yShift = mmToPixels(backOffsetYmm);
     shiftEntireDocumentByOffset(xShift, yShift);
+}
+
+if (outputPDF === true && typeof batchNumber !== "undefined") {
+    var pdfFolder = new Folder(scriptFolder.fullName + "/../PDFOutput");
+    if (!pdfFolder.exists) pdfFolder.create();
+
+    var pdfFile = new File(pdfFolder + "/Batch_" + padNumber(batchNumber, 3) + "_Page1.pdf");
+
+    var pdfOptions = new PDFSaveOptions();
+    pdfOptions.pDFPreset = pdfExportPreset;
+
+    // === FLATTEN only if not using "High Quality Print"
+    var shouldFlatten = (pdfExportPreset !== "High Quality Print");
+    var docRef = app.activeDocument;
+
+    try {
+        if (shouldFlatten) {
+            docRef.flatten();
+        }
+
+        docRef.saveAs(pdfFile, pdfOptions, true);
+
+    } catch (e) {
+        alert("⚠️ PDF export failed using preset '" + pdfExportPreset + "':\n\n" + e.message);
+    }
 }
 
 if (batchHistory === true) {

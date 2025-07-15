@@ -16,6 +16,7 @@ var manualNote = "EPSON ET-85XX | Koala Double-Sided Matte Paper | Premium Photo
 var cardBack = true;			// true - card back; If true, it applies any cardBack adjustments specified in the config
 var backOffsetXmm = 0.0;   		// horizontal shift in mm
 var backOffsetYmm = 0.0;   		// vertical shift in mm
+var selectEachCard = true;		// Set to true if you want to be prompted for each card selection individually.  This is useful for Card back selection where you need to match up per slot.
 
 var cardWidthMM = 69;
 var cardHeightMM = 94;

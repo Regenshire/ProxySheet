@@ -20,6 +20,20 @@ Each of the Configuration script files can be edited.  At the top of the script 
 
 ## Version History
 
+### 2025-07-15 - Version 5.10
+
+\* New Silhouette Layout - SevenCard Layout Backside Mirroring - Back-side printing support added: When cardBack = true, the layout is fully mirrored to ensure perfect front-to-back alignment.
+
+\* Backside Image Selection - When cardBack = true and selectEachCard = true, the script will prompt you to choose the card back for each card so that double-sided cards can be better supported.
+
+\* PDF Export Support - You can now export directly to .pdf by setting outputPDF = true in your config script.
+
+* Files are saved to the /PDFOutput/ folder with filenames like Batch\_001\_Page1.pdf.
+* A new config variable pdfExportPreset allows choosing export quality (e.g., "High Quality Print", "Smallest File Size").
+* Documents are automatically flattened before PDF export (unless using "High Quality Print") to reduce file size.
+
+
+
 ### 2025-07-15 - Version 5.00
 
 \* New Silhouette Layout - SevenCard Layout Added - A new layout mode called "SevenCard" has been implemented. It is designed to improve cutting accuracy with Silhouette devices by centering one card vertically and aligning six additional cards in a mirrored 3x2 grid beside it.  This creates space around the registration marks, greatly increasing the registration detection and allowing users to use the Silhouette device with more precision and without using the "Post-it Note" trick.  For the Sevencard layout, secial support for duplex printing has been added. The back layout is fully mirrored, ensuring perfect front-to-back alignment when using cardBack = true for the SevenCard layout.
@@ -34,9 +48,9 @@ Each of the Configuration script files can be edited.  At the top of the script 
 * On each run, a new batch file is created inside the /batchHistory/ folder (e.g., Batch\_001.jsx).
 * These batch scripts store:
 
-&nbsp;	- All config variables used at time of execution
+ 	- All config variables used at time of execution
 
-&nbsp;	- The exact file paths of all selected images
+ 	- The exact file paths of all selected images
 
 * When a batch file is re-run, the user is prompted to automatically reload those images — allowing exact reprints without file selection.
 * Saved batch scripts are self-contained and executable in Photoshop (they include a reference to the RE\_PhotoEngine.jsx engine).
@@ -44,8 +58,8 @@ Each of the Configuration script files can be edited.  At the top of the script 
 * The displayed batch number can optionally be printed onto each card using displayBatchNumber = true.  This places the batch number in the lower right of the card. Do not use if you normally have text in that location.
 
 
-2025-07-14 - Version 4.20
----
+
+## 2025-07-14 - Version 4.20
 
 \* Added Card Export functionality that allows for a user to export individual Card files in a different format (JPG or PNG) and with or without Bleed (MPC, NoBleed).  This functionality allows a user to convert MPC cards into NoBleed cards and to convert NoBleed cards into MPC compatible cards.  It also allows a user to convert the DPI on cards.  For example, a user could convert a directory full of PNG 800 dpi MPC cards into JPG 300 DPI NoBleed cards.  Please see the new Config\_Exports directory for a list of example scripts.
 

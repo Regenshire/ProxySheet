@@ -10,6 +10,11 @@ var cardWidthMM = 69;
 var cardHeightMM = 94;
 var dpi = 800;
 
+var cardBack = false;			// true - card back; If true, it applies any cardBack adjustments specified in the config. For seven card layout it ensures backs match fronts.
+var backOffsetXmm = 0.00;   		// horizontal shift in mm
+var backOffsetYmm = 0.00;   		// vertical shift in mm
+var selectEachCard = false;		// Set to true if you want to be prompted for each card selection individually.  This is useful for Card back selection where you need to match up per slot.
+
 // BLEED SETTINGS
 var cutMarkSize = 4.5; 			// in MM - Default 4.5 for MPC formatted images
 var cutOffset = 3.04; 			// in MM - Default 3.04 for MPC formatted images
@@ -28,6 +33,11 @@ var sat = 35;
 var gmm = 1.05;
 var whitepoint = 255;
 var blackpoint = 0;
+
+// Batch History
+var batchHistory = true;		// Saves to the Batch History Folder
+var batchHistoryMin = 1;		// Starting Batch #
+var displayBatchNumber = false;		// If this is set to true it will add the batch number to each card in very small font to the lower right footer of the card
 
 // === END CONFIG ===
 

@@ -38,7 +38,7 @@ var blackpoint = 0;
 // Batch History
 var batchHistory = true;		// Saves to the Batch History Folder
 var batchHistoryMin = 1;			// Starting Batch #
-var displayBatchNumber = true;		// If this is set to true it will add the batch number to each card in very small font to the lower right footer of the card
+var displayBatchNumber = false;		// If this is set to true it will add the batch number to each card in very small font to the lower right footer of the card
 
 // === END CONFIG ===
 

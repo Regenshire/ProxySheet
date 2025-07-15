@@ -673,6 +673,7 @@ function getInitialConfigSnapshot() {
         cardBack: cardBack,
         backOffsetXmm: backOffsetXmm,
         backOffsetYmm: backOffsetYmm,
+        selectEachCard: selectEachCard,
 
         // Card Dimensions / DPI
         cardWidthMM: cardWidthMM,
@@ -707,6 +708,7 @@ function getInitialConfigSnapshot() {
         exportSingles: exportSingles,
         exportFormat: exportFormat,
         exportAddBleed: exportAddBleed,
+        outputPDF: outputPDF,
         debugOn: debugOn,
 
         // Batch Settings
