@@ -1,4 +1,4 @@
-// === REGEN PHOTOSHOP MTG PRINT LAYOUT ENGINE v4.3 ===
+// === REGEN PHOTOSHOP MTG PRINT LAYOUT ENGINE v5.0 ===
 // --- This file contains the code for the script.  The Config scripts must use an #include to this script to operate
 
 // === SAFETY: Fallback Defaults for Missing Config Variables ===
@@ -61,8 +61,21 @@ if (typeof exportFormat === "undefined") exportFormat = "jpg";
 if (typeof exportAddBleed === "undefined") exportAddBleed = "";
 if (typeof debugOn === "undefined") debugOn = false;
 
+// Batch History
+if (typeof batchHistory === "undefined") batchHistory = false;
+if (typeof batchHistoryMin === "undefined") batchHistoryMin = 1;
+if (typeof displayBatchNumber === "undefined") displayBatchNumber = false;
+if (typeof batchNumber === "undefined") batchNumber = null;
+
+
 // HELPER FUNCTIONS
 #include "RE_HelperFunctions.jsx"
+
+if (batchHistory === true && batchNumber === null){
+    determineBatchNumber();
+}
+
+var initialConfigVars = getInitialConfigSnapshot();
 
 function main() {
 // === Check for Export Singles Mode ===
@@ -87,8 +100,10 @@ if (exportSingles) {
     return;
 }
 
+// Save original 
+
 // === Page Size Calculations ===
-if (layout === "horizontal") {
+if (layout === "horizontal" || layout === "SevenCard") {
     // Swap width and height for landscape
     var temp = pageWidthInches;
     pageWidthInches = pageHeightInches;
@@ -103,10 +118,24 @@ var pageWidthPx = inchToPx(pageWidthInches); // 2550 at 300 DPI, 6800 at 800 DPI
 var pageHeightPx = inchToPx(pageHeightInches); // 3300 at 300 DPI, 8800 at 800 DPI
 
 // === Layout-specific values ===
-var rows = layout === "vertical" ? 3 : 2;
-var cols = layout === "vertical" ? 3 : 4;
-var totalCards = rows * cols;
-var silhouetteBleedAdjust = 2.2; // in MM – trim the outer edges of each card when using Silhouette by this much on each side. DEFAULT 2.2
+
+var rows, cols, totalCards;
+
+if (layout === "vertical") {
+    rows = 3;
+    cols = 3;
+    totalCards = 9;
+} else if (layout === "SevenCard") {
+    rows = 2;
+    cols = 4;
+    totalCards = 7; // Only 7 active cards
+} else {
+    rows = layout === "vertical" ? 3 : 2;
+    cols = layout === "vertical" ? 3 : 4;
+    totalCards = rows * cols;
+}
+
+var silhouetteBleedAdjust = 2.0; // in MM – trim the outer edges of each card when using Silhouette by this much on each side. DEFAULT 2.2
 var insetInches = 0.394; // distance specified in Silhouette for Registration Mark Inset
 var insetMM = insetInches * 25.4; // ≈ 10 mm
 var insetX = mmToPixels(insetMM); // distance from left edge to reg mark
@@ -187,13 +216,52 @@ for (var key in excludedSlots) {
 // Clamp allowed image count to at least 0
 var allowedImages = Math.max(0, totalCards - excludedCount);
 
-var cardFiles = File.openDialog(
-    "Select up to " +
-        allowedImages +
-        " card images in order (left to right, top to bottom)",
-    undefined,
-    true
-);
+// === Load Card Files (supporting batch restore) ===
+var cardFiles = null;
+
+if (typeof batchImagePaths !== "undefined" && batchImagePaths.length > 0) {
+    var useSaved = confirm(
+        "This batch includes saved card image paths.\n\nWould you like to load the original files automatically?"
+    );
+
+    if (useSaved) {
+        cardFiles = [];
+        var missingCount = 0;
+
+        for (var i = 0; i < batchImagePaths.length; i++) {
+            var f = File(batchImagePaths[i]);
+            if (f.exists) {
+                cardFiles.push(f);
+            } else {
+                missingCount++;
+            }
+        }
+
+        if (missingCount > 0) {
+            alert(
+                "⚠️ " + missingCount + " file(s) could not be found.\nYou will need to reselect all images."
+            );
+            cardFiles = null;
+        }
+    }
+}
+
+// Fallback if user declined or files were missing
+if (cardFiles === null) {
+    var folderPrompt =
+        typeof batchImageDirectory !== "undefined"
+            ? Folder(batchImageDirectory)
+            : undefined;
+
+    cardFiles = File.openDialog(
+        "Select up to " +
+            allowedImages +
+            " card images in order (left to right, top to bottom)",
+        undefined,
+        true
+    );
+}
+
 
 // Clip selection if too many were selected
 if (cardFiles && cardFiles.length > allowedImages) {
@@ -244,8 +312,47 @@ for (var i = 0; i < totalCards; i++) {
     //var x = (i % cols) * cardWhome + cardStartX;
     //var y = Math.floor(i / cols) * cardHhome + cardStartY;
 
-    var x = (i % cols) * cardDisplayW + cardStartX;
-    var y = Math.floor(i / cols) * cardDisplayH + cardStartY;
+    var x, y;
+
+    //var x = (i % cols) * cardDisplayW + cardStartX;
+    //var y = Math.floor(i / cols) * cardDisplayH + cardStartY;
+
+if (layout === "SevenCard") {
+    if (i === 0) {
+        // Card 1: vertically centered, far left or right
+        y = Math.round((pageHeightPx - cardDisplayH) / 2);
+
+        if (cardBack) {
+            // BACK: Card 1 on far right
+            x = cardStartX + 3 * cardDisplayW;
+        } else {
+            // FRONT: Card 1 on far left
+            x = cardStartX;
+        }
+
+    } else {
+        // Cards 2-4 (top row), 6-8 (bottom row) — 3x2 grid
+        var localIndex = i - 1;
+        var row = Math.floor(localIndex / 3);
+        var col = localIndex % 3;
+
+        var colFlipped = !cardBack ? col : 2 - col;  // ← flip entire grid
+
+        if (cardBack) {
+            // CARD BACK
+            x = cardStartX + colFlipped * cardDisplayW;
+        } else {
+            // CARD FRONTS
+            x = cardStartX + cardDisplayW + colFlipped * cardDisplayW;
+        }
+
+        y = cardStartY + row * cardDisplayH;
+    }
+}
+     else {
+        x = (i % cols) * cardDisplayW + cardStartX;
+        y = Math.floor(i / cols) * cardDisplayH + cardStartY;
+    }
 
     var baseLayer;
 
@@ -324,6 +431,15 @@ for (var i = 0; i < totalCards; i++) {
             );
         }
         baseLayer.move(group, ElementPlacement.INSIDE);
+
+        if (displayBatchNumber === true && batchNumber !== null) {
+           //  var formattedNumber = "# " + batchNumber.toString().padStart(3, "0");
+            var formattedNumber = padNumber(batchNumber, 3);
+
+            addBatchNumberLabel(group, x, y, dpi, formattedNumber);
+        }
+
+	// === Add batchumber ===
     } else {
         // Fallback blank card
         baseLayer = drawCardBackground(
@@ -391,7 +507,7 @@ addVibranceAdjustment(vib, sat, "Vibrance (Global)", sheetGroup, false);
 addLevelsAdjustmentLayer(blackpoint, whitepoint, gmm, sheetGroup);
 
 // === Silhouette Registration Improvement Triangle ===
-if (useSilhouette && cardFormat != "NoBleed") {
+if (useSilhouette && cardFormat != "NoBleed" && layout != "SevenCard") {
     // Calculate bottom-left corner of slot 5
     var slot5Index = 4; // zero-based index
     var slot5Col = slot5Index % cols;
@@ -463,6 +579,11 @@ if (cardBack && (backOffsetXmm !== 0 || backOffsetYmm !== 0)) {
     var yShift = mmToPixels(backOffsetYmm);
     shiftEntireDocumentByOffset(xShift, yShift);
 }
+
+if (batchHistory === true) {
+    saveBatchHistory(initialConfigVars, scriptFolder, cardFiles, batchNumber);
+}
+
 
 }
 

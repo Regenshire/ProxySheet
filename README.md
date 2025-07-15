@@ -20,7 +20,32 @@ Each of the Configuration script files can be edited.  At the top of the script 
 
 ## Version History
 
-### 2025-07-14 - Version 4.20
+### 2025-07-15 - Version 5.00
+
+\* New Silhouette Layout - SevenCard Layout Added - A new layout mode called "SevenCard" has been implemented. It is designed to improve cutting accuracy with Silhouette devices by centering one card vertically and aligning six additional cards in a mirrored 3x2 grid beside it.  This creates space around the registration marks, greatly increasing the registration detection and allowing users to use the Silhouette device with more precision and without using the "Post-it Note" trick.  For the Sevencard layout, secial support for duplex printing has been added. The back layout is fully mirrored, ensuring perfect front-to-back alignment when using cardBack = true for the SevenCard layout.
+
+\* Silhouette Support updated - The Silhouette markings and template have been redesigned to improve location and registration to increase the accuracy and consistency cuts on the Silhouette cutting machine.
+
+\* New Silhouette Studio Template: SevenCard - A new Studio file is included to support the SevenCard layout: Regen Silhouette Studio Cutting Template v5 - Seven Card.studio3
+
+\* Batch History System (New Feature) - A fully integrated batch tracking system has been added to allow re-printing of specific card sheets without needing to manually reconfigure or reselect images.
+
+* Set batchHistory = true in any config script to enable.
+* On each run, a new batch file is created inside the /batchHistory/ folder (e.g., Batch\_001.jsx).
+* These batch scripts store:
+
+&nbsp;	- All config variables used at time of execution
+
+&nbsp;	- The exact file paths of all selected images
+
+* When a batch file is re-run, the user is prompted to automatically reload those images — allowing exact reprints without file selection.
+* Saved batch scripts are self-contained and executable in Photoshop (they include a reference to the RE\_PhotoEngine.jsx engine).
+* Batch numbers are auto-incremented and formatted with padded numbering (# 001, # 002, etc.)
+* The displayed batch number can optionally be printed onto each card using displayBatchNumber = true.  This places the batch number in the lower right of the card. Do not use if you normally have text in that location.
+
+
+2025-07-14 - Version 4.20
+---
 
 \* Added Card Export functionality that allows for a user to export individual Card files in a different format (JPG or PNG) and with or without Bleed (MPC, NoBleed).  This functionality allows a user to convert MPC cards into NoBleed cards and to convert NoBleed cards into MPC compatible cards.  It also allows a user to convert the DPI on cards.  For example, a user could convert a directory full of PNG 800 dpi MPC cards into JPG 300 DPI NoBleed cards.  Please see the new Config\_Exports directory for a list of example scripts.
 

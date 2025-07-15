@@ -662,3 +662,194 @@ function exportSinglesFromFolder(config) {
 
     alert("Export complete: " + files.length + " files processed.");
 }
+
+function getInitialConfigSnapshot() {
+    return {
+        // Page/Layout
+        pageWidthInches: pageWidthInches,
+        pageHeightInches: pageHeightInches,
+        layout: layout,
+        cardFormat: cardFormat,
+        cardBack: cardBack,
+        backOffsetXmm: backOffsetXmm,
+        backOffsetYmm: backOffsetYmm,
+
+        // Card Dimensions / DPI
+        cardWidthMM: cardWidthMM,
+        cardHeightMM: cardHeightMM,
+        dpi: dpi,
+
+        // Bleed / Cut settings
+        cutOffset: cutOffset,
+        cutMarkSize: cutMarkSize,
+        showCropMarks: showCropMarks,
+
+        // Silhouette & Slot Exclusions
+        useSilhouette: useSilhouette,
+        excludeCardSlots: excludeCardSlots,
+
+        // Notes
+        notesOn: notesOn,
+        noteFontSize: noteFontSize,
+        manualNote: manualNote,
+
+        // Color Adjustments
+        bright: bright,
+        contr: contr,
+        vib: vib,
+        sat: sat,
+        gmm: gmm,
+        whitepoint: whitepoint,
+        blackpoint: blackpoint,
+        addPerCardAdjustLayer: addPerCardAdjustLayer,
+
+        // Export Settings
+        exportSingles: exportSingles,
+        exportFormat: exportFormat,
+        exportAddBleed: exportAddBleed,
+        debugOn: debugOn,
+
+        // Batch Settings
+        batchNumber: batchNumber,
+        displayBatchNumber: displayBatchNumber
+    };
+}
+
+function saveBatchHistory(configVars, scriptFolder, cardFilesToSave, batchNumberToUse) {
+    try {
+        if (!batchHistory) return;
+
+        var batchDir = new Folder(scriptFolder.fullName + "/../batchHistory");
+        if (!batchDir.exists) batchDir.create();
+
+        // Determine next batch number
+        //var existing = batchDir.getFiles("Batch_*.jsx");
+        //var highest = batchHistoryMin || 1;
+
+        /*for (var i = 0; i < existing.length; i++) {
+            var name = existing[i].name;
+            var num = parseInt(name.replace("Batch_", "").replace(".jsx", ""));
+            if (!isNaN(num) && num >= highest) highest = num + 1;
+        }*/
+
+        //var batchNumber = highest;
+        var batchNumber = batchNumberToUse;
+
+        var timestamp = new Date().toLocaleString();
+        var output = [];
+
+        output.push("// Batch #" + batchNumber + " generated on " + timestamp + " (Local Time)\n");
+        if (typeof manualNote !== "undefined" && manualNote.length > 0) {
+            output.push("// Note: " + manualNote + "\n");
+        }
+
+        output.push("var batchNumber = " + batchNumber + ";\n");
+
+        for (var key in configVars) {
+            if (!configVars.hasOwnProperty(key)) continue;
+            if (key === "batchHistory" || key === "batchHistoryMin") continue;
+
+            var val = configVars[key];
+            var line = "var " + key + " = ";
+
+            if (typeof val === "string") line += '"' + val + '"';
+            else if (typeof val === "boolean") line += val.toString();
+            else line += val;
+
+            line += ";\n";
+            output.push(line);
+        }
+
+        // === Save batchImagePaths and directory
+        if (cardFilesToSave && cardFilesToSave.length > 0) {
+            output.push("\n// Saved image file paths\n");
+            output.push("var batchImagePaths = [\n");
+            for (var i = 0; i < cardFilesToSave.length; i++) {
+                var safePath = cardFilesToSave[i].fsName.replace(/\\/g, "\\\\");
+                output.push('    "' + safePath + '"' + (i < cardFilesToSave.length - 1 ? "," : "") + "\n");
+            }
+            output.push("];\n");
+
+            var parentFolder = cardFilesToSave[0].parent.fsName.replace(/\\/g, "\\\\");
+            output.push('var batchImageDirectory = "' + parentFolder + '";\n');
+        }
+
+        // === Add the Include so the script is executable ===
+        output.push("// INCLUDE THE RE_PhotoEngine.jsx FILE - DO NOT REMOVE");
+        output.push('#include "../RE_PhotoEngine/RE_PhotoEngine.jsx"\n');
+
+        // === Save to the Batch File ===
+        var file = new File(batchDir + "/Batch_" + batchNumber + ".jsx");
+        file.encoding = "UTF8";
+        file.open("w");
+        for (var j = 0; j < output.length; j++) {
+            file.writeln(output[j]);
+        }
+        file.close();
+    } catch (e) {
+        alert("⚠️ Batch history save failed:\n" + e.message);
+    }
+}
+
+function determineBatchNumber() {
+    if (batchHistory === true) {
+        var batchDir = new Folder(File($.fileName).parent.fullName + "/../batchHistory");
+        if (!batchDir.exists) batchDir.create();
+
+        var existing = batchDir.getFiles("Batch_*.jsx");
+        var highest = batchHistoryMin || 1;
+
+        for (var i = 0; i < existing.length; i++) {
+            var name = existing[i].name;
+            var num = parseInt(name.replace("Batch_", "").replace(".jsx", ""));
+            if (!isNaN(num) && num >= highest) highest = num + 1;
+        }
+
+        batchNumber = highest;
+    }
+}
+
+function addBatchNumberLabel(group, x, y, dpi, formattedNumberText) {
+    var scale = dpi / 300.0;
+    var cardWpx = mmToPixels(cardWidthMM);
+    var cardHpx = mmToPixels(cardHeightMM);
+    var offsetX = Math.round(67 * scale) + Math.round(cardWpx * 0.05);
+    var offsetY = Math.round(32 * scale) + Math.round(cardHpx * 0.05);
+
+    var fontSizePt = 3.8;
+
+    // Create the text layer
+    var textLayer = app.activeDocument.artLayers.add();
+    textLayer.kind = LayerKind.TEXT;
+    textLayer.name = "BatchNumber";
+
+    var textItem = textLayer.textItem;
+    textItem.contents = formattedNumberText;
+    textItem.font = "ArialMT";  // More reliable fallback
+    //textItem.size = 9.8;
+    textItem.size = fontSizePt;
+    textItem.justification = Justification.RIGHT;
+
+    var batchWhite = new SolidColor();
+    batchWhite.rgb.red = 195;
+    batchWhite.rgb.green = 195;
+    batchWhite.rgb.blue = 195;
+    textItem.color = batchWhite;
+
+    var posX = x + mmToPixels(cardWidthMM) - offsetX;
+    var posY = y + mmToPixels(cardHeightMM) - offsetY;
+    textItem.position = [posX, posY];
+
+    // Ensure it appears as the top layer in the group
+    textLayer.move(group, ElementPlacement.PLACEATBEGINNING);
+}
+
+function padNumber(num, digits) {
+    var str = num.toString();
+    while (str.length < digits) str = "0" + str;
+    return str;
+}
+
+
+
+

@@ -1,7 +1,7 @@
 // === CONFIG - You can edit these values ===
 var pageWidthInches = 8.5;		// Page width in inches - Default 8.5
 var pageHeightInches = 11;		// Page height in inches - Default 11
-var layout = "horizontal"; 		// "vertical" (3x3) or "horizontal" (2x4)
+var layout = "horizontal"; 		// "vertical" (3x3), "horizontal" (2x4), or "SevenCard" (designed for improved Silhouette detection)
 var cardFormat = "MPC";			// "MPC" for MPC formatted files with 6mm bleed, "NoBleed" for files available on Scryfall that have no bleed.
 var notesOn = true;			// true - Show setting notes; false - dont show
 var noteFontSize = 10;			// font size to use for notes;  10 is the default;
@@ -10,6 +10,15 @@ var manualNote = "";			// Enter a Manual Note you want to display on the sheet -
 var cardWidthMM = 69;
 var cardHeightMM = 94;
 var dpi = 800;
+
+// CARDBACK - User if this script is for Card Backs and you want to adjust the offset for alignment purposes
+var cardBack = false;			// true - card back; If true, it applies any cardBack adjustments specified in the config
+var backOffsetXmm = -0.00;   		// horizontal shift in mm
+var backOffsetYmm = -0.00;   		// vertical shift in mm
+
+// BATCH HISTORY - This function allows the script to automatically save each use of the script into the BatchHistory folder so that the task can be repeated by double-clicking on the batch file
+var batchHistory = true;
+var displayBatchNumber = false;		// If this is set to true it will add the batch number to each card in very small font to the lower right footer of the card
 
 // EXCLUDE CARD SLOTS
 var excludeCardSlots = "";  // Comma-separated list starting at 1 of card slots to not fill with cards. E.g., "4,5,8" would skill card slot 4, 5, & 8 from upper left to lower right.
@@ -33,6 +42,11 @@ var gmm = 1.05;
 var whitepoint = 255;
 var blackpoint = 0;
 var addPerCardAdjustLayer = true;	// false = disables per-card adjustment layer
+
+// EXPORT FUNCTIONS - This section is used if you want to setup a Card conversion export script to do things like convert DPS, Image Type (PNG or JPEG), or to remove or add bleed and export to individual card files
+var exportSingles = false;		// Set to true if you want to convert and export singles in a directory
+var exportFormat = "jpg";		// Select the export Format, current options are PNG and JPEG
+var exportAddBleed = "";		//Black if you want to add a Black Bleed to NoBleed Cards
 
 // === END CONFIG ===
 

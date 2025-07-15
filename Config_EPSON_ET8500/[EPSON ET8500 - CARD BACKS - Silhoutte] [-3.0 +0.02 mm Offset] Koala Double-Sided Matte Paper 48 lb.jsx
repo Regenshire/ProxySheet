@@ -15,7 +15,7 @@ var manualNote = "EPSON ET-85XX | Koala Double-Sided Matte Paper | Premium Photo
 
 var cardBack = true;			// true - card back; If true, it applies any cardBack adjustments specified in the config
 var backOffsetXmm = -3.00;   		// horizontal shift in mm
-var backOffsetYmm = 0.02;   		// vertical shift in mm
+var backOffsetYmm = -0.02;   		// vertical shift in mm
 
 var cardWidthMM = 69;
 var cardHeightMM = 94;
@@ -39,6 +39,11 @@ var sat = 0;
 var gmm = 1.05;
 var whitepoint = 255;
 var blackpoint = 0;
+
+// Batch History
+var batchHistory = true;		// Saves to the Batch History Folder
+var batchHistoryMin = 1;		// Starting Batch #
+var displayBatchNumber = false;		// If this is set to true it will add the batch number to each card in very small font to the lower right footer of the card
 
 // === END CONFIG ===
 

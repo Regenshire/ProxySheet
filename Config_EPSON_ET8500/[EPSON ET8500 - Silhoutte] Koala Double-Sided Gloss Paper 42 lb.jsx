@@ -27,13 +27,18 @@ var useSilhouette = true; 		// Add Silhouette Cameo 5 registration marks if true
 
 // BRIGHTNESS/CONTRAST/COLOR CORRECTION
 var bright = 15;
-var contr = 15;
+var contr = 18;
 var vib = 0;
-var sat = 45;
+var sat = 50;
 
 var gmm = 1.05;
 var whitepoint = 255;
 var blackpoint = 0;
+
+// Batch History
+var batchHistory = true;		// Saves to the Batch History Folder
+var batchHistoryMin = 1;			// Starting Batch #
+var displayBatchNumber = true;		// If this is set to true it will add the batch number to each card in very small font to the lower right footer of the card
 
 // === END CONFIG ===
 
