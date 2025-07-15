@@ -1,29 +1,14 @@
 // === CONFIG ===
-var pageWidthInches = 8.5;		// Page width in inches - Default 8.5
-var pageHeightInches = 11;		// Page height in inches - Default 11
-var cardFormat = "NoBleed"; 		// "MPC" for MPC formatted cards with 6 mm bleed or "NoBleed" for scryfall images with no bleed.  Do not mix the two card types.
 var layout = "SevenCard"; 		// "vertical" (3x3), "horizontal" (2x4), or "SevenCard" (designed for improved Silhouette detection)
-var notesOn = true;			// true - Show setting notes; false - dont show
-var noteFontSize = 10;			// font size to use for notes;  10 is the default;
-var manualNote = "";			// Enter a Manual Note you want to display on the sheet - For example you could list the printer model, or other setting you want to display
-
-var cardWidthMM = 69;
-var cardHeightMM = 94;
+var cardFormat = "NoBleed"; 		// "MPC" for MPC formatted cards with 6 mm bleed or "NoBleed" for scryfall images with no bleed.  Do not mix the two card types.
 var dpi = 300;
+var useSilhouette = true; 		// Add Silhouette Cameo 5 registration marks if true
+var showCropMarks = false;		// false to hide cut/crop marks - Cropmarks are one of the slowest things in the script, so if you don't need them turn them off.
 
 var cardBack = true;			// true - card back; If true, it applies any cardBack adjustments specified in the config. For seven card layout it ensures backs match fronts.
 var backOffsetXmm = 0.00;   		// horizontal shift in mm
 var backOffsetYmm = 0.00;   		// vertical shift in mm
 var selectEachCard = true;		// Set to true if you want to be prompted for each card selection individually.  This is useful for Card back selection where you need to match up per slot.
-
-// BLEED SETTINGS
-var cutMarkSize = 4.5; 			// in MM - Default 4.5 for MPC formatted images
-var cutOffset = 3.04; 			// in MM - Default 3.04 for MPC formatted images
-var showCropMarks = false;		// false to hide cut/crop marks - Cropmarks are one of the slowest things in the script, so if you don't need them turn them off.
-
-// SILHOUETTE SETTINGS
-// Silhouette is a cutting machine that can be used for cutting proxy cards. These settings are for using this machine.  The layout must be horizontal.
-var useSilhouette = true; 		// Add Silhouette Cameo 5 registration marks if true
 
 // BRIGHTNESS/CONTRAST/COLOR CORRECTION
 var bright = 18;
