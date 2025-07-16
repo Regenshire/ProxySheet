@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MTG Photoshop Layout Tool</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>MTG Photoshop Layout - Card Proxy Layout Tool</h1>
+      <button id="settingsBtn" title="Settings ⚙️">⚙️</button>
+    </header>
+
+    <nav class="tab-nav">
+      <button class="tab-button active" data-tab="create">Create</button>
+      <button class="tab-button" data-tab="configs">Configs</button>
+      <button class="tab-button" data-tab="history">History</button>
+      <button class="tab-button" data-tab="silhouette">Silhouette</button>
+      <button class="tab-button" data-tab="tools">Tools</button>
+    </nav>
+
+    <main>
+      <section class="tab-panel active" id="tab-create">
+        <h2>Create Layout</h2>
+        <p class="tab-description">Configure your print layout using the options below. Hover for help.</p>
+
+        <form id="createForm" class="grid-form">
+          <!-- Layout -->
+          <fieldset>
+            <legend>Layout</legend>
+            <label>Layout
+              <select name="layout">
+                <option value="horizontal">Horizontal (2x4)</option>
+                <option value="vertical">Vertical (3x3)</option>
+                <option value="SevenCard">SevenCard</option>
+              </select>
+            </label>
+            <label>Page Width (in)
+              <input type="number" name="pageWidthInches" value="8.5" />
+            </label>
+            <label>Page Height (in)
+              <input type="number" name="pageHeightInches" value="11" />
+            </label>
+            <label>DPI
+              <input type="number" name="dpi" value="800" />
+            </label>
+          </fieldset>
+
+          <!-- Card Format -->
+          <fieldset>
+            <legend>Card Format</legend>
+            <label>Card Format
+              <select name="cardFormat">
+                <option value="MPC">MPC (with bleed)</option>
+                <option value="NoBleed">NoBleed</option>
+              </select>
+            </label>
+            <label>Card Width (mm)
+              <input type="number" name="cardWidthMM" value="69" />
+            </label>
+            <label>Card Height (mm)
+              <input type="number" name="cardHeightMM" value="94" />
+            </label>
+            <label>
+              <input type="checkbox" name="useSilhouette" />
+              Enable Silhouette Registration
+            </label>
+          </fieldset>
+
+          <!-- Cut & Bleed -->
+          <fieldset>
+            <legend>Cut & Bleed</legend>
+            <label>Cut Mark Size (mm)
+              <input type="number" name="cutMarkSize" value="4.5" step="any"  />
+            </label>
+            <label>Cut Offset (mm)
+              <input type="number" name="cutOffset" value="3.04" step="any"  />
+            </label>
+            <label>
+              <input type="checkbox" name="showCropMarks" checked />
+              Show Crop Marks
+            </label>
+          </fieldset>
+
+          <!-- Color Adjustments -->
+          <fieldset>
+            <legend>Color Adjustments</legend>
+            <label>Brightness <input type="number" name="bright" value="0" /></label>
+            <label>Contrast <input type="number" name="contr" value="0" /></label>
+            <label>Vibrance <input type="number" name="vib" value="0" /></label>
+            <label>Saturation <input type="number" name="sat" value="0" /></label>
+            <label>Gamma (GMM) <input type="number" name="gmm" value="1.05" /></label>
+            <label>Whitepoint <input type="number" name="whitepoint" value="255" /></label>
+            <label>Blackpoint <input type="number" name="blackpoint" value="0" /></label>
+          </fieldset>
+
+          <!-- Back Alignment -->
+          <fieldset>
+            <legend>Back Alignment</legend>
+            <label>
+              <input type="checkbox" name="cardBack" />
+              Card Backs - This is a sheet of Card Backs
+            </label>
+            <label>Offset X (mm)
+              <input type="number" name="backOffsetXmm" value="0.00" step="any"  />
+            </label>
+            <label>Offset Y (mm)
+              <input type="number" name="backOffsetYmm" value="0.00" step="any"  />
+            </label>
+            <label>
+              <input type="checkbox" name="selectEachCard" />
+              Prompt for each card
+            </label>
+          </fieldset>
+
+          <!-- Notes -->
+          <fieldset class="notes-section">
+            <legend>Notes</legend>
+            <label>
+              <input type="checkbox" name="notesOn" checked />
+              Show Notes on Sheet
+            </label>
+            <label>Manual Note
+              <input type="text" name="manualNote" placeholder="Printer, paper, etc." />
+            </label>
+            <label>Note Font Size
+              <input type="number" name="noteFontSize" value="10" />
+            </label>
+          </fieldset>
+
+          <!-- Buttons -->
+          <div class="form-actions">
+            <button type="button" id="resetDefaultsBtn" class="reset">Reset to Defaults</button>
+            <div class="action-buttons">
+              <button type="submit">Run Now</button>
+              <button type="button" id="saveConfigBtn">Save Config</button>
+            </div>
+          </div>
+          <div id="statusMessage" class="status-message"></div>
+        </form>
+      </section>
+
+      <section class="tab-panel" id="tab-configs">
+        <h2>Configs</h2>
+        <div id="configList" class="config-list"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-history">
+        <h2>Batch History</h2>
+
+        <div id="historyControls">
+          <span>Sort by:</span>
+          <select id="historySort">
+            <option value="batchNumber">Batch #</option>
+            <option value="date">Date</option>
+            <option value="layout">Layout</option>
+            <option value="cardFormat">Card Format</option>
+            <option value="dpi">DPI</option>
+          </select>
+          <label for="historyDirection">Order:</label>
+          <select id="historyDirection">
+            <option value="desc">Desc</option>
+            <option value="asc">Asc</option>
+          </select>
+        </div>
+
+        <div id="historyList" class="history-list">
+          <!-- JS-injected items go here -->
+        </div>
+      </section>
+
+
+      <section class="tab-panel" id="tab-silhouette">
+        <h2>Silhouette</h2>
+      </section>
+
+      <section class="tab-panel" id="tab-tools">
+        <h2>Tools</h2>
+        <p>Utility functions and image operations such as Export Singles, Add Bleed, and File Conversion will appear here.</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Save Config Modal -->
+  <div id="saveConfigModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h2>Save Configuration</h2>
+
+      <form id="saveConfigForm">
+        <label for="configFolder">Folder Name</label>
+        <input type="text" id="configFolder" name="configFolder" maxlength="40" placeholder="Enter or select a folder..." list="folderOptions" required />
+        <datalist id="folderOptions"></datalist>
+
+        <label for="configName">Configuration Name</label>
+        <input type="text" id="configName" name="configName" maxlength="100" placeholder="Enter configuration name..." required />
+
+        <div class="modal-buttons">
+          <button type="submit" class="create">Create</button>
+          <button type="button" id="cancelSaveConfig" class="cancel">Cancel</button>
+        </div>
+      </form>
+
+      <div id="saveConfigStatus" class="modal-status"></div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal-overlay hidden">
+    <div class="modal-content settings-modal">
+      <div class="modal-header">
+        <h2>Application Settings</h2>
+        <button id="settingsCloseX" title="Close Settings" class="modal-close">✖</button>
+      </div>
+
+      <form id="settingsForm" class="grid-form">
+        <fieldset class="settings-section">
+          <legend>Batch History</legend>
+          <p class="settings-description">
+            <strong>Batch History</strong> allows you to automatically save each batch that is run to a folder.
+            You can re-open and re-run past batches directly from the History tab.
+          </p>
+
+          <label>
+            <input type="checkbox" id="setting_batchHistory" />
+            Enable Batch History (default: on)
+          </label>
+
+
+          <label>
+            <input type="checkbox" id="setting_displayBatchNumber" />
+            Show Batch Number on Cards
+          </label>
+        </fieldset>
+
+        <div class="modal-footer">
+          <button type="button" id="closeSettingsBtn" class="modal-wide-button">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  <script src="renderer.js"></script>
+</body>
+</html>

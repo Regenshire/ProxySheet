@@ -1,0 +1,633 @@
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #1b1a29;
+  color: #f5f5f5;
+  font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  background: #2b2a3d;
+  color: #f8f8f8;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #444;
+}
+
+header h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+#settingsBtn {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+#settingsBtn:hover {
+  color: #fff;
+}
+
+.tab-nav {
+  display: flex;
+  background-color: #292841;
+  border-bottom: 1px solid #3d3c5a;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 1rem;
+  cursor: pointer;
+  border-right: 1px solid #3d3c5a;
+}
+
+.tab-button:last-child {
+  border-right: none;
+}
+
+.tab-button:hover,
+.tab-button.active {
+  background-color: #3b395a;
+  color: #fff;
+}
+
+main {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.tab-description {
+  font-size: 0.95rem;
+  color: #aaa;
+  margin-bottom: 16px;
+}
+
+/* Layout Grid */
+.grid-form {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-top: 1em;
+}
+
+/* Section box */
+.grid-form fieldset {
+  background-color: #2d2c42;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.grid-form fieldset legend {
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0 6px;
+  color: #f0f0f0;
+}
+
+.grid-form label {
+  font-size: 0.95rem;
+  color: #ccc;
+  margin-top: 4px;
+}
+
+.grid-form input,
+.grid-form select {
+  padding: 6px 10px;
+  margin-top: 4px;
+  font-size: 0.95rem;
+  background-color: #3a3a54;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.grid-form input[type="checkbox"] {
+  width: auto;
+}
+
+/* Notes section spans two columns */
+.grid-form fieldset.notes-section {
+  grid-column: span 2;
+}
+
+/* Button bar */
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.form-actions button {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#saveConfigBtn {
+  background-color: #3478f6;
+  color: white;
+}
+
+#saveConfigBtn:hover {
+  background-color: #1f64e1;
+}
+
+.form-actions button[type="submit"] {
+  background-color: #4caf50;
+  color: white;
+}
+
+.form-actions button[type="submit"]:hover {
+  background-color: #3e9941;
+}
+
+.status-message {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+  font-size: 0.95rem;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #2a2a38;
+  color: #ccc;
+  border: 1px solid transparent;
+}
+
+.status-message.success {
+  color: #aef9ae;
+  border-color: #2f8f2f;
+}
+
+.status-message.error {
+  color: #ffaaaa;
+  border-color: #9c2d2d;
+}
+
+/* === Save Config Modal === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 10, 20, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: #2b2a3d;
+  color: #f5f5f5;
+  padding: 24px 32px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 14px;
+  font-size: 0.95rem;
+  color: #ddd;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 6px;
+  background-color: #3a3a54;
+  border: 1px solid #666;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  margin: 0 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 0;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-buttons .create {
+  background-color: #4caf50;
+  color: white;
+}
+
+.modal-buttons .create:hover {
+  background-color: #3c9542;
+}
+
+.modal-buttons .cancel {
+  background-color: #999;
+  color: white;
+}
+
+.modal-buttons .cancel:hover {
+  background-color: #777;
+}
+
+.modal-status {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+#resetDefaultsBtn {
+  background-color: #aa4444;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#resetDefaultsBtn:hover {
+  background-color: #992f2f;
+}
+
+/* === Modal (Shared) === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(10, 10, 20, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: #2b2a3d;
+  color: #f5f5f5;
+  padding: 24px 32px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+/* Reused for both config + settings */
+.settings-section {
+  background-color: #2d2c42;
+  padding: 16px 20px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.settings-section legend {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #f0f0f0;
+}
+
+.settings-section p.settings-description {
+  font-size: 0.95rem;
+  color: #aaa;
+  margin-bottom: 12px;
+}
+
+/* === Settings Modal Specific === */
+.settings-modal {
+  padding: 24px;
+  max-width: 540px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #f5f5f5;
+}
+
+.modal-close {
+  background: none;
+  color: #ccc;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  color: white;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.settings-section {
+  width: 100%;
+  background-color: #2d2c42;
+  padding: 16px 20px;
+  border: 1px solid #444;
+  border-radius: 8px;
+}
+
+.settings-section legend {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #f0f0f0;
+}
+
+.settings-section p.settings-description {
+  font-size: 0.95rem;
+  color: #aaa;
+  margin-bottom: 12px;
+}
+
+.settings-section input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+/* Restore full-width footer button */
+.modal-footer {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.modal-wide-button {
+  width: 100%;
+  padding: 12px 0;
+  font-weight: bold;
+  font-size: 1rem;
+  background-color: #999;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-wide-button:hover {
+  background-color: #777;
+}
+
+.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #ccc;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.checkbox-inline input[type="checkbox"] {
+  transform: scale(1.1);
+  margin: 0;
+}
+
+.checkbox-inline span {
+  line-height: 1.4;
+}
+
+#historyControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+#historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* OLD: max-height: 400px; */
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2d2c42;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  font-size: 0.9rem;
+  color: #ddd;
+}
+
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-item button {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-item button:hover {
+  background-color: #3b8f3b;
+}
+
+#historyControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+#historyControls select {
+  padding: 6px 10px;
+  background-color: #3a3a54;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.config-folder {
+  background-color: #2d2c42;
+  border-radius: 6px;
+  border: 1px solid #444;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.config-folder-header {
+  padding: 10px 14px;
+  font-weight: bold;
+  background-color: #3b395a;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config-folder-scripts {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+}
+
+.config-script {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2d2c42;
+  padding: 6px 10px;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+.config-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.9rem;
+  color: #ddd;
+}
+
+.config-script button {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-left: 6px;
+}
+
+.config-script .edit-btn {
+  background-color: #3478f6;
+}
+
+.config-script button:hover {
+  opacity: 0.9;
+}
+
+.config-buttons {
+  display: flex;
+  gap: 8px;
+}

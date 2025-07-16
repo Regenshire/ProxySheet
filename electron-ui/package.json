@@ -1,0 +1,24 @@
+{
+  "name": "mtg-proxy-ui",
+  "version": "1.0.0",
+  "description": "Electron UI for MTG Photoshop Proxy Layout Tool",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-packager . MTGLayoutUI --platform=win32 --arch=x64 --out=dist --overwrite",
+    "format": "prettier --write \"**/*.{js,json,html,css}\""
+  },
+  "keywords": [
+    "electron",
+    "mtg",
+    "photoshop",
+    "jsx",
+    "proxy"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^29.3.0",
+    "electron-packager": "^17.1.1"
+  }
+}
