@@ -2,6 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const USER_CONFIGS_DIR = path.resolve(__dirname, '../USER_CONFIGS');
+const xml2js = require('xml2js');
+const CONFIG_INFO_PATH = path.join(USER_CONFIGS_DIR, 'configInfo.xml');
 
 const isValidName = (str, maxLength) => {
   const validPattern = /^[\w\s-]+$/;
@@ -86,6 +88,7 @@ const listBatchHistory = (directory) => {
 
 const listUserConfigs = (baseDir) => {
   if (!fs.existsSync(baseDir)) return [];
+  const folderMeta = loadFolderMetadata();
 
   const folders = fs.readdirSync(baseDir).filter(f => {
     const full = path.join(baseDir, f);
@@ -117,11 +120,36 @@ const listUserConfigs = (baseDir) => {
         };
       });
 
+    const meta = folderMeta[folder] || {};
+
     return {
       folder,
-      scripts
+      scripts,
+      sortOrder: parseInt(meta.sortOrder || '999', 10),
+      description: meta.description || ''
     };
+  }).sort((a, b) => a.sortOrder - b.sortOrder);
+};
+
+const loadFolderMetadata = () => {
+  if (!fs.existsSync(CONFIG_INFO_PATH)) return {};
+
+  const xml = fs.readFileSync(CONFIG_INFO_PATH, 'utf-8');
+  let meta = {};
+
+  xml2js.parseString(xml, (err, result) => {
+    if (err || !result?.configs?.folder) return;
+
+    result.configs.folder.forEach(f => {
+      const name = f.$.name;
+      meta[name] = {
+        sortOrder: f.sortOrder?.[0] || '999',
+        description: f.description?.[0] || ''
+      };
+    });
   });
+
+  return meta;
 };
 
 
@@ -138,6 +166,45 @@ const getBatchHistoryData = () => {
 
 const getUserConfigData = () => listUserConfigs(USER_CONFIGS_DIR);
 
+const saveFolderSortOrder = (sortedList) => {
+  const existing = loadFolderMetadata();
+
+  const builder = new xml2js.Builder({ headless: true, rootName: 'configs' });
+  const folderNodes = sortedList.map(entry => ({
+    $: { name: entry.name },
+    sortOrder: entry.sortOrder.toString(),
+    description: existing[entry.name]?.description || ''
+  }));
+
+  const xml = builder.buildObject({ folder: folderNodes });
+  fs.writeFileSync(CONFIG_INFO_PATH, xml, 'utf-8');
+};
+
+const updateFolderDescription = (folderName, newDesc) => {
+  const existing = loadFolderMetadata();
+
+  const builder = new xml2js.Builder({ headless: true, rootName: 'configs' });
+
+  const updated = Object.keys(existing).map(name => ({
+    $: { name },
+    sortOrder: existing[name].sortOrder || '999',
+    description: name === folderName ? newDesc : existing[name].description || ''
+  }));
+
+  if (!existing[folderName]) {
+    updated.push({
+      $: { name: folderName },
+      sortOrder: '999',
+      description: newDesc
+    });
+  }
+
+  const xml = builder.buildObject({ folder: updated });
+  fs.writeFileSync(CONFIG_INFO_PATH, xml, 'utf-8');
+};
+
+
+
 module.exports = {
   isValidName,
   buildJsxContent,
@@ -145,5 +212,7 @@ module.exports = {
   listBatchHistory,
   runJsxFile,
   getBatchHistoryData,
-  getUserConfigData
+  getUserConfigData,
+  saveFolderSortOrder,
+  updateFolderDescription
 };

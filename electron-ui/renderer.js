@@ -1,3 +1,8 @@
+function debugLog(msg) {
+  const logEl = document.getElementById('debug-log');
+  logEl.textContent = `[DEBUG] ${msg}`;
+}
+
 // Tab switching logic
 document.querySelectorAll('.tab-button').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -125,7 +130,17 @@ const folderOptions = document.getElementById('folderOptions');
 // Show the modal
 openSaveConfigBtn.addEventListener('click', async () => {
   saveStatus.textContent = "";
-  saveConfigForm.reset();
+
+  const folderInput = saveConfigForm.configFolder;
+  const configInput = saveConfigForm.configName;
+
+  if (window.editingConfigContext) {
+    folderInput.value = window.editingConfigContext.folderName || '';
+    configInput.value = window.editingConfigContext.configName || '';
+  } else {
+    saveConfigForm.reset(); // Only reset if not editing
+  }
+
   saveConfigModal.classList.remove('hidden');
 
   const folders = await window.electronAPI.listUserConfigFolders();
@@ -137,9 +152,11 @@ openSaveConfigBtn.addEventListener('click', async () => {
   });
 });
 
+
 // Cancel/close
 cancelSaveBtn.addEventListener('click', () => {
   saveConfigModal.classList.add('hidden');
+  //window.editingConfigContext = null;
 });
 
 // Handle Create
@@ -178,6 +195,8 @@ saveConfigForm.addEventListener('submit', async (e) => {
   } else {
     saveStatus.textContent = "❌ " + result.message;
   }
+
+  window.editingConfigContext = null;
 });
 
 // Handle Reset to Defaults
@@ -192,6 +211,8 @@ document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
   const statusBox = document.getElementById('statusMessage');
   statusBox.textContent = "↩️ Settings have been reset to defaults.";
   statusBox.className = "status-message";
+
+  window.editingConfigContext = null;
 });
 
 
@@ -298,7 +319,40 @@ document.getElementById('historyDirection').addEventListener('change', loadBatch
 document.querySelector('[data-tab="history"]').addEventListener('click', loadBatchHistory);
 
 const loadUserConfigs = async () => {
+  let activeEditInput = null;
   const configList = document.getElementById('configList');
+
+  let dragSrcEl = null;
+
+  const onDragStart = (e) => {
+    dragSrcEl = e.currentTarget;
+    e.currentTarget.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const onDragOver = (e) => {
+    e.preventDefault();
+    const dragging = document.querySelector('.config-folder.dragging');
+    const afterElement = getDragAfterElement(configList, e.clientY);
+    if (afterElement == null) {
+      configList.appendChild(dragging);
+    } else {
+      configList.insertBefore(dragging, afterElement);
+    }
+  };
+
+  const onDragEnd = async () => {
+    const folders = [...configList.querySelectorAll('.config-folder')];
+    folders.forEach(el => el.classList.remove('dragging'));
+
+    const newOrder = folders.map((el, i) => ({
+      name: el.dataset.folder,
+      sortOrder: i + 1
+    }));
+
+    await window.electronAPI.updateFolderSortOrder(newOrder);
+  };
+
   const data = await window.electronAPI.getUserConfigs();
   const collapseState = JSON.parse(localStorage.getItem('configCollapse') || '{}');
 
@@ -308,13 +362,94 @@ const loadUserConfigs = async () => {
     const wrapper = document.createElement('div');
     wrapper.className = 'config-folder';
 
+    wrapper.setAttribute('draggable', true);
+    wrapper.dataset.folder = folderData.folder;
+    wrapper.addEventListener('dragstart', onDragStart);
+    wrapper.addEventListener('dragend', onDragEnd);
+    configList.addEventListener('dragover', onDragOver);
+
     const header = document.createElement('div');
     header.className = 'config-folder-header';
-    header.textContent = folderData.folder;
 
     const toggleIcon = document.createElement('span');
     toggleIcon.textContent = collapseState[folderData.folder] ? '▸' : '▾';
-    header.prepend(toggleIcon);
+    toggleIcon.style.marginRight = '10px';
+
+    const label = document.createElement('div');
+    label.className = 'folder-label';
+
+    const folderName = document.createElement('div');
+    folderName.className = 'folder-name';
+    folderName.textContent = folderData.folder;
+
+    label.appendChild(folderName);
+
+    const descDisplay = document.createElement('div');
+    descDisplay.className = 'folder-description';
+    descDisplay.textContent = folderData.description || '';
+    label.appendChild(descDisplay);
+
+    const descInput = document.createElement('input');
+    descInput.className = 'folder-description-input';
+    descInput.value = folderData.description || '';
+    descInput.style.display = 'none';
+    label.appendChild(descInput);
+
+    descInput.addEventListener('blur', async () => {
+      const newDesc = descInput.value.trim();
+
+      descInput.style.display = 'none';
+      descDisplay.style.display = 'block';
+
+      if (newDesc !== folderData.description) {
+        await window.electronAPI.updateFolderDescription(folderData.folder, newDesc);
+        loadUserConfigs();
+      }
+
+      activeEditInput = null;
+    });
+
+    descInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        descInput.blur(); // Saves
+      } else if (e.key === 'Escape') {
+        descInput.value = folderData.description || '';
+        descInput.blur(); // Cancels
+      }
+    });
+
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = '✎';
+    editBtn.title = 'Edit Folder Description';
+    editBtn.className = 'edit-folder-btn';
+    editBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      // If another edit is active, blur it to trigger save/cancel
+      if (activeEditInput && activeEditInput !== descInput) {
+        activeEditInput.blur();
+      }
+
+      descDisplay.style.display = 'none';
+      descInput.style.display = 'block';
+      descInput.focus();
+
+      // Move cursor to end
+      const val = descInput.value;
+      descInput.value = '';
+      descInput.value = val;
+
+      activeEditInput = descInput;
+    });
+
+
+
+    header.appendChild(toggleIcon);
+    header.appendChild(label);
+    header.appendChild(editBtn);
 
     const content = document.createElement('div');
     content.className = 'config-folder-scripts';
@@ -356,32 +491,14 @@ const loadUserConfigs = async () => {
       const editBtn = document.createElement('button');
       editBtn.textContent = 'Edit';
       editBtn.className = 'edit-btn';
-      editBtn.onclick = async () => {
-        const res = await fetch(`file://${script.filePath}`);
-        const raw = await res.text();
-        const config = {};
+      editBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-        for (const line of raw.split('\n')) {
-          if (line.startsWith('var ')) {
-            try {
-              eval(line.replace('var ', 'config.'));
-            } catch (e) {}
-          }
-        }
-
-        localStorage.setItem('mtgProxyLastConfig', JSON.stringify(config));
-        document.querySelector('[data-tab="create"]').click();
-        const form = document.getElementById('createForm');
-        for (const [key, value] of Object.entries(config)) {
-          const field = form.elements[key];
-          if (!field) continue;
-          if (field.type === 'checkbox') field.checked = value;
-          else field.value = value;
-        }
-
-        document.getElementById('configName').value = script.fileName.replace('.jsx', '');
-        document.getElementById('configFolder').value = folderData.folder;
-      };
+        descDisplay.style.display = 'none';
+        descInput.style.display = 'block';
+        descInput.focus();
+      });
 
       const buttonGroup = document.createElement('div');
       buttonGroup.className = 'config-buttons';
@@ -399,6 +516,21 @@ const loadUserConfigs = async () => {
     configList.appendChild(wrapper);
   });
 };
+
+function getDragAfterElement(container, y) {
+  const elements = [...container.querySelectorAll('.config-folder:not(.dragging)')];
+
+  return elements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
 
 // Trigger on tab open
 document.querySelector('[data-tab="configs"]').addEventListener('click', loadUserConfigs);

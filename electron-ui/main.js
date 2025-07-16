@@ -166,3 +166,11 @@ ipcMain.handle('run-user-config-file', async (_, filePath) => {
   return helpers.runJsxFile(filePath);
 });
 
+ipcMain.handle('update-folder-sort-order', async (_, order) => {
+  return helpers.saveFolderSortOrder(order);
+});
+
+ipcMain.handle('update-folder-description', async (_, { folder, description }) => {
+  return helpers.updateFolderDescription(folder, description);
+});
+
