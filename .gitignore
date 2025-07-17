@@ -1,5 +1,7 @@
 /batchHistory/
 /PDFOutput/
-/electron-ui/node_modules/
+/node_modules/
 /TempConfig/
-/electron-ui/node_modules/.prettierrc
+/node_modules/.prettierrc
+/dist/
+.prettierrc

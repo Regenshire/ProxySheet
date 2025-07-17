@@ -35,7 +35,7 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.handle('generate-jsx', async (_, config) => {
-  const configDir = path.resolve(__dirname, '../TempConfig');
+  const configDir = path.resolve(__dirname, 'TempConfig');
   const outputPath = path.join(configDir, 'MTG_Generated.jsx');
 
 // Add default values if missing
@@ -68,7 +68,7 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
       throw new Error("Invalid config name. Use only letters, numbers, spaces, dashes, and underscores.");
     }
 
-    const baseDir = path.resolve(__dirname, '../USER_CONFIGS');
+    const baseDir = path.resolve(__dirname, 'USER_CONFIGS');
     const targetDir = path.join(baseDir, folderName);
     const outputPath = path.join(targetDir, `${configName}.jsx`);
 
@@ -157,7 +157,7 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
 });
 
 ipcMain.handle('list-user-config-folders', async () => {
-  const dir = path.resolve(__dirname, '../USER_CONFIGS');
+  const dir = path.resolve(__dirname, 'USER_CONFIGS');
   try {
     if (!fs.existsSync(dir)) return [];
     return fs.readdirSync(dir).filter(f =>

@@ -706,3 +706,55 @@ main {
   margin-top: 2px;
   width: 100%;
 }
+
+.tool-card {
+  border: 1px solid #444;
+  background-color: #262640;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.tool-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  background-color: #343453;
+  color: #f5f5f5;
+  font-weight: bold;
+}
+
+.tool-header:hover {
+  background-color: #404068;
+}
+
+.tool-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.tool-header .chevron {
+  transition: transform 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.tool-header.collapsed .chevron {
+  transform: rotate(-90deg);
+}
+
+.tool-body {
+  padding: 16px 20px;
+  display: block;
+}
+
+.tool-body.collapsed {
+  display: none;
+}
+
+.tool-description {
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  color: #ccc;
+}

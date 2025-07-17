@@ -659,7 +659,6 @@ const loadSilhouetteTemplates = async () => {
   render();
 };
 
-
 function getDragAfterElement(container, y) {
   const elements = [...container.querySelectorAll('.config-folder:not(.dragging)')];
 
@@ -674,6 +673,20 @@ function getDragAfterElement(container, y) {
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
+document.querySelectorAll('.tool-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const targetId = header.dataset.target;
+    const target = document.querySelector(targetId);
+
+    if (target.classList.contains('collapsed')) {
+      target.classList.remove('collapsed');
+      header.classList.remove('collapsed');
+    } else {
+      target.classList.add('collapsed');
+      header.classList.add('collapsed');
+    }
+  });
+});
 
 // Trigger on tab open
 document.querySelector('[data-tab="configs"]').addEventListener('click', loadUserConfigs);

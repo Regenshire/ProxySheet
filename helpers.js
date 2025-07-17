@@ -1,10 +1,10 @@
 // electron-ui/helpers.js
 const fs = require('fs');
 const path = require('path');
-const USER_CONFIGS_DIR = path.resolve(__dirname, '../USER_CONFIGS');
+const USER_CONFIGS_DIR = path.resolve(__dirname, 'USER_CONFIGS');
 const xml2js = require('xml2js');
 const CONFIG_INFO_PATH = path.join(USER_CONFIGS_DIR, 'configInfo.xml');
-const TEMPLATE_INFO_PATH = path.resolve(__dirname, '../RE_Silhouette/templateInfo.xml');
+const TEMPLATE_INFO_PATH = path.resolve(__dirname, 'RE_Silhouette/templateInfo.xml');
 
 const isValidName = (str, maxLength) => {
   const validPattern = /^[\w\s-]+$/;
@@ -195,7 +195,7 @@ const runJsxFile = (filePath) => {
   return shell.openPath(filePath);
 };
 
-const BATCH_HISTORY_DIR = path.resolve(__dirname, '../batchHistory');
+const BATCH_HISTORY_DIR = path.resolve(__dirname, 'batchHistory');
 
 const getBatchHistoryData = () => {
   return listBatchHistory(BATCH_HISTORY_DIR);
@@ -241,7 +241,7 @@ const updateFolderDescription = (folderName, newDesc) => {
 };
 
 const getSilhouetteTemplates = () => {
-  const dir = path.resolve(__dirname, '../RE_Silhouette');
+  const dir = path.resolve(__dirname, 'RE_Silhouette');
   if (!fs.existsSync(dir)) return [];
 
   const files = fs.readdirSync(dir).filter(f => f.endsWith('.studio') || f.endsWith('.studio3'));
