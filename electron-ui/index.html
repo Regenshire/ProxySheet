@@ -179,7 +179,61 @@
 
       <section class="tab-panel" id="tab-tools">
         <h2>Tools</h2>
-        <p>Utility functions and image operations such as Export Singles, Add Bleed, and File Conversion will appear here.</p>
+        <p>Utility functions and tools to assist in working with various card images.</p>
+        <h2>Card Conversion Tool</h2>
+        <p class="tab-description">
+          Use this tool to convert card images by changing DPI, export format (JPG/PNG), applying color correction, and optionally adding black bleed borders for NoBleed cards. This is helpful when preparing images from Scryfall or other sources for printing or layout.  This allows a user to select a Folder of images and convert them.
+        </p>
+
+        <form id="conversionForm" class="grid-form">
+          <fieldset>
+            <legend>Conversion Settings</legend>
+
+            <label>DPI
+              <input type="number" name="dpi" value="800" />
+            </label>
+
+            <label>Card Format
+              <select name="cardFormat" id="conversionCardFormat">
+                <option value="NoBleed">NoBleed (Scryfall)</option>
+                <option value="MPC">MPC (with bleed)</option>
+              </select>
+            </label>
+
+            <label>Export Format
+              <select name="exportFormat">
+                <option value="jpg">JPG</option>
+                <option value="png">PNG</option>
+              </select>
+            </label>
+
+            <label id="bleedOptionContainer">Add Black Bleed
+              <select name="exportAddBleed">
+                <option value="">None</option>
+                <option value="Black">Black</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Color Adjustments</legend>
+
+            <label>Brightness <input type="number" name="bright" value="0" /></label>
+            <label>Contrast <input type="number" name="contr" value="0" /></label>
+            <label>Vibrance <input type="number" name="vib" value="0" /></label>
+            <label>Saturation <input type="number" name="sat" value="0" /></label>
+            <label>Gamma (GMM) <input type="number" name="gmm" value="1.00" step="any" /></label>
+            <label>Whitepoint <input type="number" name="whitepoint" value="255" /></label>
+            <label>Blackpoint <input type="number" name="blackpoint" value="0" /></label>
+          </fieldset>
+
+          <div class="form-actions">
+            <button type="submit" id="runConversionBtn">Run Conversion</button>
+          </div>
+
+          <div id="conversionStatus" class="status-message"></div>
+        </form>
+
       </section>
     </main>
   </div>

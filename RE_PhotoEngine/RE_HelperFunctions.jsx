@@ -472,7 +472,13 @@ function placeSilhouetteDetectionAid(doc, scriptFolder, x, y, dpi) {
 function addNoBleedPadding(doc, bleedSizePx, mode) {
     try {
         // Step 1: Get background color BEFORE resizing canvas
-        var borderColor = getEdgeAverageDarkColor(doc); // Sample edge from current card
+
+        var black = new SolidColor();
+        black.rgb.red = 0;
+        black.rgb.green = 0;
+        black.rgb.blue = 0;
+
+        //var borderColor = getEdgeAverageDarkColor(doc); // Sample edge from current card
 
         // Step 2: Resize canvas outward
         // Step 1: Sample border color BEFORE resizing
@@ -493,8 +499,9 @@ function addNoBleedPadding(doc, bleedSizePx, mode) {
 
             doc.selection.selectAll();
             doc.selection.fill(sampledColor);
-            doc.selection.deselect();
+            //doc.selection.fill(black);
 
+            doc.selection.deselect();
         }
 
     } catch (e) {
@@ -538,7 +545,7 @@ function getEdgeAverageDarkColor(doc) {
     darkColor.rgb.green = minG;
     darkColor.rgb.blue = minB;
 
-//    alert("Sampled RGB (min): " + Math.round(minR) + ", " + Math.round(minG) + ", " + Math.round(minB));
+    //    alert("Sampled RGB (min): " + Math.round(minR) + ", " + Math.round(minG) + ", " + Math.round(minB));
 
     if (minR <= 250 && minG <= 250 && minB <= 250) {
         return darkColor;
@@ -594,6 +601,8 @@ function exportSinglesFromFolder(config) {
         var imgFile = files[i];
         var doc = open(imgFile);
         doc.resizeImage(UnitValue(cardWidthPx, "px"), UnitValue(cardHeightPx, "px"), null, ResampleMethod.BICUBIC);
+        // Capture image layer before adding anything
+        var imageLayer = doc.activeLayer;
 
         if (cropMarginPx > 0) {
             doc.crop([
@@ -604,22 +613,39 @@ function exportSinglesFromFolder(config) {
             ]);
         }
 
-        if (config.cardFormat === "NoBleed" && (noBleedAddBleed === "Black" || noBleedAddBleed === "AI")) {
+        if (config.cardFormat === "NoBleed" && (noBleedAddBleed === "Black")) {
             var bleedPx = mmToPixels(3.0);
             addNoBleedPadding(doc, bleedPx, noBleedAddBleed);
         }
 
         doc.resizeImage(null, null, dpi, ResampleMethod.NONE);
+	// Capture true image layer AFTER placing it
+	var baseLayer = app.activeDocument.activeLayer;
 
+        // if (bright !== 0 || contr !== 0) { addBrightnessContrastAdjustment(bright, contr, "Brightness/Contrast", null, false); }
         if (bright !== 0 || contr !== 0) {
-            addBrightnessContrastAdjustment(bright, contr, "Brightness/Contrast", null, false);
+            var adjustLayer = addBrightnessContrastAdjustment(bright, contr, "Brightness/Contrast", null, false);
+            adjustLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
         }
         if (vib !== 0 || sat !== 0) {
-            addVibranceAdjustment(vib, sat, "Vibrance", null, false);
+            var vibLayer = addVibranceAdjustment(vib, sat, "Vibrance", null, false);
+            vibLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
         }
         if (gmm !== 1.0 || whitepoint !== 255 || blackpoint !== 0) {
-            addLevelsAdjustment(gmm, whitepoint, blackpoint, "Levels", null, false);
+          addLevelsAdjustmentLayer(blackpoint, whitepoint, gmm, null);
+          var levelsLayer = app.activeDocument.activeLayer;
+          levelsLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
         }
+	// Move the image below all adjustment layers
+	imageLayer.move(doc, ElementPlacement.PLACEATEND);
+
+	// Find Bleed Fill layer and move it below the image as final step
+	try {
+	  var bleedLayer = doc.artLayers.getByName("Bleed Fill");
+	  bleedLayer.move(doc, ElementPlacement.PLACEATEND);
+	} catch (e) {
+	  // Do nothing if Bleed Fill doesn't exist
+	}
 
         if (debugOn) {
             alert("DEBUG: Previewing " + imgFile.name + "\nDPI: " + dpi +

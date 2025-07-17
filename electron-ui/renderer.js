@@ -119,6 +119,46 @@ closeSettingsBtn.addEventListener('click', () => {
   });
 });
 
+document.getElementById('conversionCardFormat').addEventListener('change', (e) => {
+  const show = e.target.value === 'NoBleed';
+  document.getElementById('bleedOptionContainer').style.display = show ? 'block' : 'none';
+});
+
+// Handle Conversion Tool Submit
+document.getElementById('conversionForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+  const config = {
+    exportSingles: true,
+    dpi: parseInt(form.dpi.value),
+    cardFormat: form.cardFormat.value,
+    exportFormat: form.exportFormat.value.toLowerCase(),
+    exportAddBleed: form.exportAddBleed.value,
+    bright: parseInt(form.bright.value),
+    contr: parseInt(form.contr.value),
+    vib: parseInt(form.vib.value),
+    sat: parseInt(form.sat.value),
+    gmm: parseFloat(form.gmm.value),
+    whitepoint: parseInt(form.whitepoint.value),
+    blackpoint: parseInt(form.blackpoint.value)
+  };
+
+  const statusBox = document.getElementById('conversionStatus');
+  statusBox.textContent = "⏳ Running conversion...";
+
+  const result = await window.electronAPI.generateJSX(config);
+
+  if (result.success) {
+    statusBox.textContent = "✅ Conversion script launched in Photoshop.";
+    statusBox.className = "status-message success";
+  } else {
+    statusBox.textContent = "❌ " + result.message;
+    statusBox.className = "status-message error";
+  }
+});
+
+
 // === Save Config Modal ===
 const openSaveConfigBtn = document.getElementById('saveConfigBtn');
 const saveConfigModal = document.getElementById('saveConfigModal');
