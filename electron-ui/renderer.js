@@ -517,6 +517,90 @@ const loadUserConfigs = async () => {
   });
 };
 
+const loadSilhouetteTemplates = async () => {
+  const container = document.getElementById('tab-silhouette');
+  container.innerHTML = '';
+
+  const controls = document.createElement('div');
+  controls.id = 'silhouetteControls';
+  controls.innerHTML = `
+    <span>Sort by:</span>
+    <select id="silhouetteSort">
+      <option value="sortOrder">Sort Order</option>
+      <option value="title">Title</option>
+      <option value="tags">Tags</option>
+      <option value="fileName">File Name</option>
+    </select>
+    <label for="silhouetteDirection">Order:</label>
+    <select id="silhouetteDirection">
+      <option value="asc">Asc</option>
+      <option value="desc">Desc</option>
+    </select>
+  `;
+  container.appendChild(controls);
+
+  const list = document.createElement('div');
+  list.id = 'silhouetteList';
+  list.className = 'history-list';
+  container.appendChild(list);
+
+  const render = async () => {
+    const data = await window.electronAPI.getSilhouetteTemplates();
+    const sortKey = document.getElementById('silhouetteSort').value;
+    const direction = document.getElementById('silhouetteDirection').value;
+
+    const sorted = [...data].sort((a, b) => {
+      const aVal = a[sortKey] || '';
+      const bVal = b[sortKey] || '';
+
+      const compare = (sortKey === 'sortOrder')
+        ? Number(aVal) - Number(bVal)
+        : aVal.toString().localeCompare(bVal.toString());
+
+      return direction === 'asc' ? compare : -compare;
+    });
+
+    const list = document.getElementById('silhouetteList');
+    list.innerHTML = '';
+
+    sorted.forEach((item) => {
+      const el = document.createElement('div');
+      el.className = 'history-item';
+
+      const info = document.createElement('div');
+      info.className = 'history-info';
+
+      const title = item.title?.trim() || item.fileName;
+      const tags = item.tags?.trim() || '';
+      const description = item.description?.trim() || '';
+      const fileName = item.fileName;
+
+      info.innerHTML = `
+        <div><strong>${title}</strong> — ${fileName}</div>
+        <div>${tags}</div>
+        <div style="font-size: 0.85rem; color: #aaa; max-width: 90%; text-align: justify; text-align-last: left;">${description}</div>
+      `;
+
+      const btn = document.createElement('button');
+      btn.textContent = 'Run';
+      btn.onclick = () => window.electronAPI.runUserConfigFile(item.filePath);
+
+      el.appendChild(info);
+      el.appendChild(btn);
+      list.appendChild(el);
+    });
+
+
+  };
+
+
+  document.getElementById('silhouetteSort').addEventListener('change', render);
+  document.getElementById('silhouetteDirection').addEventListener('change', render);
+
+  render();
+};
+
+
 function getDragAfterElement(container, y) {
   const elements = [...container.querySelectorAll('.config-folder:not(.dragging)')];
 
@@ -534,3 +618,5 @@ function getDragAfterElement(container, y) {
 
 // Trigger on tab open
 document.querySelector('[data-tab="configs"]').addEventListener('click', loadUserConfigs);
+document.querySelector('[data-tab="silhouette"]').addEventListener('click', loadSilhouetteTemplates);
+

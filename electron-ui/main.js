@@ -162,6 +162,15 @@ ipcMain.handle('get-user-configs', async () => {
   return helpers.getUserConfigData();
 });
 
+ipcMain.handle('get-silhouette-templates', async () => {
+  return helpers.getSilhouetteTemplates();
+});
+
+ipcMain.handle('save-silhouette-template-metadata', async (_, updatedList) => {
+  return helpers.saveTemplateMetadata(updatedList);
+});
+
+
 ipcMain.handle('run-user-config-file', async (_, filePath) => {
   return helpers.runJsxFile(filePath);
 });

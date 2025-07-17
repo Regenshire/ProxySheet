@@ -12,5 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getUserConfigs: () => ipcRenderer.invoke('get-user-configs'),
   updateFolderSortOrder: (order) => ipcRenderer.invoke('update-folder-sort-order', order),
   updateFolderDescription: (folder, description) => ipcRenderer.invoke('update-folder-description', { folder, description }),
+    getSilhouetteTemplates: () => ipcRenderer.invoke('get-silhouette-templates'),
+  saveSilhouetteTemplateMetadata: (list) => ipcRenderer.invoke('save-silhouette-template-metadata', list),
   runUserConfigFile: (filePath) => ipcRenderer.invoke('run-user-config-file', filePath)  
 });

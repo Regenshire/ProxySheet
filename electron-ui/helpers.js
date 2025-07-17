@@ -4,6 +4,7 @@ const path = require('path');
 const USER_CONFIGS_DIR = path.resolve(__dirname, '../USER_CONFIGS');
 const xml2js = require('xml2js');
 const CONFIG_INFO_PATH = path.join(USER_CONFIGS_DIR, 'configInfo.xml');
+const TEMPLATE_INFO_PATH = path.resolve(__dirname, '../RE_Silhouette/templateInfo.xml');
 
 const isValidName = (str, maxLength) => {
   const validPattern = /^[\w\s-]+$/;
@@ -152,6 +153,42 @@ const loadFolderMetadata = () => {
   return meta;
 };
 
+const loadTemplateMetadata = () => {
+  if (!fs.existsSync(TEMPLATE_INFO_PATH)) return {};
+
+  const xml = fs.readFileSync(TEMPLATE_INFO_PATH, 'utf-8');
+  let meta = {};
+
+  xml2js.parseString(xml, (err, result) => {
+    if (err || !result?.templates?.template) return;
+
+    result.templates.template.forEach(t => {
+      const fileName = t.$.fileName;
+      meta[fileName] = {
+        sortOrder: parseInt(t.sortOrder?.[0] || '999', 10),
+        title: t.title?.[0] || '',
+        description: t.description?.[0] || '',
+        tags: t.tags?.[0] || ''
+      };
+    });
+  });
+
+  return meta;
+};
+
+const saveTemplateMetadata = (templateList) => {
+  const builder = new xml2js.Builder({ headless: true, rootName: 'templates' });
+  const nodes = templateList.map(entry => ({
+    $: { fileName: entry.fileName },
+    sortOrder: entry.sortOrder.toString(),
+    title: entry.title || '',
+    description: entry.description || '',
+    tags: entry.tags || ''
+  }));
+
+  const xml = builder.buildObject({ template: nodes });
+  fs.writeFileSync(TEMPLATE_INFO_PATH, xml, 'utf-8');
+};
 
 const runJsxFile = (filePath) => {
   const { shell } = require('electron');
@@ -203,6 +240,25 @@ const updateFolderDescription = (folderName, newDesc) => {
   fs.writeFileSync(CONFIG_INFO_PATH, xml, 'utf-8');
 };
 
+const getSilhouetteTemplates = () => {
+  const dir = path.resolve(__dirname, '../RE_Silhouette');
+  if (!fs.existsSync(dir)) return [];
+
+  const files = fs.readdirSync(dir).filter(f => f.endsWith('.studio') || f.endsWith('.studio3'));
+  const meta = loadTemplateMetadata();
+
+  return files.map((file, idx) => {
+    const info = meta[file] || {};
+    return {
+      fileName: file,
+      filePath: path.join(dir, file),
+      sortOrder: info.sortOrder ?? 999,
+      title: info.title || file,
+      description: info.description || '',
+      tags: info.tags || ''
+    };
+  }).sort((a, b) => a.sortOrder - b.sortOrder);
+};
 
 
 module.exports = {
@@ -214,5 +270,7 @@ module.exports = {
   getBatchHistoryData,
   getUserConfigData,
   saveFolderSortOrder,
+  getSilhouetteTemplates,
+  saveTemplateMetadata,
   updateFolderDescription
 };

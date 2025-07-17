@@ -526,6 +526,16 @@ main {
   gap: 2px;
 }
 
+.history-info input {
+  font-size: 0.9rem;
+  padding: 6px 8px;
+  background-color: #3a3a54;
+  border: 1px solid #666;
+  border-radius: 4px;
+  color: white;
+  margin-top: 4px;
+}
+
 .history-item button {
   background-color: #4caf50;
   color: white;
@@ -563,6 +573,31 @@ main {
   border-radius: 4px;
   font-size: 0.95rem;
 }
+
+#silhouetteControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+#silhouetteControls select {
+  padding: 6px 10px;
+  background-color: #3a3a54;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+#silhouetteList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 
 .config-folder {
   background-color: #2d2c42;
