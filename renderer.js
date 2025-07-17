@@ -286,6 +286,7 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     useSilhouette: form.useSilhouette.checked,
     notesOn: form.notesOn.checked,
     noteFontSize: parseInt(form.noteFontSize.value),
+    //excludeCardSlots: form.excludeCardSlots.value.trim(),
     manualNote: form.manualNote.value
   };
 

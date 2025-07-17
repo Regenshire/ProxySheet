@@ -3,11 +3,13 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const helpers = require('./helpers');
+const { Menu } = require('electron');
+
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width: 1200,
+    height: 800,
     minWidth: 800,
     minHeight: 600,
     resizable: true,
@@ -21,6 +23,42 @@ function createWindow() {
 
   win.loadFile('index.html');
 }
+
+Menu.setApplicationMenu(Menu.buildFromTemplate([
+  {
+    label: 'File',
+    submenu: [
+      { role: 'quit' }
+    ]
+  },
+  {
+    label: 'View',
+    submenu: [
+      { role: 'reload' },
+      { role: 'toggleDevTools' },
+      { type: 'separator' },
+      { role: 'resetZoom' },
+      { role: 'zoomIn' },
+      { role: 'zoomOut' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
+    ]
+  },
+  {
+    label: 'Help',
+    submenu: [
+      {
+        label: 'GitHub',
+        click: async () => {
+          const { shell } = require('electron');
+          await shell.openExternal('https://github.com/Regenshire/MTGPhotoshopLayout');
+        }
+      }
+    ]
+  }
+]));
+
+
 
 app.whenReady().then(() => {
   createWindow();
@@ -116,22 +154,25 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
       lines.push(`var showCropMarks = ${config.showCropMarks};`);
     }
 
-
-
     lines.push("\n// --- Color Adjustments ---");
-    lines.push(`var bright = ${config.bright};`);
-    lines.push(`var contr = ${config.contr};`);
-    lines.push(`var vib = ${config.vib};`);
-    lines.push(`var sat = ${config.sat};`);
-    lines.push(`var gmm = ${config.gmm};`);
-    lines.push(`var whitepoint = ${config.whitepoint};`);
-    lines.push(`var blackpoint = ${config.blackpoint};`);
+
+    if (config.bright !== '' && config.bright != null) lines.push(`var bright = ${config.bright};`);
+    if (config.contr !== '' && config.contr != null) lines.push(`var contr = ${config.contr};`);
+    if (config.vib !== '' && config.vib != null) lines.push(`var vib = ${config.vib};`);
+    if (config.sat !== '' && config.sat != null) lines.push(`var sat = ${config.sat};`);
+    if (config.gmm !== '' && config.gmm != null) lines.push(`var gmm = ${config.gmm};`);
+    if (config.whitepoint !== '' && config.whitepoint != null) lines.push(`var whitepoint = ${config.whitepoint};`);
+    if (config.blackpoint !== '' && config.blackpoint != null) lines.push(`var blackpoint = ${config.blackpoint};`);
 
     lines.push("\n// --- Back Alignment ---");
     lines.push(`var cardBack = ${config.cardBack};`);
     lines.push(`var backOffsetXmm = ${config.backOffsetXmm};`);
     lines.push(`var backOffsetYmm = ${config.backOffsetYmm};`);
     lines.push(`var selectEachCard = ${config.selectEachCard};`);
+
+    if (config.excludeCardSlots && config.excludeCardSlots.trim() !== '') {
+      lines.push(`var excludeCardSlots = "${config.excludeCardSlots.trim()}";`);
+    }
 
     lines.push("\n// --- Silhouette ---");
     lines.push(`var useSilhouette = ${config.useSilhouette};`);
@@ -202,4 +243,3 @@ ipcMain.handle('update-folder-sort-order', async (_, order) => {
 ipcMain.handle('update-folder-description', async (_, { folder, description }) => {
   return helpers.updateFolderDescription(folder, description);
 });
-

@@ -4,18 +4,20 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MTG Photoshop Layout Tool</title>
+  <title>ProxySheet – Photoshop Proxy Layout Tool</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app-container">
     <header>
-      <h1>MTG Photoshop Layout - Card Proxy Layout Tool</h1>
+      <h1>ProxySheet – Photoshop Proxy Layout Tool</h1>
       <button id="settingsBtn" title="Settings ⚙️">⚙️</button>
     </header>
+    <p class="tagline">Layout. Print. Proxy. All in Photoshop.</p>
 
     <nav class="tab-nav">
-      <button class="tab-button active" data-tab="create">Create</button>
+      <button class="tab-button active" data-tab="info">Info</button>
+      <button class="tab-button" data-tab="create">Create</button>
       <button class="tab-button" data-tab="configs">Configs</button>
       <button class="tab-button" data-tab="history">History</button>
       <button class="tab-button" data-tab="silhouette">Silhouette</button>
@@ -23,11 +25,36 @@
     </nav>
 
     <main>
-      <section class="tab-panel active" id="tab-create">
+
+      <section class="tab-panel active" id="tab-info">
+        <h2>Welcome to ProxySheet</h2>
+        <p><strong>ProxySheet</strong> is a layout tool for printing Magic: The Gathering proxy cards using Adobe Photoshop. It generates high-resolution, sheet-based layouts that are ready to run in Photoshop, with full support for batch printing, cut marks, bleed control, Silhouette registration, and custom settings.</p>
+
+        <h3>Requirements</h3>
+        <ul>
+          <li>🖥️ Windows 10/11 or macOS 12+</li>
+          <li>📸 Adobe Photoshop 2021+ (tested with 2023+)</li>
+          <li>✅ Scripting support must be enabled in Photoshop</li>
+          <li>📁 Files and folders must remain in their original structure</li>
+        </ul>
+
+        <h3>Getting Started</h3>
+        <ol>
+          <li>Open the <strong>Create</strong> tab to build a new layout or use the <strong>Configs</strong> tab to select an existing layout</li>
+          <li>Click <strong>Run Now</strong> to generate and launch the script in Photoshop</li>
+          <li>Use <strong>Configs</strong> to manage saved layouts</li>
+          <li>Use <strong>Tools</strong> for conversion and color adjustment</li>
+        </ol>
+
+        <h3>Support & Updates</h3>
+        <p>For more info or to report issues, visit the <a href="https://github.com/Regenshire/MTGPhotoshopLayout" target="_blank">GitHub project page</a>.</p>
+      </section>
+
+      <section class="tab-panel" id="tab-create">
         <h2>Create Layout</h2>
         <p class="tab-description">Configure your print layout using the options below. Hover for help.</p>
 
-        <form id="createForm" class="grid-form">
+        <form id="createForm" class="grid-form"  novalidate>
           <!-- Layout -->
           <fieldset>
             <legend>Layout</legend>
@@ -92,7 +119,7 @@
             <label>Contrast <input type="number" name="contr" value="0" /></label>
             <label>Vibrance <input type="number" name="vib" value="0" /></label>
             <label>Saturation <input type="number" name="sat" value="0" /></label>
-            <label>Gamma (GMM) <input type="number" name="gmm" value="1.05" /></label>
+            <label>Gamma (GMM) <input type="number" name="gmm" value="1.05" step="any"  /></label>
             <label>Whitepoint <input type="number" name="whitepoint" value="255" /></label>
             <label>Blackpoint <input type="number" name="blackpoint" value="0" /></label>
           </fieldset>
@@ -115,6 +142,17 @@
               Prompt for each card
             </label>
           </fieldset>
+
+          <!-- Slot Exclusions
+          <fieldset>
+            <legend>Exclude Slots</legend>
+            <label>Exclude Card Slots
+              <input type="text" name="excludeCardSlots" placeholder="e.g., 1,5,9" />
+            </label>
+            <small style="color: #aaa; font-size: 0.85rem;">
+              Enter a comma-separated list of card slot numbers (1-based) to exclude from the sheet. For example: <code>1,5,8</code>
+            </small>
+          </fieldset> -->
 
           <!-- Notes -->
           <fieldset class="notes-section">
@@ -222,7 +260,7 @@
                 <label>Contrast <input type="number" name="contr" value="0" /></label>
                 <label>Vibrance <input type="number" name="vib" value="0" /></label>
                 <label>Saturation <input type="number" name="sat" value="0" /></label>
-                <label>Gamma (GMM) <input type="number" name="gmm" value="1.05" /></label>
+                <label>Gamma (GMM) <input type="number" name="gmm" value="1.00" step="any"  /></label>
                 <label>Whitepoint <input type="number" name="whitepoint" value="255" /></label>
                 <label>Blackpoint <input type="number" name="blackpoint" value="0" /></label>
               </fieldset>

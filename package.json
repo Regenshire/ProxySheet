@@ -1,11 +1,11 @@
 {
-  "name": "mtg-proxy-ui",
-  "version": "1.0.0",
-  "description": "Electron UI for MTG Photoshop Proxy Layout Tool",
+  "name": "proxysheet",
+  "version": "1.0.0 BETA",
+  "description": "ProxySheet - Photoshop Proxy Layout Tool",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "pack": "electron-packager . MTGLayoutUI --platform=win32 --arch=x64 --out=dist --overwrite --ignore=\"^/batchHistory($|/)\" --ignore=\"^/TempConfig($|/)\" --ignore=\"^/Config_Default($|/)\" --ignore=\"^/Config_Exports($|/)\" --ignore=\"^/Config_Silhouette($|/)\" --ignore=\"^/Config_Epson_ET8500($|/)\"",
+    "pack": "electron-packager . MTGLayoutUI --platform=win32 --arch=x64 --out=dist --overwrite --executable-name=ProxySheet --ignore=\"^/batchHistory($|/)\" --ignore=\"^/TempConfig($|/)\" --ignore=\"^/Config_Default($|/)\" --ignore=\"^/Config_Exports($|/)\" --ignore=\"^/Config_Silhouette($|/)\" --ignore=\"^/Config_Epson_ET8500($|/)\"",
     "format": "prettier --write \"**/*.{js,json,html,css}\""
   },
   "keywords": [
@@ -15,7 +15,7 @@
     "jsx",
     "proxy"
   ],
-  "author": "Your Name",
+  "author": "Regenshire",
   "license": "MIT",
   "devDependencies": {
     "electron": "^29.3.0",
