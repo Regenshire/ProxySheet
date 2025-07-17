@@ -89,14 +89,34 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
     lines.push(`var dpi = ${config.dpi};`);
 
     lines.push("\n// --- Card Format ---");
+    const skipCardWidth = config.cardFormat === "NoBleed" && config.useSilhouette === true;
+
     lines.push(`var cardFormat = \"${config.cardFormat}\";`);
-    lines.push(`var cardWidthMM = ${config.cardWidthMM};`);
-    lines.push(`var cardHeightMM = ${config.cardHeightMM};`);
+    if (!skipCardWidth && config.cardWidthMM  !== '') {
+      lines.push(`var cardWidthMM = ${config.cardWidthMM};`);
+    }
+    if (!skipCardWidth && config.cardHeightMM  !== '') {
+      lines.push(`var cardHeightMM = ${config.cardHeightMM};`);
+    }
 
     lines.push("\n// --- Cut & Bleed ---");
-    lines.push(`var cutMarkSize = ${config.cutMarkSize};`);
-    lines.push(`var cutOffset = ${config.cutOffset};`);
-    lines.push(`var showCropMarks = ${config.showCropMarks};`);
+    const skipCutSettings = config.cardFormat === "NoBleed" && config.useSilhouette === true;
+
+    if (!skipCutSettings && config.cutMarkSize !== '') {
+      lines.push(`var cutMarkSize = ${config.cutMarkSize};`);
+    }
+
+    if (!skipCutSettings && config.cutOffset !== '') {
+      lines.push(`var cutOffset = ${config.cutOffset};`);
+    }
+
+    if (skipCutSettings) {
+      lines.push(`var showCropMarks = false;`);
+    } else {
+      lines.push(`var showCropMarks = ${config.showCropMarks};`);
+    }
+
+
 
     lines.push("\n// --- Color Adjustments ---");
     lines.push(`var bright = ${config.bright};`);

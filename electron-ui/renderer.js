@@ -418,17 +418,15 @@ const loadUserConfigs = async () => {
       }
     });
 
-
-    const editBtn = document.createElement('button');
-    editBtn.textContent = '✎';
-    editBtn.title = 'Edit Folder Description';
-    editBtn.className = 'edit-folder-btn';
-    editBtn.addEventListener('click', (e) => {
+    const editFolderDescBtn = document.createElement('button');
+    editFolderDescBtn.textContent = '✎';
+    editFolderDescBtn.title = 'Edit Folder Description';
+    editFolderDescBtn.className = 'edit-folder-btn';
+    editFolderDescBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
 
-      // If another edit is active, blur it to trigger save/cancel
       if (activeEditInput && activeEditInput !== descInput) {
         activeEditInput.blur();
       }
@@ -437,7 +435,6 @@ const loadUserConfigs = async () => {
       descInput.style.display = 'block';
       descInput.focus();
 
-      // Move cursor to end
       const val = descInput.value;
       descInput.value = '';
       descInput.value = val;
@@ -445,11 +442,9 @@ const loadUserConfigs = async () => {
       activeEditInput = descInput;
     });
 
-
-
     header.appendChild(toggleIcon);
     header.appendChild(label);
-    header.appendChild(editBtn);
+    header.appendChild(editFolderDescBtn);
 
     const content = document.createElement('div');
     content.className = 'config-folder-scripts';
@@ -491,14 +486,38 @@ const loadUserConfigs = async () => {
       const editBtn = document.createElement('button');
       editBtn.textContent = 'Edit';
       editBtn.className = 'edit-btn';
-      editBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+      editBtn.onclick = async () => {
+        const res = await fetch(`file://${script.filePath}`);
+        const raw = await res.text();
+        const config = {};
 
-        descDisplay.style.display = 'none';
-        descInput.style.display = 'block';
-        descInput.focus();
-      });
+        for (const line of raw.split('\n')) {
+          if (line.startsWith('var ')) {
+            try {
+              eval(line.replace('var ', 'config.'));
+            } catch (e) {}
+          }
+        }
+
+      localStorage.setItem('mtgProxyLastConfig', JSON.stringify(config));
+        document.querySelector('[data-tab="create"]').click();
+        const form = document.getElementById('createForm');
+        for (const [key, value] of Object.entries(config)) {
+          const field = form.elements[key];
+          if (!field) continue;
+          if (field.type === 'checkbox') field.checked = value;
+          else field.value = value;
+        }
+
+        document.getElementById('configName').value = script.fileName.replace('.jsx', '');
+        document.getElementById('configFolder').value = folderData.folder;
+
+        window.editingConfigContext = {
+          folderName: folderData.folder,
+          configName: script.fileName.replace('.jsx', '')
+        };
+
+      };
 
       const buttonGroup = document.createElement('div');
       buttonGroup.className = 'config-buttons';
