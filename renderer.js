@@ -371,24 +371,71 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     const stopWatching = monitorSentinelStatus((line) => {
       statusBox.textContent = `🔁 ${line}`;
     }, async () => {
-        statusBox.textContent = "✅ Photoshop batch complete.\nStarting PDF merge...";
+        statusBox.textContent = "✅ Photoshop batch complete.\nMerging PDFs...";
 
-        // TODO: PDF merge logic here
-        await delay(1000); // simulate merge
+        const batchNum = config.batchNumber;
+        const paddedBatch = String(batchNum).padStart(3, "0");
 
-        statusBox.textContent = "📄 Opening merged PDF...";
-        await delay(1000);
+        const pdfDir = 'TempConfig/TempPDF';
+        const outDir = 'PDFOutput';
 
-        // TODO: Actually open the merged file here
-        // await window.electronAPI.openFile('PDFOutput/Merged_Fronts.pdf');
+        // Step 1: Read all PDFs
+        const { success, files } = await window.electronAPI.readDirFiltered(pdfDir, '.pdf');
+        if (!success || files.length === 0) {
+          statusBox.textContent = "❌ No PDFs found to merge.";
+          return;
+        }
+
+        // Step 2: Sort PDFs into fronts and backs
+        const frontFiles = files.filter(f => !f.includes('_Back')).sort();
+        const backFiles = files.filter(f => f.includes('_Back')).sort();
+
+        const mergedPaths = [];
+
+        if (config.separateBackPDF) {
+          // Merge fronts
+          const frontOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Front.pdf`;
+          const frontPaths = frontFiles.map(f => `${pdfDir}/${f}`);
+          const mergedFront = await window.electronAPI.mergePDFs(frontPaths, frontOut);
+          if (mergedFront) mergedPaths.push(frontOut);
+
+          // Merge backs
+          const backOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Back.pdf`;
+          const backPaths = backFiles.map(f => `${pdfDir}/${f}`);
+          const mergedBack = await window.electronAPI.mergePDFs(backPaths, backOut);
+          if (mergedBack) mergedPaths.push(backOut);
+        } else {
+          // Interleave front and back
+          const combinedOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Combined.pdf`;
+          const interleaved = [];
+
+          for (const front of frontFiles.sort()) {
+            interleaved.push(`${pdfDir}/${front}`);
+            const back = front.replace('.pdf', '_Back.pdf');
+            if (files.includes(back)) {
+              interleaved.push(`${pdfDir}/${back}`);
+            }
+          }
+
+          const merged = await window.electronAPI.mergePDFs(interleaved, combinedOut);
+          if (merged) mergedPaths.push(combinedOut);
+        }
+
+        // Step 3: Validate output
+        const allExist = mergedPaths.every(p => window.electronAPI.fileExists(p));
+        if (!allExist) {
+          statusBox.textContent = "❌ Merged PDF(s) not found after creation.";
+          return;
+        }
 
         statusBox.textContent = "🧹 Cleaning up temporary files...";
+        await delay(500);
+        await window.electronAPI.cleanupBatchTemp();
 
-        // Delete the sentinel file
-        await window.electronAPI.deleteFile('TempConfig/sentinal_batch_status.txt');
-
-        await delay(1000);
+        statusBox.textContent = "✅ Batch complete!";
+        await delay(800);
         overlay.classList.add('hidden');
+
     });
 
     // Allow manual cancel
@@ -398,6 +445,13 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     };
     // === END SENTINEL WATCH ===
 
+    if (!config.batchNumber) {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const yyyymmdd = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+      const hhmmss = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+      config.batchNumber = parseInt(`${yyyymmdd}${hhmmss}`); // ← numeric
+    }
 
     await runBatchPages(config);
     return; // Skip default single-sheet run

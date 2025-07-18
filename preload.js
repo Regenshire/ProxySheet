@@ -19,8 +19,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   selectCardImageFolder: () => ipcRenderer.invoke('select-card-folder'),
   selectCardBackImage: () => ipcRenderer.invoke('select-card-back'),
   getCardImageFiles: (folderPath) => ipcRenderer.invoke('get-card-image-files', folderPath),
+  mergePDFs: (inputPaths, outputPath) => ipcRenderer.invoke('merge-pdfs', { inputPaths, outputPath }),
+  cleanupBatchTemp: () => ipcRenderer.invoke('cleanup-batch-temp'),
   writeLog: (msg) => ipcRenderer.invoke('write-log', msg),
   readSentinelFile: (path) => ipcRenderer.invoke('read-file-content', path),
   deleteFile: (path) => ipcRenderer.invoke('delete-file', path),
+  readDirFiltered: (folder, ext) => ipcRenderer.invoke('read-dir-filtered', folder, ext),
+  fileExists: (path) => ipcRenderer.invoke('file-exists', path),
   runUserConfigFile: (filePath) => ipcRenderer.invoke('run-user-config-file', filePath)  
 });

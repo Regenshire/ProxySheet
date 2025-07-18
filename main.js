@@ -342,3 +342,30 @@ ipcMain.handle('delete-file', async (_, relativePath) => {
   }
 });
 
+const { pdfMerge } = require('./pdf-utils');
+
+ipcMain.handle('merge-pdfs', async (_, { inputPaths, outputPath }) => {
+  const success = await pdfMerge(inputPaths, outputPath);
+  return { success };
+});
+
+const { cleanupBatchTemp } = require('./pdf-utils');
+
+ipcMain.handle('cleanup-batch-temp', async () => {
+  return cleanupBatchTemp();
+});
+
+ipcMain.handle('read-dir-filtered', async (_, folder, ext = '') => {
+  const dirPath = path.resolve(__dirname, folder);
+  try {
+    const files = fs.readdirSync(dirPath).filter(f => f.endsWith(ext));
+    return { success: true, files };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+});
+
+ipcMain.handle('file-exists', async (_, relativePath) => {
+  const fullPath = path.resolve(__dirname, relativePath);
+  return fs.existsSync(fullPath);
+});

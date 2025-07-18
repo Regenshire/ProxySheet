@@ -339,6 +339,8 @@ const getSilhouetteTemplates = () => {
 };
 
 
+
+
 module.exports = {
   isValidName,
   buildJsxContent,
