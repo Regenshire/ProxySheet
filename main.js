@@ -243,3 +243,102 @@ ipcMain.handle('update-folder-sort-order', async (_, order) => {
 ipcMain.handle('update-folder-description', async (_, { folder, description }) => {
   return helpers.updateFolderDescription(folder, description);
 });
+
+ipcMain.handle('build-batch-jsx', async (_, filePaths, config, includePath, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath) => {
+  const jsx = helpers.buildBatchJsxContent(
+  config,
+  includePath,
+  filePaths,
+  isBackPage,
+  sheetPageNum,
+  pdfExportPath,
+  outputFile,
+  nextConfigPath
+);
+  const configDir = path.resolve(__dirname, 'TempConfig');
+  if (!fs.existsSync(configDir)) fs.mkdirSync(configDir);
+  const outPath = path.resolve(configDir, outputFile);
+  fs.writeFileSync(outPath, jsx, 'utf-8');
+  return outPath;
+});
+
+ipcMain.handle('select-card-folder', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory']
+  });
+
+  if (result.canceled || !result.filePaths.length) {
+    return { canceled: true };
+  }
+
+  return { path: result.filePaths[0] };
+});
+
+ipcMain.handle('get-card-image-files', async (_, folderPath) => {
+  const fs = require('fs');
+  const path = require('path');
+
+  try {
+    const files = fs.readdirSync(folderPath)
+      .filter(name => /\.(jpg|jpeg|png)$/i.test(name))
+      .map(name => ({
+        name,
+        path: path.join(folderPath, name)
+      }));
+
+    return { success: true, files };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+});
+
+ipcMain.handle('select-card-back', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }]
+  });
+
+  if (result.canceled || !result.filePaths.length) {
+    return { canceled: true };
+  }
+
+  return { path: result.filePaths[0], name: path.basename(result.filePaths[0]) };
+});
+
+ipcMain.handle('write-log', async (_, message) => {
+  try {
+    const logDir = path.resolve(__dirname, 'logs');
+    const logFile = path.join(logDir, 'logs.txt');
+
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
+
+    const timestamp = new Date().toISOString();
+    const entry = `[${timestamp}] ${message}\n`;
+    fs.appendFileSync(logFile, entry, 'utf8');
+  } catch (err) {
+    console.error("⚠️ Failed to write log:", err.message);
+  }
+});
+
+ipcMain.handle('read-file-content', async (_, relativePath) => {
+  const fullPath = path.resolve(__dirname, relativePath);
+  try {
+    const content = fs.readFileSync(fullPath, 'utf-8');
+    return { success: true, content };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+});
+
+ipcMain.handle('delete-file', async (_, relativePath) => {
+  const fullPath = path.resolve(__dirname, relativePath);
+  try {
+    if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+});
+

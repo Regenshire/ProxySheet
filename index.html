@@ -143,6 +143,34 @@
             </label>
           </fieldset>
 
+          <!-- Batch Export Options -->
+          <fieldset>
+            <legend>Batch Export</legend>
+
+            <label>
+              <input type="checkbox" name="batchMultiPage" />
+              Enable Multipage Batch Export
+            </label>
+
+            <label>
+              <input type="checkbox" name="combinePDF" checked />
+              Create Combined PDF Documents
+            </label>
+
+            <label>
+              <input type="checkbox" name="separateBackPDF" />
+              Generate Separate PDFs for Front and Back
+            </label>
+
+            <label>
+              <input type="checkbox" name="autoCleanup" checked />
+              Delete Individual PDFs After Merge
+            </label>
+
+            <div id="batchInputSummary" style="font-size: 0.85rem; color: #ccc; padding-top: 6px;"></div>
+          </fieldset>
+
+
           <!-- Slot Exclusions
           <fieldset>
             <legend>Exclude Slots</legend>
@@ -337,6 +365,17 @@
   </div>
 
   <div id="debug-log" style="padding: 10px; font-size: 0.85rem; color: #ccc; background: #1a1a1a;"></div>
+
+  <div id="processingOverlay" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h2>Processing in Photoshop...</h2>
+      <pre id="processingStatus">Waiting for updates...</pre>
+      <div class="modal-buttons">
+        <button id="cancelProcessing" class="cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script src="renderer.js"></script>
 </body>
 </html>

@@ -783,3 +783,16 @@ main {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+#batchInputSummary {
+  line-height: 1.4;
+}
+
+#processingStatus {
+  background: #111;
+  color: #0f0;
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}

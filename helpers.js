@@ -6,6 +6,20 @@ const xml2js = require('xml2js');
 const CONFIG_INFO_PATH = path.join(USER_CONFIGS_DIR, 'configInfo.xml');
 const TEMPLATE_INFO_PATH = path.resolve(__dirname, 'RE_Silhouette/templateInfo.xml');
 
+const logPath = path.join(__dirname, "logs", "logs.txt");
+
+function writeHelperLog(message) {
+  const timestamp = new Date().toISOString();
+  const entry = `[${timestamp}] [helpers.js] ${message}\n`;
+
+  try {
+    fs.mkdirSync(path.dirname(logPath), { recursive: true });
+    fs.appendFileSync(logPath, entry, "utf8");
+  } catch (err) {
+    console.error("❌ Failed to write log from helpers.js:", err.message);
+  }
+}
+
 const isValidName = (str, maxLength) => {
   const validPattern = /^[\w\s-]+$/;
   return typeof str === 'string' &&
@@ -24,6 +38,70 @@ const buildJsxContent = (config, includePath) => {
   lines.push(`#include "${includePath}"`);
   return lines.join('\n');
 };
+
+const buildBatchJsxContent = (config, includePath, imageFiles, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath) => {
+  const lines = [];
+
+  lines.push(`// Auto-generated Batch Layout Page`);
+  lines.push("// " + new Date().toLocaleString());
+  lines.push("\n// === CONFIG VALUES ===");
+
+  Object.entries(config).forEach(([key, val]) => {
+    if (val === '' || val == null) return;
+    const safeVal = typeof val === 'string' ? JSON.stringify(val) : val;
+    lines.push(`var ${key} = ${safeVal};`);
+  });
+
+  if (isBackPage) {
+    lines.push("var cardBack = true;");
+  }
+
+  lines.push("\n// === Card Files ===");
+  lines.push("var selectEachCard = false;");
+
+  lines.push("\n// === Batch Mode File List ===");
+  lines.push("var batchImagePaths = [");
+  lines.push(...imageFiles.map(p => `  "${p.replace(/\\/g, "\\\\")}",`));
+  lines.push("];");
+
+  lines.push("var selectEachCard = false;");
+
+  const folderPath = imageFiles.length > 0 ? path.dirname(imageFiles[0]) : '';
+  lines.push(`var batchImageDirectory = "${folderPath.replace(/\\/g, '\\\\')}";`);
+
+  lines.push("var batchSkipPrompt = true;");
+  lines.push("var batchLightMode = true;");
+
+  lines.push("var outputPDF = true;");
+
+  let fullNextPath = "";
+  if (nextConfigPath && nextConfigPath.length > 0) {
+    const absPath = path.resolve(__dirname, nextConfigPath);
+    fullNextPath = absPath.replace(/\\/g, "\\\\");
+  }
+  lines.push(`var batchNextConfig = "${fullNextPath}";`);
+  
+  writeHelperLog(` buildBatchJsxContent - nextConfigPath: ${nextConfigPath}`);
+  writeHelperLog(` buildBatchJsxContent - fullNextPath: ${fullNextPath}`);
+  
+  lines.push("var pdfExportPreset = \"Press Quality\";");
+  lines.push(`var batchNumber = ${config.batchNumber};`);
+
+  lines.push(`var sheetPageNum = ${sheetPageNum};`);
+
+  const baseName = outputFile.replace(/\.jsx$/i, "").replace(/[^a-zA-Z0-9_]/g, "_");
+  lines.push(`var exportBaseName = "${baseName}";`);
+
+  if (pdfExportPath) {
+    lines.push(`var pdfExportPath = "${pdfExportPath.replace(/\\/g, "\\\\")}";`);
+  }
+
+  lines.push("\n// INCLUDE THE RE_PhotoEngine.jsx FILE - DO NOT REMOVE");
+  lines.push(`#include "${includePath}"`);
+
+  return lines.join('\n');
+};
+
 
 const parseJsxVarsFromFile = (filePath) => {
   const content = fs.readFileSync(filePath, 'utf-8');
@@ -264,6 +342,7 @@ const getSilhouetteTemplates = () => {
 module.exports = {
   isValidName,
   buildJsxContent,
+  buildBatchJsxContent,
   parseJsxVarsFromFile,
   listBatchHistory,
   runJsxFile,

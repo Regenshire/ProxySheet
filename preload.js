@@ -14,5 +14,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateFolderDescription: (folder, description) => ipcRenderer.invoke('update-folder-description', { folder, description }),
     getSilhouetteTemplates: () => ipcRenderer.invoke('get-silhouette-templates'),
   saveSilhouetteTemplateMetadata: (list) => ipcRenderer.invoke('save-silhouette-template-metadata', list),
+  buildBatchJsx: (filePaths, config, includePath, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath) =>
+    ipcRenderer.invoke('build-batch-jsx', filePaths, config, includePath, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath),
+  selectCardImageFolder: () => ipcRenderer.invoke('select-card-folder'),
+  selectCardBackImage: () => ipcRenderer.invoke('select-card-back'),
+  getCardImageFiles: (folderPath) => ipcRenderer.invoke('get-card-image-files', folderPath),
+  writeLog: (msg) => ipcRenderer.invoke('write-log', msg),
+  readSentinelFile: (path) => ipcRenderer.invoke('read-file-content', path),
+  deleteFile: (path) => ipcRenderer.invoke('delete-file', path),
   runUserConfigFile: (filePath) => ipcRenderer.invoke('run-user-config-file', filePath)  
 });

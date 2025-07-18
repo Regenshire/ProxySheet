@@ -162,8 +162,26 @@ function placeImageInDocument(
     destGroup,
     layerName,
     posX,
-    posY
+    posY,
+    reuseCache // ← optional object to prevent re-opening
 ) {
+
+    // Reuse cached copy if one exists
+    var imagePath = imageFile instanceof File ? imageFile.fsName : imageFile;
+    if (reuseCache && reuseCache[imagePath]) {
+        var cachedLayer = reuseCache[imagePath].duplicate();
+        if (destDoc) app.activeDocument = destDoc;
+        cachedLayer.name = layerName;
+        if (typeof posX !== "undefined" && typeof posY !== "undefined") {
+            cachedLayer.translate(
+                posX - cachedLayer.bounds[0].as("px"),
+                posY - cachedLayer.bounds[1].as("px")
+            );
+        }
+        if (destGroup) cachedLayer.move(destGroup, ElementPlacement.INSIDE);
+        return cachedLayer;
+    }
+
     // Open the image file as a new document
     var imgDoc = app.open(imageFile);
     // Resize if target dimensions are provided
@@ -201,6 +219,11 @@ function placeImageInDocument(
         );
     }
     if (destGroup) newLayer.move(destGroup, ElementPlacement.INSIDE);
+
+    if (reuseCache) {
+        reuseCache[imagePath] = newLayer;
+    }
+
     return newLayer;
 }
 
@@ -878,6 +901,26 @@ function padNumber(num, digits) {
     return str;
 }
 
+function callNextConfig(configLocation) {
+    if (typeof configLocation !== "undefined" && configLocation.length > 0) {
+        try {
+            var nextFile = new File(configLocation);
+            if (nextFile.exists) {
+                $.evalFile(nextFile);
+            } else {
+                alert("⚠️ Next config file not found:\n" + configLocation);
+            }
+        } catch (e) {
+            alert("Failed to call next config:\n" + e.message);
+        }
+    } else {
+        $.writeln("✅ No next config to run. Batch complete.");
+    }
+}
 
-
-
+function writeSentinal(sentinalFilename, sentinalMessage) {
+    var logFile = new File(sentinalFilename);
+    logFile.open("a");
+    logFile.writeln(sentinalMessage);
+    logFile.close();
+}

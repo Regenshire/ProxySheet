@@ -1,0 +1,412 @@
+[2025-07-18T20:46:15.310Z] ****** prepareBatchCardData() started *****
+[2025-07-18T20:46:15.312Z]  - window.batchCardFacePath value: D:\MTG\Proxies\09 - Card Backs
+[2025-07-18T20:46:15.313Z]  - window.batchCardBackFile path: D:\MTG\Proxies\09 - Card Backs\FF Card Cube 0.jpg
+[2025-07-18T20:46:15.314Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T20:46:15.315Z] Scanning card folder for images...
+[2025-07-18T20:46:15.316Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\09 - Card Backs
+[2025-07-18T20:46:15.318Z] 📁 getCardImageFiles returned 39 entries
+[2025-07-18T20:46:15.320Z] 📂 scanCardDirectory returned: 39 single, 0 double-sided cards
+[2025-07-18T20:46:15.321Z] ✅ prepareBatchCardData completed: 0 double | 39 single.
+[2025-07-18T20:46:15.323Z] 🔄 runBatchPages started. Total pages: 6
+[2025-07-18T20:46:15.324Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T20:46:15.326Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T20:46:15.333Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T20:46:15.334Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T20:46:15.337Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T20:46:15.338Z]  - Checking for backCards - backCards.length: 7
+[2025-07-18T20:46:15.340Z]  - Back Page - Padded: undefined
+[2025-07-18T20:46:15.341Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.342Z]  - Setting backPath
+[2025-07-18T20:46:15.343Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T20:46:15.344Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T20:46:15.347Z]  - backPath Set
+[2025-07-18T20:46:15.348Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T20:46:15.350Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.351Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T20:46:15.352Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T20:46:15.353Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_3.jsx
+[2025-07-18T20:46:15.355Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_3.jsx
+[2025-07-18T20:46:15.356Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_3.jsx
+[2025-07-18T20:46:15.359Z]  - Checking for backCards - backCards.length: 7
+[2025-07-18T20:46:15.360Z]  - Back Page - Padded: undefined
+[2025-07-18T20:46:15.361Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T20:46:15.362Z]  - Setting backPath
+[2025-07-18T20:46:15.363Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_3_Back.jsx
+[2025-07-18T20:46:15.364Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_3_Back.jsx
+[2025-07-18T20:46:15.367Z]  - backPath Set
+[2025-07-18T20:46:15.368Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.369Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T20:46:15.371Z]  - i: 2 | page: 3 | frontName: MTG_Batch_Page_3.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page3.pdf
+[2025-07-18T20:46:15.373Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_4.jsx
+[2025-07-18T20:46:15.374Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_4.jsx
+[2025-07-18T20:46:15.376Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_4.jsx
+[2025-07-18T20:46:15.379Z]  - Checking for backCards - backCards.length: 7
+[2025-07-18T20:46:15.380Z]  - Back Page - Padded: undefined
+[2025-07-18T20:46:15.381Z]  - Back Page i: 2 | page: 3 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page3_Back.pdf | backName: MTG_Batch_Page_3_Back.jsx
+[2025-07-18T20:46:15.383Z]  - Setting backPath
+[2025-07-18T20:46:15.384Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_4_Back.jsx
+[2025-07-18T20:46:15.385Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_4_Back.jsx
+[2025-07-18T20:46:15.389Z]  - backPath Set
+[2025-07-18T20:46:15.390Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.392Z]  - Loop 2 Completed | Ready for next record
+[2025-07-18T20:46:15.393Z]  - i: 3 | page: 4 | frontName: MTG_Batch_Page_4.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page4.pdf
+[2025-07-18T20:46:15.394Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_5.jsx
+[2025-07-18T20:46:15.396Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_5.jsx
+[2025-07-18T20:46:15.397Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_5.jsx
+[2025-07-18T20:46:15.399Z]  - Checking for backCards - backCards.length: 7
+[2025-07-18T20:46:15.401Z]  - Back Page - Padded: undefined
+[2025-07-18T20:46:15.402Z]  - Back Page i: 3 | page: 4 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page4_Back.pdf | backName: MTG_Batch_Page_4_Back.jsx
+[2025-07-18T20:46:15.403Z]  - Setting backPath
+[2025-07-18T20:46:15.405Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_5_Back.jsx
+[2025-07-18T20:46:15.406Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_5_Back.jsx
+[2025-07-18T20:46:15.409Z]  - backPath Set
+[2025-07-18T20:46:15.410Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.412Z]  - Loop 3 Completed | Ready for next record
+[2025-07-18T20:46:15.414Z]  - i: 4 | page: 5 | frontName: MTG_Batch_Page_5.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page5.pdf
+[2025-07-18T20:46:15.416Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_6.jsx
+[2025-07-18T20:46:15.417Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_6.jsx
+[2025-07-18T20:46:15.419Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_6.jsx
+[2025-07-18T20:46:15.423Z]  - Checking for backCards - backCards.length: 7
+[2025-07-18T20:46:15.425Z]  - Back Page - Padded: undefined
+[2025-07-18T20:46:15.426Z]  - Back Page i: 4 | page: 5 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page5_Back.pdf | backName: MTG_Batch_Page_5_Back.jsx
+[2025-07-18T20:46:15.428Z]  - Setting backPath
+[2025-07-18T20:46:15.429Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_6_Back.jsx
+[2025-07-18T20:46:15.430Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_6_Back.jsx
+[2025-07-18T20:46:15.433Z]  - backPath Set
+[2025-07-18T20:46:15.434Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.436Z]  - Loop 4 Completed | Ready for next record
+[2025-07-18T20:46:15.438Z]  - i: 5 | page: 6 | frontName: MTG_Batch_Page_6.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page6.pdf
+[2025-07-18T20:46:15.439Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.440Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.441Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.444Z]  - Checking for backCards - backCards.length: 4
+[2025-07-18T20:46:15.446Z]  - Back Page - Padded: undefined
+[2025-07-18T20:46:15.447Z]  - Back Page i: 5 | page: 6 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page6_Back.pdf | backName: MTG_Batch_Page_6_Back.jsx
+[2025-07-18T20:46:15.448Z]  - Setting backPath
+[2025-07-18T20:46:15.450Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T20:46:15.451Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T20:46:15.454Z]  - backPath Set
+[2025-07-18T20:46:15.455Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:46:15.456Z]  - Loop 5 Completed | Ready for next record
+[2025-07-18T20:46:15.458Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T20:46:15.459Z] ▶️ Launching batch in Photoshop...
+[2025-07-18T20:50:11.755Z] ****** prepareBatchCardData() started *****
+[2025-07-18T20:50:11.757Z]  - window.batchCardFacePath value: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T20:50:11.758Z]  - window.batchCardBackFile path: D:\MTG\Proxies\09 - Card Backs\FF Card Cube 0.jpg
+[2025-07-18T20:50:11.760Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T20:50:11.761Z] Scanning card folder for images...
+[2025-07-18T20:50:11.763Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T20:50:11.765Z] 📁 getCardImageFiles returned 4 entries
+[2025-07-18T20:50:11.766Z] 📂 scanCardDirectory returned: 2 single, 1 double-sided cards
+[2025-07-18T20:50:11.768Z] ✅ prepareBatchCardData completed: 1 double | 2 single.
+[2025-07-18T20:50:11.770Z] 🔄 runBatchPages started. Total pages: 2
+[2025-07-18T20:50:11.771Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T20:50:11.772Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T20:50:11.774Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T20:50:11.775Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T20:50:11.778Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T20:50:11.779Z]  - Checking for backCards - backCards.length: 2
+[2025-07-18T20:50:11.781Z]  - Back Page - Padded: undefined
+[2025-07-18T20:50:11.782Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:50:11.784Z]  - Setting backPath
+[2025-07-18T20:50:11.785Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T20:50:11.786Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T20:50:11.789Z]  - backPath Set
+[2025-07-18T20:50:11.791Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T20:50:11.792Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:50:11.794Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T20:50:11.795Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T20:50:11.797Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:50:11.798Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:50:11.799Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:50:11.802Z]  - Checking for backCards - backCards.length: 1
+[2025-07-18T20:50:11.804Z]  - Back Page - Padded: undefined
+[2025-07-18T20:50:11.805Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T20:50:11.806Z]  - Setting backPath
+[2025-07-18T20:50:11.808Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T20:50:11.809Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T20:50:11.812Z]  - backPath Set
+[2025-07-18T20:50:11.813Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T20:50:11.815Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T20:50:11.816Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T20:50:11.817Z] ▶️ Launching batch in Photoshop...
+[2025-07-18T21:24:11.906Z] ****** prepareBatchCardData() started *****
+[2025-07-18T21:24:11.908Z]  - window.batchCardFacePath value: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:24:11.909Z]  - window.batchCardBackFile path: D:\MTG\Proxies\Card Backs\MTG Original Edit 0.jpg
+[2025-07-18T21:24:11.911Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T21:24:11.912Z] Scanning card folder for images...
+[2025-07-18T21:24:11.914Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:24:11.916Z] 📁 getCardImageFiles returned 4 entries
+[2025-07-18T21:24:11.918Z] 📂 scanCardDirectory returned: 2 single, 1 double-sided cards
+[2025-07-18T21:24:11.919Z] ✅ prepareBatchCardData completed: 1 double | 2 single.
+[2025-07-18T21:24:11.922Z] 🔄 runBatchPages started. Total pages: 2
+[2025-07-18T21:24:11.923Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T21:24:11.925Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:24:11.932Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:24:11.933Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T21:24:11.936Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:24:11.937Z]  - Checking for backCards - backCards.length: 2
+[2025-07-18T21:24:11.939Z]  - Back Page - Padded: undefined
+[2025-07-18T21:24:11.940Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:24:11.942Z]  - Setting backPath
+[2025-07-18T21:24:11.943Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:24:11.944Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:24:11.947Z]  - backPath Set
+[2025-07-18T21:24:11.949Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:24:11.950Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:24:11.951Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T21:24:11.953Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T21:24:11.954Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:24:11.956Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:24:11.957Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:24:11.959Z]  - Checking for backCards - backCards.length: 1
+[2025-07-18T21:24:11.961Z]  - Back Page - Padded: undefined
+[2025-07-18T21:24:11.962Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:24:11.963Z]  - Setting backPath
+[2025-07-18T21:24:11.965Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T21:24:11.966Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T21:24:11.968Z]  - backPath Set
+[2025-07-18T21:24:11.970Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:24:11.971Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T21:24:11.973Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:24:11.974Z] ▶️ Launching batch in Photoshop...
+[2025-07-18T21:26:25.069Z] ****** prepareBatchCardData() started *****
+[2025-07-18T21:26:25.071Z]  - window.batchCardFacePath value: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:26:25.072Z]  - window.batchCardBackFile path: D:\MTG\Proxies\Card Backs\MTG Original Edit 0.jpg
+[2025-07-18T21:26:25.074Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T21:26:25.075Z] Scanning card folder for images...
+[2025-07-18T21:26:25.077Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:26:25.079Z] 📁 getCardImageFiles returned 4 entries
+[2025-07-18T21:26:25.080Z] 📂 scanCardDirectory returned: 2 single, 1 double-sided cards
+[2025-07-18T21:26:25.082Z] ✅ prepareBatchCardData completed: 1 double | 2 single.
+[2025-07-18T21:26:25.083Z] 🔄 runBatchPages started. Total pages: 2
+[2025-07-18T21:26:25.084Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T21:26:25.086Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:26:25.087Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:26:25.089Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T21:26:25.092Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:26:25.093Z]  - Checking for backCards - backCards.length: 2
+[2025-07-18T21:26:25.094Z]  - Back Page - Padded: undefined
+[2025-07-18T21:26:25.096Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:26:25.097Z]  - Setting backPath
+[2025-07-18T21:26:25.099Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:26:25.100Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:26:25.103Z]  - backPath Set
+[2025-07-18T21:26:25.104Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:26:25.105Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:26:25.107Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T21:26:25.109Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T21:26:25.110Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:26:25.111Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:26:25.113Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:26:25.115Z]  - Checking for backCards - backCards.length: 1
+[2025-07-18T21:26:25.117Z]  - Back Page - Padded: undefined
+[2025-07-18T21:26:25.118Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:26:25.119Z]  - Setting backPath
+[2025-07-18T21:26:25.121Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T21:26:25.122Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T21:26:25.124Z]  - backPath Set
+[2025-07-18T21:26:25.126Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:26:25.127Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T21:26:25.129Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:26:25.130Z] ▶️ Launching batch in Photoshop...
+[2025-07-18T21:32:46.959Z] ****** prepareBatchCardData() started *****
+[2025-07-18T21:32:46.961Z]  - window.batchCardFacePath value: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:32:46.962Z]  - window.batchCardBackFile path: D:\MTG\Proxies\Card Backs\SqualFeathers.jpg
+[2025-07-18T21:32:46.963Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T21:32:46.965Z] Scanning card folder for images...
+[2025-07-18T21:32:46.967Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:32:46.969Z] 📁 getCardImageFiles returned 4 entries
+[2025-07-18T21:32:46.971Z] 📂 scanCardDirectory returned: 2 single, 1 double-sided cards
+[2025-07-18T21:32:46.972Z] ✅ prepareBatchCardData completed: 1 double | 2 single.
+[2025-07-18T21:32:46.974Z] 🔄 runBatchPages started. Total pages: 2
+[2025-07-18T21:32:46.976Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T21:32:46.980Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:32:46.987Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:32:46.989Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T21:32:46.991Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:32:46.993Z]  - Checking for backCards - backCards.length: 2
+[2025-07-18T21:32:46.994Z]  - Back Page - Padded: undefined
+[2025-07-18T21:32:46.996Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:32:46.998Z]  - Setting backPath
+[2025-07-18T21:32:46.999Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:32:47.000Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:32:47.002Z]  - backPath Set
+[2025-07-18T21:32:47.004Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:32:47.005Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:32:47.007Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T21:32:47.008Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T21:32:47.010Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:32:47.011Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:32:47.013Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:32:47.015Z]  - Checking for backCards - backCards.length: 1
+[2025-07-18T21:32:47.016Z]  - Back Page - Padded: undefined
+[2025-07-18T21:32:47.018Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:32:47.019Z]  - Setting backPath
+[2025-07-18T21:32:47.020Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T21:32:47.022Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T21:32:47.024Z]  - backPath Set
+[2025-07-18T21:32:47.025Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:32:47.027Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T21:32:47.028Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:32:47.030Z] ▶️ Launching batch in Photoshop...
+[2025-07-18T21:33:21.159Z] ****** prepareBatchCardData() started *****
+[2025-07-18T21:33:21.160Z]  - window.batchCardFacePath value: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:33:21.162Z]  - window.batchCardBackFile path: D:\MTG\Proxies\Card Backs\SqualFeathers.jpg
+[2025-07-18T21:33:21.163Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T21:33:21.165Z] Scanning card folder for images...
+[2025-07-18T21:33:21.166Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:33:21.168Z] 📁 getCardImageFiles returned 4 entries
+[2025-07-18T21:33:21.170Z] 📂 scanCardDirectory returned: 2 single, 1 double-sided cards
+[2025-07-18T21:33:21.171Z] ✅ prepareBatchCardData completed: 1 double | 2 single.
+[2025-07-18T21:33:21.173Z] 🔄 runBatchPages started. Total pages: 2
+[2025-07-18T21:33:21.174Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T21:33:21.176Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:33:21.177Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:33:21.179Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T21:33:21.182Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:33:21.183Z]  - Checking for backCards - backCards.length: 2
+[2025-07-18T21:33:21.185Z]  - Back Page - Padded: undefined
+[2025-07-18T21:33:21.187Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:33:21.188Z]  - Setting backPath
+[2025-07-18T21:33:21.190Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:33:21.191Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:33:21.194Z]  - backPath Set
+[2025-07-18T21:33:21.195Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:33:21.197Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:33:21.198Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T21:33:21.200Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T21:33:21.201Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:33:21.203Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:33:21.204Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:33:21.206Z]  - Checking for backCards - backCards.length: 1
+[2025-07-18T21:33:21.208Z]  - Back Page - Padded: undefined
+[2025-07-18T21:33:21.209Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:33:21.211Z]  - Setting backPath
+[2025-07-18T21:33:21.212Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T21:33:21.214Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T21:33:21.216Z]  - backPath Set
+[2025-07-18T21:33:21.218Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:33:21.219Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T21:33:21.221Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:33:21.222Z] ▶️ Launching batch in Photoshop...
+[2025-07-18T21:46:43.805Z] ****** prepareBatchCardData() started *****
+[2025-07-18T21:46:43.806Z]  - window.batchCardFacePath value: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:46:43.808Z]  - window.batchCardBackFile path: D:\MTG\Proxies\Card Backs\SqualFeathers.jpg
+[2025-07-18T21:46:43.809Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T21:46:43.811Z] Scanning card folder for images...
+[2025-07-18T21:46:43.812Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:46:43.814Z] 📁 getCardImageFiles returned 4 entries
+[2025-07-18T21:46:43.819Z] 📂 scanCardDirectory returned: 2 single, 1 double-sided cards
+[2025-07-18T21:46:43.820Z] ✅ prepareBatchCardData completed: 1 double | 2 single.
+[2025-07-18T21:46:43.822Z] 🔄 runBatchPages started. Total pages: 2
+[2025-07-18T21:46:43.827Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T21:46:43.829Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:46:43.836Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:46:43.838Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T21:46:43.840Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:46:43.842Z]  - Checking for backCards - backCards.length: 2
+[2025-07-18T21:46:43.844Z]  - Back Page - Padded: undefined
+[2025-07-18T21:46:43.845Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:46:43.846Z]  - Setting backPath
+[2025-07-18T21:46:43.848Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:46:43.849Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:46:43.852Z]  - backPath Set
+[2025-07-18T21:46:43.853Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:46:43.855Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:46:43.856Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T21:46:43.857Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T21:46:43.859Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:46:43.860Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:46:43.862Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:46:43.864Z]  - Checking for backCards - backCards.length: 1
+[2025-07-18T21:46:43.865Z]  - Back Page - Padded: undefined
+[2025-07-18T21:46:43.867Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:46:43.868Z]  - Setting backPath
+[2025-07-18T21:46:43.870Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T21:46:43.871Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T21:46:43.873Z]  - backPath Set
+[2025-07-18T21:46:43.875Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:46:43.876Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T21:46:43.877Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:46:43.879Z] ▶️ Launching batch in Photoshop...
+[2025-07-18T21:48:22.734Z] ****** prepareBatchCardData() started *****
+[2025-07-18T21:48:22.736Z]  - window.batchCardFacePath value: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:48:22.737Z]  - window.batchCardBackFile path: D:\MTG\Proxies\Card Backs\SqualFeathers.jpg
+[2025-07-18T21:48:22.738Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T21:48:22.740Z] Scanning card folder for images...
+[2025-07-18T21:48:22.741Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:48:22.743Z] 📁 getCardImageFiles returned 4 entries
+[2025-07-18T21:48:22.745Z] 📂 scanCardDirectory returned: 2 single, 1 double-sided cards
+[2025-07-18T21:48:22.746Z] ✅ prepareBatchCardData completed: 1 double | 2 single.
+[2025-07-18T21:48:22.748Z] 🔄 runBatchPages started. Total pages: 2
+[2025-07-18T21:48:22.749Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T21:48:22.751Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:48:22.752Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:48:22.754Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T21:48:22.757Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:48:22.758Z]  - Checking for backCards - backCards.length: 2
+[2025-07-18T21:48:22.760Z]  - Back Page - Padded: undefined
+[2025-07-18T21:48:22.761Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:48:22.763Z]  - Setting backPath
+[2025-07-18T21:48:22.765Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:48:22.766Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:48:22.768Z]  - backPath Set
+[2025-07-18T21:48:22.770Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:48:22.771Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:48:22.773Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T21:48:22.774Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T21:48:22.776Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:48:22.777Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:48:22.779Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:48:22.781Z]  - Checking for backCards - backCards.length: 1
+[2025-07-18T21:48:22.783Z]  - Back Page - Padded: undefined
+[2025-07-18T21:48:22.784Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:48:22.786Z]  - Setting backPath
+[2025-07-18T21:48:22.787Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T21:48:22.788Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T21:48:22.791Z]  - backPath Set
+[2025-07-18T21:48:22.792Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:48:22.794Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T21:48:22.795Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:48:22.797Z] ▶️ Launching batch in Photoshop...
+[2025-07-18T21:49:40.014Z] ****** prepareBatchCardData() started *****
+[2025-07-18T21:49:40.015Z]  - window.batchCardFacePath value: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:49:40.017Z]  - window.batchCardBackFile path: D:\MTG\Proxies\Card Backs\SqualFeathers.jpg
+[2025-07-18T21:49:40.019Z]  About to check if (!window.batchCardFacePath || !window.batchCardBackFile) 
+[2025-07-18T21:49:40.020Z] Scanning card folder for images...
+[2025-07-18T21:49:40.022Z] 🔍 scanCardDirectory called with folder: D:\MTG\Proxies\Testing\3 Card Test
+[2025-07-18T21:49:40.023Z] 📁 getCardImageFiles returned 4 entries
+[2025-07-18T21:49:40.025Z] 📂 scanCardDirectory returned: 2 single, 1 double-sided cards
+[2025-07-18T21:49:40.027Z] ✅ prepareBatchCardData completed: 1 double | 2 single.
+[2025-07-18T21:49:40.028Z] 🔄 runBatchPages started. Total pages: 2
+[2025-07-18T21:49:40.029Z]  - i: 0 | page: 1 | frontName: MTG_Batch_Page_1.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page1.pdf
+[2025-07-18T21:49:40.031Z]  - frontNextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:49:40.033Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2.jsx
+[2025-07-18T21:49:40.035Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2.jsx
+[2025-07-18T21:49:40.037Z]  Setting firstFrontScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:49:40.039Z]  - Checking for backCards - backCards.length: 2
+[2025-07-18T21:49:40.040Z]  - Back Page - Padded: undefined
+[2025-07-18T21:49:40.042Z]  - Back Page i: 0 | page: 1 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page1_Back.pdf | backName: MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:49:40.043Z]  - Setting backPath
+[2025-07-18T21:49:40.045Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: TempConfig/MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:49:40.047Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:49:40.049Z]  - backPath Set
+[2025-07-18T21:49:40.050Z]  Setting firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:49:40.052Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:49:40.053Z]  - Loop 0 Completed | Ready for next record
+[2025-07-18T21:49:40.055Z]  - i: 1 | page: 2 | frontName: MTG_Batch_Page_2.jsx | frontPdfExportPath: PDFOutput/ProxySheet_undefined_Page2.pdf
+[2025-07-18T21:49:40.057Z]  - frontNextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:49:40.058Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:49:40.059Z] [helpers.js]  buildBatchJsxContent - fullNextPath: D:\\MTG\\Home Proxy\\Photoshop Scripts\\05 - DEV\\MTGPhotoshopLayout\\TempConfig\\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:49:40.062Z]  - Checking for backCards - backCards.length: 1
+[2025-07-18T21:49:40.063Z]  - Back Page - Padded: undefined
+[2025-07-18T21:49:40.064Z]  - Back Page i: 1 | page: 2 | backPdfExportPath : PDFOutput/ProxySheet_undefined_Page2_Back.pdf | backName: MTG_Batch_Page_2_Back.jsx
+[2025-07-18T21:49:40.066Z]  - Setting backPath
+[2025-07-18T21:49:40.067Z] [helpers.js]  buildBatchJsxContent - nextConfigPath: 
+[2025-07-18T21:49:40.069Z] [helpers.js]  buildBatchJsxContent - fullNextPath: 
+[2025-07-18T21:49:40.071Z]  - backPath Set
+[2025-07-18T21:49:40.072Z]  - Back Page - firstBackScript: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1_Back.jsx
+[2025-07-18T21:49:40.074Z]  - Loop 1 Completed | Ready for next record
+[2025-07-18T21:49:40.076Z] Launching first batch script: D:\MTG\Home Proxy\Photoshop Scripts\05 - DEV\MTGPhotoshopLayout\TempConfig\MTG_Batch_Page_1.jsx
+[2025-07-18T21:49:40.077Z] ▶️ Launching batch in Photoshop...
