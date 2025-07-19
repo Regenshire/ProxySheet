@@ -4,6 +4,8 @@
 
 ProxySheet is a powerful desktop application and Photoshop scripting engine for laying out and printing high-quality Magic: The Gathering proxy cards. It provides a graphical UI for building layouts, managing configurations, exporting PDFs, and preparing cut-ready Silhouette Studio files.
 
+<img width="1389" height="1197" alt="Image" src="https://github.com/user-attachments/assets/60c760a2-9443-4fb1-88e8-93da118de367" />
+
 ---
 
 ## Requirements
