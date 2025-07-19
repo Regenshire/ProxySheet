@@ -7,6 +7,7 @@ var layout = "vertical";
 var pageWidthInches = 8.5;
 var pageHeightInches = 11;
 var dpi = 800;
+var paperType = "Letter";
 
 // --- Card Format ---
 var cardFormat = "MPC";
@@ -16,7 +17,7 @@ var cardHeightMM = 94;
 // --- Cut & Bleed ---
 var cutMarkSize = 4.5;
 var cutOffset = 3.04;
-var showCropMarks = false;
+var showCropMarks = true;
 
 // --- Color Adjustments ---
 var bright = 0;
@@ -46,7 +47,7 @@ var noteFontSize = 10;
 var manualNote = "";
 
 // --- Meta Info ---
-var configCreateDate = "2025-07-19T01:33:51.285Z";
+var configCreateDate = "2025-07-19T15:41:47.546Z";
 
 // === END CONFIG ===
 

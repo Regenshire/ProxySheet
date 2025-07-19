@@ -59,9 +59,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const presets = {
       Letter: [8.5, 11],
       A4: [8.27, 11.69],
-      A3: [11.69, 16.54],
       Legal: [8.5, 14],
-      Tabloid: [11, 17]
+      A3: [11.69, 16.54],
+      Tabloid: [11, 17],
+      ArchB: [12, 18]
     };
 
     const val = select.value;
@@ -69,7 +70,10 @@ window.addEventListener('DOMContentLoaded', () => {
       width.value = presets[val][0];
       height.value = presets[val][1];
     }
+
+    updateLayoutOptions(); // ← Add this line
   });
+
 
   // === Open PDF Output Folder ===
   document.getElementById('pdfOutputBtn').addEventListener('click', async () => {
@@ -329,18 +333,33 @@ function resetDefaults() {
   localStorage.removeItem('batchCardFacePath');
   localStorage.removeItem('batchCardBackFile');
 
+  try {}
+  catch {}
+
+  try {
+    window.batchCardFacePath = null;
+    window.batchCardBackFile = null;
+
+    const batchSummary = document.getElementById('batchInputSummary');
+    if (batchSummary) batchSummary.textContent = "";
+  } catch (e) {}
+
   const statusBox = document.getElementById('statusMessage');
   statusBox.className = "status-message";
 
   window.editingConfigContext = null;
 }
 
+// Dynamically update layout options if page size is changed manually
+document.querySelector('input[name="pageWidthInches"]').addEventListener('input', updateLayoutOptions);
+document.querySelector('input[name="pageHeightInches"]').addEventListener('input', updateLayoutOptions);
+document.querySelector('select[name="layout"]').addEventListener('change', updateLayoutOptions);
+
 // Handle Reset to Defaults
 document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
   const confirmed = confirm("Are you sure you want to reset all settings to defaults?\nThis will clear your saved preferences.");
   if (confirmed) resetDefaults();
 });
-
 
 document.getElementById('createForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -380,14 +399,34 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
   };
 
   if (form.batchMultiPage.checked) {
-    const ok = await prepareBatchCardData();
+    const summary = document.getElementById('batchInputSummary');
+    summary.textContent = "";
 
-    if (!ok) {
-      //statusBox.textContent = "❌ Failed to prepare card data. Please check your folder and back image.";
-      return;
+    if (!window.batchCardFacePath || (!window.batchCardBackFile && !config.noBackImage)) {
+      const folder = await window.electronAPI.selectCardImageFolder();
+      if (folder.canceled) return;
+
+      window.batchCardFacePath = folder.path;
+      localStorage.setItem('batchCardFacePath', folder.path);
+
+      if (!config.noBackImage) {
+        const back = await window.electronAPI.selectCardBackImage();
+        if (back.canceled) return;
+
+        window.batchCardBackFile = { name: back.name, path: back.path };
+        localStorage.setItem('batchCardBackFile', JSON.stringify(window.batchCardBackFile));
+      } else {
+        window.batchCardBackFile = null;
+        localStorage.removeItem('batchCardBackFile');
+      }
     }
+
+    const ok = await prepareBatchCardData();
+    if (!ok) return;
+
     createPageBatches(config);
   }
+
 
   if (form.batchMultiPage.checked) {
     if (!window.pageBatches || window.pageBatches.length === 0) {
@@ -1155,8 +1194,27 @@ function createPageBatches(config) {
   const layout = config.layout || 'horizontal';
   let cardsPerPage = 8;
 
-  if (layout === 'vertical') cardsPerPage = 9;
-  else if (layout === 'SevenCard') cardsPerPage = 7;
+  if (layout === 'SevenCard') {
+    cardsPerPage = 7;
+  } else if (layout === 'horizontal') {
+    cardsPerPage = 8;
+  } else if (layout === 'vertical') {
+    cardsPerPage = 9;
+  } else if (layout === 'horizontal2x5') {
+    cardsPerPage = 10;
+  } else if (layout === 'horizontal2x6') {
+    cardsPerPage = 12;
+  } else if (layout === 'horizontal3x6') {
+    cardsPerPage = 18;
+  } else if (layout === 'vertical4x3') {
+    cardsPerPage = 12;
+  } else if (layout === 'vertical5x3') {
+    cardsPerPage = 15;
+  } else if (layout === 'vertical4x4') {
+    cardsPerPage = 16;
+  } else {
+    cardsPerPage = 8; // fallback for horizontal (2x4)
+  }
 
   const batches = [];
 
@@ -1422,6 +1480,77 @@ function monitorSentinelStatus(onUpdate, onComplete) {
 
   return () => clearInterval(interval); // return cleanup function
 }
+
+function updateLayoutOptions() {
+  const layoutSelect = document.querySelector('select[name="layout"]');
+  const cardwidthMM = parseFloat(document.querySelector('input[name="cardWidthMM"]').value || '69');
+  const cardheightMM = parseFloat(document.querySelector('input[name="cardHeightMM"]').value || '94');
+  const width = parseFloat(document.querySelector('input[name="pageWidthInches"]').value);
+  const height = parseFloat(document.querySelector('input[name="pageHeightInches"]').value);
+
+
+  let availableLayouts;
+
+  if (cardwidthMM <= 63 && cardheightMM <= 88) {
+    availableLayouts = [
+      { value: 'horizontal', label: 'Horizontal (2x4)', minW: 0, minH: 0, silSupport: true },
+      { value: 'vertical', label: 'Vertical (3x3)', minW: 0, minH: 0, silSupport: true },
+      { value: 'SevenCard', label: 'SevenCard', minW: 8.27, minH: 11.69, silSupport: true },
+      { value: 'horizontal2x5', label: 'Horizontal (2x5)', minW: 8, minH: 13, silSupport: false },
+      { value: 'horizontal2x6', label: 'Horizontal (2x6)', minW: 11, minH: 16, silSupport: false },
+      { value: 'horizontal3x6', label: 'Horizontal (3x6)', minW: 11, minH: 16, silSupport: false },
+      { value: 'vertical4x3', label: 'Vertical (4x3)', minW: 8.27, minH: 14, silSupport: false },
+      { value: 'vertical4x4', label: 'Vertical (4x4)', minW: 10.8, minH: 14, silSupport: false },
+      { value: 'vertical5x3', label: 'Vertical (5x3)', minW: 10, minH: 18, silSupport: false }
+    ];
+  } else {
+    availableLayouts = [
+      { value: 'horizontal', label: 'Horizontal (2x4)', minW: 0, minH: 0, silSupport: true },
+      { value: 'vertical', label: 'Vertical (3x3)', minW: 0, minH: 0, silSupport: true },
+      { value: 'SevenCard', label: 'SevenCard', minW: 8.27, minH: 11.69, silSupport: true },
+      { value: 'horizontal2x5', label: 'Horizontal (2x5)', minW: 8.27, minH: 14, silSupport: false },
+      { value: 'horizontal2x6', label: 'Horizontal (2x6)', minW: 11, minH: 16.54, silSupport: false },
+      { value: 'horizontal3x6', label: 'Horizontal (3x6)', minW: 12, minH: 16.54, silSupport: false },
+      { value: 'vertical4x3', label: 'Vertical (4x3)', minW: 9, minH: 16, silSupport: false },
+      { value: 'vertical4x4', label: 'Vertical (4x4)', minW: 12, minH: 18, silSupport: false },
+      { value: 'vertical5x3', label: 'Vertical (5x3)', minW: 11, minH: 20, silSupport: false }
+    ];
+  }
+
+
+
+  // Preserve current selection
+  const current = layoutSelect.value;
+  layoutSelect.innerHTML = '';
+
+  availableLayouts.forEach(opt => {
+    if (width >= opt.minW && height >= opt.minH) {
+      const o = document.createElement('option');
+      o.value = opt.value;
+      o.textContent = opt.label;
+      layoutSelect.appendChild(o);
+    }
+  });
+
+  // Reselect previous layout if still valid, otherwise fall back to horizontal
+  const stillExists = [...layoutSelect.options].some(o => o.value === current);
+  layoutSelect.value = stillExists ? current : 'horizontal';
+
+  const silhouetteCheckbox = document.querySelector('input[name="useSilhouette"]');
+  const selectedLayout = layoutSelect.value;
+  const layoutMeta = availableLayouts.find(l => l.value === selectedLayout);
+
+  if (layoutMeta && layoutMeta.silSupport === false) {
+    silhouetteCheckbox.checked = false;
+    silhouetteCheckbox.disabled = true;
+    silhouetteCheckbox.title = "Silhouette Registration (Disabled)";
+  } else {
+    silhouetteCheckbox.disabled = false;
+    silhouetteCheckbox.title = "";
+  }
+
+}
+
 
 // Trigger on tab open
 document.querySelector('[data-tab="configs"]').addEventListener('click', loadUserConfigs);

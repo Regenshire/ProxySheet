@@ -611,7 +611,7 @@ function exportSinglesFromFolder(config) {
     }
 
     var files = inputFolder.getFiles(function(f) {
-        return f instanceof File && f.name.match(/\.(png|jpg|jpeg)$/i);
+        return f instanceof File && f.name.match(/\.(jpg|jpeg|png|webp|tif|tiff|eps|bmp|gif|heic|heif|svg)$/i);
     });
 
     if (files.length === 0) {

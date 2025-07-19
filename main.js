@@ -275,6 +275,8 @@ ipcMain.handle('build-batch-jsx', async (_, filePaths, config, includePath, isBa
 
 ipcMain.handle('select-card-folder', async () => {
   const result = await dialog.showOpenDialog({
+    title: "Select Your Card Image Folder",
+    buttonLabel: "Use this Folder",
     properties: ['openDirectory']
   });
 
@@ -291,7 +293,8 @@ ipcMain.handle('get-card-image-files', async (_, folderPath) => {
 
   try {
     const files = fs.readdirSync(folderPath)
-      .filter(name => /\.(jpg|jpeg|png)$/i.test(name))
+      //.filter(name => /\.(jpg|jpeg|png)$/i.test(name))
+      .filter(name => name.match(/\.(jpg|jpeg|png|webp|tif|tiff|eps|bmp|gif|heic|heif|svg)$/i))
       .map(name => ({
         name,
         path: path.join(folderPath, name)
@@ -305,8 +308,15 @@ ipcMain.handle('get-card-image-files', async (_, folderPath) => {
 
 ipcMain.handle('select-card-back', async () => {
   const result = await dialog.showOpenDialog({
+    title: "Select Default Back Image",
+    buttonLabel: "Use this Card Back",
     properties: ['openFile'],
-    filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png'] }]
+    filters: [{ name: 'Images', extensions: [
+      'jpg', 'jpeg', 'png', 'webp',
+      'tif', 'tiff', 'eps',
+      'bmp', 'gif', 'heic', 'heif',
+      'svg'
+    ] }]
   });
 
   if (result.canceled || !result.filePaths.length) {

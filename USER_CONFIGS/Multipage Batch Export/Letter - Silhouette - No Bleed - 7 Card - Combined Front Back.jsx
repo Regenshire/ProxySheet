@@ -7,6 +7,7 @@ var layout = "SevenCard";
 var pageWidthInches = 8.5;
 var pageHeightInches = 11;
 var dpi = 800;
+var paperType = "Letter";
 
 // --- Card Format ---
 var cardFormat = "NoBleed";
@@ -42,7 +43,7 @@ var noteFontSize = 10;
 var manualNote = "";
 
 // --- Meta Info ---
-var configCreateDate = "2025-07-19T01:30:34.855Z";
+var configCreateDate = "2025-07-19T15:43:08.766Z";
 
 // === END CONFIG ===
 

@@ -111,7 +111,7 @@ function main() {
     // Save original 
 
     // === Page Size Calculations ===
-    if (layout === "horizontal" || layout === "SevenCard") {
+    if (layout === "horizontal" || layout === "horizontal2x5" || layout === "horizontal2x6" || layout === "horizontal3x6" ||layout === "SevenCard") {
         // Swap width and height for landscape
         var temp = pageWidthInches;
         pageWidthInches = pageHeightInches;
@@ -133,10 +133,42 @@ function main() {
         rows = 3;
         cols = 3;
         totalCards = 9;
+    } else if (layout === "vertical3x2") {
+        rows = 3;
+        cols = 2;
+        totalCards = rows * cols; 
+    } else if (layout === "vertical4x3") {
+        rows = 4;
+        cols = 3;
+        totalCards = rows * cols;
+    } else if (layout === "vertical4x4") {
+        rows = 4;
+        cols = 4;
+        totalCards = rows * cols;
+    } else if (layout === "vertical5x3") {
+        rows = 5;
+        cols = 3;
+        totalCards = rows * cols;
+    } else if (layout === "horizontal") {
+        rows = 2;
+        cols = 4;
+        totalCards = rows * cols;
+    } else if (layout === "horizontal2x5") {
+        rows = 2;
+        cols = 5;
+        totalCards = rows * cols;
+    } else if (layout === "horizontal2x6") {
+        rows = 2;
+        cols = 6;
+        totalCards = rows * cols;
+    } else if (layout === "horizontal3x6") {
+        rows = 3;
+        cols = 6;
+        totalCards = rows * cols;
     } else if (layout === "SevenCard") {
         rows = 2;
         cols = 4;
-        totalCards = 7; // Only 7 active cards
+        totalCards = 7; // Only 7 active cards    
     } else {
         rows = layout === "vertical" ? 3 : 2;
         cols = layout === "vertical" ? 3 : 4;
@@ -217,7 +249,8 @@ function main() {
 
     if (outputPDF === true) {
         var sentinelPath = scriptFolder.fullName + "/../TempConfig/sentinal_batch_status.txt";
-        writeSentinal(sentinelPath, "RUNNING: " + File($.fileName).name);
+        var displayName = (typeof exportBaseName !== "undefined") ? exportBaseName : File($.fileName).name;
+        writeSentinal(sentinelPath, "RUNNING: " + displayName);
     }
 
     // Count excluded slots
@@ -358,51 +391,82 @@ function main() {
         var isExcluded = excludedSlots[slotNumber] === true;
         var cardHadImage = false;
 
-        //var x = (i % cols) * cardWhome + cardStartX;
-        //var y = Math.floor(i / cols) * cardHhome + cardStartY;
-
+        // === Card placement logic ===
         var x, y;
 
-        //var x = (i % cols) * cardDisplayW + cardStartX;
-        //var y = Math.floor(i / cols) * cardDisplayH + cardStartY;
+        if (layout === "SevenCard") {
+            if (i === 0) {
+                // Card 1: vertically centered, far left or far right
+                y = Math.round((pageHeightPx - cardDisplayH) / 2);
 
-    if (layout === "SevenCard") {
-        if (i === 0) {
-            // Card 1: vertically centered, far left or right
-            y = Math.round((pageHeightPx - cardDisplayH) / 2);
-
-            if (cardBack) {
-                // BACK: Card 1 on far right
-                x = cardStartX + 3 * cardDisplayW;
+                if (cardBack) {
+                    x = cardStartX + 3 * cardDisplayW;
+                } else {
+                    x = cardStartX;
+                }
             } else {
-                // FRONT: Card 1 on far left
-                x = cardStartX;
-            }
+                // Cards 2–7: grid
+                var localIndex = i - 1;
+                var row = Math.floor(localIndex / 3);
+                var col = localIndex % 3;
+                var colFlipped = cardBack ? (2 - col) : col;
 
+                if (cardBack) {
+                    x = cardStartX + colFlipped * cardDisplayW;
+                } else {
+                    x = cardStartX + cardDisplayW + colFlipped * cardDisplayW;
+                }
+
+                y = cardStartY + row * cardDisplayH;
+            }
         } else {
-            // Cards 2-4 (top row), 6-8 (bottom row) — 3x2 grid
-            var localIndex = i - 1;
-            var row = Math.floor(localIndex / 3);
-            var col = localIndex % 3;
-
-            var colFlipped = !cardBack ? col : 2 - col;  // ← flip entire grid
-
-            if (cardBack) {
-                // CARD BACK
-                x = cardStartX + colFlipped * cardDisplayW;
-            } else {
-                // CARD FRONTS
-                x = cardStartX + cardDisplayW + colFlipped * cardDisplayW;
-            }
-
-            y = cardStartY + row * cardDisplayH;
+            // General layout (2x4, 2x5, 2x6, 3x5, etc.)
+            var row = Math.floor(i / cols);
+            var col = i % cols;
+            x = col * cardDisplayW + cardStartX;
+            y = row * cardDisplayH + cardStartY;
         }
-    }
+
+        /*
+        var x, y;
+
+        if (layout === "SevenCard") {
+            if (i === 0) {
+                // Card 1: vertically centered, far left or right
+                y = Math.round((pageHeightPx - cardDisplayH) / 2);
+
+                if (cardBack) {
+                    // BACK: Card 1 on far right
+                    x = cardStartX + 3 * cardDisplayW;
+                } else {
+                    // FRONT: Card 1 on far left
+                    x = cardStartX;
+                }
+
+            } else {
+                // Cards 2-4 (top row), 6-8 (bottom row) — 3x2 grid
+                var localIndex = i - 1;
+                var row = Math.floor(localIndex / 3);
+                var col = localIndex % 3;
+
+                var colFlipped = !cardBack ? col : 2 - col;  // ← flip entire grid
+
+                if (cardBack) {
+                    // CARD BACK
+                    x = cardStartX + colFlipped * cardDisplayW;
+                } else {
+                    // CARD FRONTS
+                    x = cardStartX + cardDisplayW + colFlipped * cardDisplayW;
+                }
+
+                y = cardStartY + row * cardDisplayH;
+            }
+        }
         else {
             x = (i % cols) * cardDisplayW + cardStartX;
             y = Math.floor(i / cols) * cardDisplayH + cardStartY;
         }
-
+        */
         var baseLayer;
 
         if (isExcluded) {
@@ -529,7 +593,8 @@ function main() {
         }   
 
         // === Load and position CutMarkOverlay.png if not excluded ===
-        if (showCropMarks && cardHadImage && !batchLightMode) {
+        //if (showCropMarks && cardHadImage && !batchLightMode) {
+        if (showCropMarks && cardHadImage) {
             var markSize = mmToPixels(cutMarkSize);
             var adjustedCutOffset = cutOffset - (useSilhouette ? silhouetteBleedAdjust : 0);
             var offset = mmToPixels(adjustedCutOffset);

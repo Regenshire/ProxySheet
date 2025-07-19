@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "pack": "electron-packager . ProxySheet --platform=win32 --arch=x64 --out=dist --overwrite --executable-name=ProxySheet --ignore=\"^/batchHistory($|/)\" --ignore=\"^/TempConfig($|/)\" --ignore=\"^/Config_Default($|/)\" --ignore=\"^/Config_Exports($|/)\" --ignore=\"^/Config_Silhouette($|/)\" --ignore=\"^/Config_Epson_ET8500($|/)\" --ignore=\"^/logs($|/)\" --ignore=\"^/PDFOutput/*($|/)\" --ignore=\"^/Printers - EPSON ET85XX($|/)\"",
+    "pack": "electron-packager . ProxySheet --platform=win32 --arch=x64 --out=dist --overwrite --executable-name=ProxySheet --ignore=\"^/TempConfig($|/)\" --ignore=\"^/logs($|/)\" --ignore=\"^/PDFOutput/.*\" --ignore=\"^/batchHistory($|/)\" --ignore=\"^/Config_Default($|/)\" --ignore=\"^/Config_EPSON_ET8500($|/)\" --ignore=\"^/Config_Exports($|/)\" --ignore=\"^/Config_Silhouette($|/)\" --ignore=\"^/USER_CONFIGS/00 - Personal/.*\" --ignore=\"^/USER_CONFIGS/Printers - EPSON ET85XX($|/)\"",  
     "format": "prettier --write \"**/*.{js,json,html,css}\""
   },
   "keywords": [

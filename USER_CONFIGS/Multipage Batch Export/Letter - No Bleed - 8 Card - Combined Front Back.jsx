@@ -7,6 +7,7 @@ var layout = "horizontal";
 var pageWidthInches = 8.5;
 var pageHeightInches = 11;
 var dpi = 800;
+var paperType = "Letter";
 
 // --- Card Format ---
 var cardFormat = "NoBleed";
@@ -14,9 +15,9 @@ var cardWidthMM = 69;
 var cardHeightMM = 94;
 
 // --- Cut & Bleed ---
-var cutMarkSize = 4.5;
-var cutOffset = 3.04;
-var showCropMarks = false;
+var cutMarkSize = 3;
+var cutOffset = 0.025;
+var showCropMarks = true;
 
 // --- Color Adjustments ---
 var bright = 0;
@@ -46,7 +47,7 @@ var noteFontSize = 10;
 var manualNote = "";
 
 // --- Meta Info ---
-var configCreateDate = "2025-07-19T01:32:03.985Z";
+var configCreateDate = "2025-07-19T15:42:13.068Z";
 
 // === END CONFIG ===
 
