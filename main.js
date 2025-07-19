@@ -13,7 +13,7 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     resizable: true,
-    title: 'MTG Proxy Layout Tool',
+    title: `ProxySheet - Photoshop Proxy Layout Tool - v${app.getVersion()}`,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -356,7 +356,9 @@ ipcMain.handle('delete-file', async (_, relativePath) => {
 const { pdfMerge } = require('./pdf-utils');
 
 ipcMain.handle('merge-pdfs', async (_, { inputPaths, outputPath }) => {
-  const success = await pdfMerge(inputPaths, outputPath);
+  const resolvedOutput = path.resolve(__dirname, outputPath);
+  const resolvedInputs = inputPaths.map(p => path.resolve(__dirname, p));
+  const success = await pdfMerge(resolvedInputs, resolvedOutput);
   return { success };
 });
 
@@ -379,4 +381,19 @@ ipcMain.handle('read-dir-filtered', async (_, folder, ext = '') => {
 ipcMain.handle('file-exists', async (_, relativePath) => {
   const fullPath = path.resolve(__dirname, relativePath);
   return fs.existsSync(fullPath);
+});
+
+ipcMain.handle('open-pdf-output-folder', async () => {
+  const outDir = path.resolve(__dirname, 'PDFOutput');
+
+  try {
+    if (!fs.existsSync(outDir)) {
+      fs.mkdirSync(outDir, { recursive: true });
+    }
+    await shell.openPath(outDir);
+    return { success: true };
+  } catch (err) {
+    console.error("❌ Failed to open PDFOutput folder:", err.message);
+    return { success: false, message: err.message };
+  }
 });

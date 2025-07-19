@@ -1,98 +1,137 @@
-# ProxySheet
+# ProxySheet – Photoshop Proxy Layout Tool
 
-ProxySheet - Photoshop Proxy Layout Tool
+> **Layout. Print. Proxy. All in Photoshop.**
 
-## How to install
+ProxySheet is a powerful desktop application and Photoshop scripting engine for laying out and printing high-quality Magic: The Gathering proxy cards. It provides a graphical UI for building layouts, managing configurations, exporting PDFs, and preparing cut-ready Silhouette Studio files.
 
-1. Extract the directories into a folder on your computer. Most of the directories will contain \*.jsx\* script files. The RE_PhotoEngine folder contains the primary script file that is referenced by the configuration files. It is important that you export all of the folders.
+---
 
-## How to use Script
+## Requirements
 
-1. Run the .\*jsx\* scripts contained in the \*DEFAULT\*, \*PrinterName\* (ie, \*EPSON_ET8500\*), or \*Silhouette\* folder in Photoshop by either double-clicking the script or going to File > Scripts > Browse and selecting the script. The script files in these locations are Configuration Files and contain the parameters of the script. Each script will reference the RE_PhotoEngine.jsx code file.
-2. In Photoshop, a file select window will appear. In this window, select up to 9 cards and press OK. It will layout the cards alphabetically and apply the Brightness, Contrast, Vibrance, Saturation, and other settings specified in the script file automatically as well as add cut marks to the output. Individual Brightness/Contrast and Vibrance Layers will also be added to every card, allowing the user to tweak on a per card basis within Photoshop if they choose without manually adding layers.
-3. The user can print directly from Photoshop, or they can export to any file format they choose such as PDF.
+- **Operating System**: Windows 10/11 or macOS 12+
+- **Photoshop**: Adobe Photoshop 2021 or later (tested with 2023+)
+- **Setup Notes**:
+  - Photoshop scripting must be enabled
+  - Extract the full release zip and keep the files together
 
-## How to Customize Script Defaults
+---
 
-Each of the Configuration script files can be edited. At the top of the script file are variables that control the page layout, card size, dpi, and the brightness/contract, vibrance, saturation, gmm, whitepoint, blackpoint layers and other options. You can copy and rename these files and tweak these settings, allowing you to save your favorite settings in scripts that you can run.
+## Getting Started
 
-## Version History
+1. **Download and Run ProxySheet**
 
-### 2025-07-17 - Version 1.00 BETA
+   - **Windows Users (Recommended)**:\
+     Download the latest release `.zip` from the [Releases](https://github.com/Regenshire/MTGPhotoshopLayout/releases) page.\
+     Extract it and double-click:
 
-\* Renamed the Application to ProxySheet - Photoshop Proxy Layout Tool \* New Graphical User Interface - We now have a UI for the scripting engine, allowing users to have better control and visibility on what the scripts can do. The UI has a number of features and is better organized then the manual photoshop scripts. The application still requires Photoshop and uses a jsx scripting backend to interact with Photoshop via scripts.
+     ```
+     ProxySheet.exe
+     ```
 
-### 2025-07-15 - Script Version 5.10
+   - **macOS / Advanced Users**:\
+     Clone the repository and run with Node.js:
 
-\* New Silhouette Layout - SevenCard Layout Backside Mirroring - Back-side printing support added: When cardBack = true, the layout is fully mirrored to ensure perfect front-to-back alignment.
+     ```bash
+     git clone https://github.com/Regenshire/MTGPhotoshopLayout.git
+     cd MTGPhotoshopLayout
+     npm install
+     npm start
+     ```
 
-\* Backside Image Selection - When cardBack = true and selectEachCard = true, the script will prompt you to choose the card back for each card so that double-sided cards can be better supported.
+2. **Make Sure Photoshop is Installed and Configured**
 
-\* PDF Export Support - You can now export directly to .pdf by setting outputPDF = true in your config script.
+   - Requires **Adobe Photoshop 2021 or later**
+   - Photoshop scripting must be enabled (default is enabled)
 
-- Files are saved to the /PDFOutput/ folder with filenames like Batch_001_Page1.pdf.
-- A new config variable pdfExportPreset allows choosing export quality (e.g., "High Quality Print", "Smallest File Size").
-- Documents are automatically flattened before PDF export (unless using "High Quality Print") to reduce file size.
+3. **Begin Using ProxySheet**
 
-### 2025-07-15 - Script Version 5.00
+   - Use the **Create** tab to build new layouts
+   - Use **Configs** to run and manage saved settings
+   - Press **Run Now** to generate and launch the script in Photoshop
 
-\* New Silhouette Layout - SevenCard Layout Added - A new layout mode called "SevenCard" has been implemented. It is designed to improve cutting accuracy with Silhouette devices by centering one card vertically and aligning six additional cards in a mirrored 3x2 grid beside it. This creates space around the registration marks, greatly increasing the registration detection and allowing users to use the Silhouette device with more precision and without using the "Post-it Note" trick. For the Sevencard layout, secial support for duplex printing has been added. The back layout is fully mirrored, ensuring perfect front-to-back alignment when using cardBack = true for the SevenCard layout.
+---
 
-\* Silhouette Support updated - The Silhouette markings and template have been redesigned to improve location and registration to increase the accuracy and consistency cuts on the Silhouette cutting machine.
+## 🧭 Key Functional Tabs
 
-\* New Silhouette Studio Template: SevenCard - A new Studio file is included to support the SevenCard layout: Regen Silhouette Studio Cutting Template v5 - Seven Card.studio3
+- **Create**: Design custom layout configurations with full control over page size, layout style, card format, cut marks, color adjustments, and back alignment.
+- **Configs**: Browse saved scripts by folder, search, sort, and rerun or edit existing setups.
+- **History**: Re-run exact config batches with saved image paths and settings. [BETA FEATURE - Does not work for PDF Batches]
+- **Silhouette**: Launch `.studio` or `.studio3` cutting templates. Edit and tag metadata for searchability.  Only have Letter and A4 templates currently built.  Have 8 card and 7 card layouts.  The 7 card layout reduces detection errors and improves cut reliability.
+- **Tools**: Convert images (format, DPI, bleed), apply color adjustments, and prepare proxy-ready assets.
 
-\* Batch History System (New Feature) - A fully integrated batch tracking system has been added to allow re-printing of specific card sheets without needing to manually reconfigure or reselect images.
+---
 
-- Set batchHistory = true in any config script to enable.
-- On each run, a new batch file is created inside the /batchHistory/ folder (e.g., Batch_001.jsx).
-- These batch scripts store:
+## ⚙️ Configuration Features
 
-- All config variables used at time of execution
+- **Layout**: Horizontal (2x4), Vertical (3x3), SevenCard
+- **Paper Size**: Letter, A4, A3, Legal, Tabloid, or Custom
+- **Card Format**:
+  - MPC (with bleed)
+  - NoBleed (Scryfall-style trimmed cards)
+- **Silhouette Registration**: Detection registration marks for Silhouette Cameo cutting machine
+- **Crop Settings**:
+  - Toggle crop marks
+  - Customize cut size and offset (mm)
+- **Color Adjustments**:
+  - Brightness, Contrast, Vibrance, Saturation
+  - Gamma, Whitepoint, Blackpoint
+- **Notes & Metadata**:
+  - Add printed notes to sheet
+  - Embed batch number visually in card lower right corner
 
-- The exact file paths of all selected images
+---
 
-- When a batch file is re-run, the user is prompted to automatically reload those images — allowing exact reprints without file selection.
-- Saved batch scripts are self-contained and executable in Photoshop (they include a reference to the RE_PhotoEngine.jsx engine).
-- Batch numbers are auto-incremented and formatted with padded numbering (# 001, # 002, etc.)
-- The displayed batch number can optionally be printed onto each card using displayBatchNumber = true. This places the batch number in the lower right of the card. Do not use if you normally have text in that location.
+## 🔄 Image Conversion Tool
 
-## 2025-07-14 - Script Version 4.20
+Accessed via the **Tools** tab, it allows:
 
-\* Added Card Export functionality that allows for a user to export individual Card files in a different format (JPG or PNG) and with or without Bleed (MPC, NoBleed). This functionality allows a user to convert MPC cards into NoBleed cards and to convert NoBleed cards into MPC compatible cards. It also allows a user to convert the DPI on cards. For example, a user could convert a directory full of PNG 800 dpi MPC cards into JPG 300 DPI NoBleed cards. Please see the new Config_Exports directory for a list of example scripts.
+- DPI rescaling
+- Format conversion (JPG, PNG)
+- Optional black bleed padding (for NoBleed prep)
+- Color correction adjustments (brightness, contrast, etc.)
 
-\* Silhouette Support updated - The Silhouette markings and template have been redesigned to improve location and registration to increase the accuracy and consistency cuts on the Silhouette cutting machine.
+---
 
-### 2025-07-12 - Script Version 4.10
+## ✂️ Silhouette Studio Integration
 
-\* Added support for Back printing Offsets. This is controlled by cardBack, backOffsetXmm, and backOffsetYmm in the config files. This allows you to place an offset to adjust for printer alignment variance.
+- Launch `.studio3` files from the **Silhouette** tab
+- Edit and sort templates with metadata (Title, Description, Tags, Order)
+- Ready-to-cut files for SevenCard and normal eight card layouts, supports both MPC and No Bleed cards
 
-\* A "\[EPSON ET8500 - CARD BACKS - Silhoutte] \[-2.0 +0.1 mm Offset] Koala Double-Sided Matte Paper 48 lb.jsx" config file has been added to the Config_EPSON_ET8500 with an example adjustment for back printing.
+---
 
-### 2025-07-11 - Script Version 4.00
+## 🛠️ Advanced Features
+- Exclude Slots: Hide specific card slots on a sheet by number.
+- Slot Reuse Cache: Optimizes layer usage during export for speed.
+- Back Offsets: Supports X/Y offset shifting for card backs (manual duplex alignment).
+- Sheet Adjustments: The sheet has adjustment layers that can be applied for color/brightness/contrast control.
+- Dynamic Adjustments: Each card can optionally receive per-card adjustment layers.
+- Auto Batch Numbering: Each export is timestamped and saved under batchHistory.
 
-\* Added RE_HelperFunctions.jsx to break out functions into a separate file to improve code management.
+---
 
-\* Added Variable Safety with default values to allow for Config files that only have some variables. This will better support future versions with less risk of breaking pre-existing config files.
 
-\* Added support for "NoBleed" files. These are files that are fully cut sized magic cards such as are found on scryfall and other sources. This functionality allows a user to setup a config that prints these types of files vs printing MPC formatted files. This is controlled via the \*cardFormat\* variable. If this is set to "MPC" it will support cards with the full 6mm MPC bleed. If the value is set to "NoBleed" it will support cards with no bleed found on sites such as scryfall.
+## 📘 License
 
-\* Added excludeCardSlots as a variable. A user can use this to exclude any cards being in specific slots. For example, if a user want to leave the rightmost two slots free on a horizontal layout, the could enter "4,8" into this field to exclude card slot 4 and 8. The user enters the numbers (Upper left to lower right) in a comma separated list for slots they want to exclude.
+MIT License
 
-\* Removed the overlay PNG file from the project for marks and replaced it with a function that constructs them in Photoshop natively from shapes.
+---
 
-\* Added support for "NoBleed" files in Silhoette mode
+## 👤 Author
 
-\* Added the ability to turn off the per Card Adjustment Layers by setting the variable \*addPerCardAdjustLayer\* to false.
+Created by [Regenshire](https://github.com/Regenshire)\
+Feedback and contributions are welcome!
 
-### 2025-07-10 - Script Version 3.30
+---
 
-\* Divided the scripting into multiple files, separating the jsx code from the configuration files \* Further developed support for Silhoutte Cameo Cutting Machines and tested on a Silhoutte Cameo 5 \* Added Note functionality to allow for tracking settings of specific print jobs to help with dialing in print configurations \* Added a _Regen Silhouette Studio Cutting Template v3.3.studio3_ file as a Silhoutte Cameo studio file for cutting.
+## 📌 Links
 
-### 2025-07-07 - Script Version 2.50
+- [GitHub Repo](https://github.com/Regenshire/MTGPhotoshopLayout)
+- [Submit Issues](https://github.com/Regenshire/MTGPhotoshopLayout/issues)
 
-\* Added (theoretical) support for Silhoutte Cameo Cutting Machine \* Added Page sizing controls and automatic centering \* Added additional templates with Silhoutte option selected and for no-brightness adjustment
+---
 
-### 2025-07-06 - Script Version 2.00
+## 📋 Changelog
 
-\* Added ability to change between vertical and horizontal layout \* Changed from a single overlay template for the entire page to Cut Marks being placed at each corner of each card by the script to allow for multiple formats
+See [CHANGELOG.md](./CHANGELOG.md) for the full changelog and release history.
+

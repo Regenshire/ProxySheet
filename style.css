@@ -48,6 +48,18 @@ header h1 {
   cursor: pointer;
 }
 
+#pdfOutputBtn {
+  all: unset;
+  font-size: 1.2rem;
+  color: #aaa;
+  cursor: pointer;
+  padding: 2px;
+}
+
+#pdfOutputBtn:hover {
+  color: #fff;
+}
+
 #settingsBtn:hover {
   color: #fff;
 }

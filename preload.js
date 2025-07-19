@@ -27,5 +27,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteFile: (path) => ipcRenderer.invoke('delete-file', path),
   readDirFiltered: (folder, ext) => ipcRenderer.invoke('read-dir-filtered', folder, ext),
   fileExists: (path) => ipcRenderer.invoke('file-exists', path),
-  runUserConfigFile: (filePath) => ipcRenderer.invoke('run-user-config-file', filePath)  
+  runUserConfigFile: (filePath) => ipcRenderer.invoke('run-user-config-file', filePath),
+  openPdfOutputFolder: () => ipcRenderer.invoke('open-pdf-output-folder')
 });

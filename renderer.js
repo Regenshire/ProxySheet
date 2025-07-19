@@ -71,6 +71,10 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // === Open PDF Output Folder ===
+  document.getElementById('pdfOutputBtn').addEventListener('click', async () => {
+    await window.electronAPI.openPdfOutputFolder();
+  });
 
   const savedCardFolder = localStorage.getItem('batchCardFacePath');
   const savedCardBack = localStorage.getItem('batchCardBackFile');
