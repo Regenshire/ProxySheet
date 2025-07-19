@@ -12,7 +12,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getUserConfigs: () => ipcRenderer.invoke('get-user-configs'),
   updateFolderSortOrder: (order) => ipcRenderer.invoke('update-folder-sort-order', order),
   updateFolderDescription: (folder, description) => ipcRenderer.invoke('update-folder-description', { folder, description }),
-    getSilhouetteTemplates: () => ipcRenderer.invoke('get-silhouette-templates'),
+  updateFolderExpanded: (folder, expanded) => ipcRenderer.invoke('update-folder-expanded', { folder, expanded }),
+  getSilhouetteTemplates: () => ipcRenderer.invoke('get-silhouette-templates'),
   saveSilhouetteTemplateMetadata: (list) => ipcRenderer.invoke('save-silhouette-template-metadata', list),
   buildBatchJsx: (filePaths, config, includePath, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath) =>
     ipcRenderer.invoke('build-batch-jsx', filePaths, config, includePath, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath),

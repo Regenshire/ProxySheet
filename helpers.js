@@ -81,8 +81,8 @@ const buildBatchJsxContent = (config, includePath, imageFiles, isBackPage, sheet
   }
   lines.push(`var batchNextConfig = "${fullNextPath}";`);
   
-  writeHelperLog(` buildBatchJsxContent - nextConfigPath: ${nextConfigPath}`);
-  writeHelperLog(` buildBatchJsxContent - fullNextPath: ${fullNextPath}`);
+  //writeHelperLog(` buildBatchJsxContent - nextConfigPath: ${nextConfigPath}`);
+  //writeHelperLog(` buildBatchJsxContent - fullNextPath: ${fullNextPath}`);
   
   lines.push("var pdfExportPreset = \"Press Quality\";");
   lines.push(`var batchNumber = ${config.batchNumber};`);
@@ -223,7 +223,8 @@ const loadFolderMetadata = () => {
       const name = f.$.name;
       meta[name] = {
         sortOrder: f.sortOrder?.[0] || '999',
-        description: f.description?.[0] || ''
+        description: f.description?.[0] || '',
+        expanded: f.$.expanded === 'true'
       };
     });
   });
@@ -286,8 +287,11 @@ const saveFolderSortOrder = (sortedList) => {
 
   const builder = new xml2js.Builder({ headless: true, rootName: 'configs' });
   const folderNodes = sortedList.map(entry => ({
-    $: { name: entry.name },
-    sortOrder: entry.sortOrder.toString(),
+    $: {
+      name: entry.name,
+      sortOrder: entry.sortOrder.toString(),
+      expanded: existing[entry.name]?.expanded ? 'true' : 'false'
+    },
     description: existing[entry.name]?.description || ''
   }));
 
@@ -338,8 +342,29 @@ const getSilhouetteTemplates = () => {
   }).sort((a, b) => a.sortOrder - b.sortOrder);
 };
 
+const updateFolderExpandedState = (folderName, isExpanded) => {
+  const existing = loadFolderMetadata();
 
+  const builder = new xml2js.Builder({ headless: true, rootName: 'configs' });
 
+  const updated = Object.keys(existing).map(name => ({
+    $: {
+      name,
+      sortOrder: existing[name].sortOrder || '999',
+      description: existing[name].description || '',
+      expanded: name === folderName ? (isExpanded ? 'true' : 'false') : (existing[name].expanded ? 'true' : 'false')
+    }
+  }));
+
+  if (!existing[folderName]) {
+    updated.push({
+      $: { name: folderName, sortOrder: '999', description: '', expanded: isExpanded ? 'true' : 'false' }
+    });
+  }
+
+  const xml = builder.buildObject({ folder: updated });
+  fs.writeFileSync(CONFIG_INFO_PATH, xml, 'utf-8');
+};
 
 module.exports = {
   isValidName,
@@ -353,5 +378,6 @@ module.exports = {
   saveFolderSortOrder,
   getSilhouetteTemplates,
   saveTemplateMetadata,
+  updateFolderExpandedState,
   updateFolderDescription
 };

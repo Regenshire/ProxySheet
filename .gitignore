@@ -5,4 +5,6 @@
 /node_modules/.prettierrc
 /dist/
 /logs/
+/USER_CONFIGS/Printers - EPSON ET85XX/
+/USER_CONFIGS/00 - Personal/*
 .prettierrc

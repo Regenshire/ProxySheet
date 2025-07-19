@@ -1,18 +1,26 @@
 <configs>
-  <folder name="MPC Bleed">
+  <folder name="00 - Personal">
     <sortOrder>1</sortOrder>
+    <description>My personal configs</description>
+  </folder>
+  <folder name="Printers - EPSON ET85XX">
+    <sortOrder>2</sortOrder>
+    <description>EPSON ET85XX Templates - These are templates tuned for use on the Epson ET85XX printer.</description>
+  </folder>
+  <folder name="MPC Bleed">
+    <sortOrder>3</sortOrder>
     <description>MPC Bleed Card Templates - MPC cards have a 3mm Bleed along the outside edge.</description>
   </folder>
   <folder name="No Bleed">
-    <sortOrder>2</sortOrder>
+    <sortOrder>4</sortOrder>
     <description>No-Bleed Card Templates - No-Bleed cards are commonly available on Scryfall and other sites.</description>
   </folder>
   <folder name="Silhouette">
-    <sortOrder>3</sortOrder>
+    <sortOrder>5</sortOrder>
     <description>Silhouette Templates - These templates are for printing cards compatible with the Silhouette Cameo cutter.</description>
   </folder>
-  <folder name="Printers - EPSON ET85XX">
-    <sortOrder>4</sortOrder>
-    <description>EPSON ET85XX Templates - These are templates tuned for use on the Epson ET85XX printer.</description>
+  <folder name="Multipage Batch Export">
+    <sortOrder>6</sortOrder>
+    <description/>
   </folder>
 </configs>

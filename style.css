@@ -796,3 +796,25 @@ main {
   font-size: 0.85rem;
   white-space: pre-wrap;
 }
+
+#configSearch {
+  background-color: #3a3a54;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#configSearch::placeholder {
+  color: #bbb;
+}
+
+#configSearch:focus {
+  outline: none;
+  border-color: #888;  /* Optional: subtle highlight */
+  box-shadow: 0 0 4px rgba(100, 100, 150, 0.6);  /* Optional: soft purple glow */
+}
+

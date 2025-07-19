@@ -297,11 +297,7 @@ saveConfigForm.addEventListener('submit', async (e) => {
   window.editingConfigContext = null;
 });
 
-// Handle Reset to Defaults
-document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
-  const confirmed = confirm("Are you sure you want to reset all settings to defaults?\nThis will clear your saved preferences.");
-  if (!confirmed) return;
-
+function resetDefaults() {
   const form = document.getElementById('createForm');
   form.reset();
   localStorage.removeItem('mtgProxyLastConfig');
@@ -309,10 +305,15 @@ document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
   localStorage.removeItem('batchCardBackFile');
 
   const statusBox = document.getElementById('statusMessage');
-  //statusBox.textContent = "↩️ Settings have been reset to defaults.";
   statusBox.className = "status-message";
 
   window.editingConfigContext = null;
+}
+
+// Handle Reset to Defaults
+document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
+  const confirmed = confirm("Are you sure you want to reset all settings to defaults?\nThis will clear your saved preferences.");
+  if (confirmed) resetDefaults();
 });
 
 
@@ -574,9 +575,82 @@ const loadUserConfigs = async () => {
   const data = await window.electronAPI.getUserConfigs();
   const collapseState = JSON.parse(localStorage.getItem('configCollapse') || '{}');
 
+  // --- apply search filter ---
+  /*const query = document.getElementById('configSearch').value.trim().toLowerCase();
+  const dataToRender = query
+    ? data.filter(fd => {
+        // 1) Match folder name or description
+        const folderText = `${fd.folder} ${(fd.description||'')}`.toLowerCase();
+        if (folderText.includes(query)) return true;
+
+        // 2) Match any script’s fileName, infoText, or the rendered layout string (including “Card Back”)
+        return fd.scripts.some(s => {
+          // recreate exactly what you display in the UI
+          const layoutString = [
+            s.layout,
+            s.cardFormat,
+            `DPI ${s.dpi}`,
+            s.cardBack ? 'Card Back' : ''
+          ]
+            .filter(Boolean)
+            .join(' ');
+
+          // combine fileName, infoText, and that layoutString into one search string
+          const haystack = [
+            s.fileName,
+            s.infoText,
+            layoutString
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+          return haystack.includes(query);
+        });
+
+      })
+    : data;
+*/
+
+// --- apply search filter ---
+const query = document.getElementById('configSearch').value.trim().toLowerCase();
+const terms = query.split(/\s+/).filter(Boolean);
+
+// Build filtered list where each folder only contains matching scripts
+const dataToRender = query
+  ? data
+      .map(fd => {
+        const filteredScripts = fd.scripts.filter(s => {
+          const visibleLayoutLine = [
+            s.layout,
+            s.cardFormat,
+            `DPI ${s.dpi}`,
+            s.cardBack ? 'Card Back' : ''
+          ].filter(Boolean).join(' ').toLowerCase();
+
+          const visibleText = [
+            s.fileName,
+            s.infoText,
+            visibleLayoutLine
+          ].filter(Boolean).join(' ').toLowerCase();
+
+          return terms.every(term => visibleText.includes(term));
+        });
+
+        if (filteredScripts.length > 0) {
+          return { ...fd, scripts: filteredScripts };
+        }
+
+        return null;
+      })
+      .filter(Boolean)
+  : data;
+
+
   configList.innerHTML = '';
 
-  data.forEach(folderData => {
+  dataToRender.forEach(folderData => {
+
     const wrapper = document.createElement('div');
     wrapper.className = 'config-folder';
 
@@ -699,12 +773,137 @@ const loadUserConfigs = async () => {
 
       const runBtn = document.createElement('button');
       runBtn.textContent = 'Run';
-      runBtn.onclick = () => window.electronAPI.runUserConfigFile(script.filePath);
+      //runBtn.onclick = () => window.electronAPI.runUserConfigFile(script.filePath);
+      runBtn.onclick = async () => {
+        const res = await fetch(`file://${script.filePath}`);
+        const raw = await res.text();
+        const config = {};
+
+        for (const line of raw.split('\n')) {
+          if (line.startsWith('var ')) {
+            try {
+              eval(line.replace('var ', 'config.'));
+            } catch (e) {}
+          }
+        }
+
+        if (config.batchMultiPage) {
+          const folder = await window.electronAPI.selectCardImageFolder();
+          if (folder.canceled) return;
+
+          window.batchCardFacePath = folder.path;
+          localStorage.setItem('batchCardFacePath', folder.path);
+
+          if (!config.noBackImage) {
+            const back = await window.electronAPI.selectCardBackImage();
+            if (back.canceled) return;
+
+            window.batchCardBackFile = { name: back.name, path: back.path };
+            localStorage.setItem('batchCardBackFile', JSON.stringify({ name: back.name, path: back.path }));
+          } else {
+            window.batchCardBackFile = null;
+            localStorage.removeItem('batchCardBackFile');
+          }
+
+          const ok = await prepareBatchCardData();
+          if (!ok) return;
+
+          createPageBatches(config);
+          if (!window.pageBatches || window.pageBatches.length === 0) return;
+
+          if (!config.batchNumber) {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            const yyyymmdd = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+            const hhmmss = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+            config.batchNumber = parseInt(`${yyyymmdd}${hhmmss}`);
+          }
+
+          const overlay = document.getElementById('processingOverlay');
+          const statusBox = document.getElementById('processingStatus');
+          const cancelBtn = document.getElementById('cancelProcessing');
+
+          overlay.classList.remove('hidden');
+          statusBox.textContent = "🟡 Waiting for Photoshop...";
+
+          const stopWatching = monitorSentinelStatus((line) => {
+            statusBox.textContent = `🔁 ${line}`;
+          }, async () => {
+            statusBox.textContent = "✅ Photoshop batch complete.\nMerging PDFs...";
+
+            const batchNum = config.batchNumber;
+            const paddedBatch = String(batchNum).padStart(3, "0");
+            const pdfDir = 'TempConfig/TempPDF';
+            const outDir = 'PDFOutput';
+
+            const { success, files } = await window.electronAPI.readDirFiltered(pdfDir, '.pdf');
+            if (!success || files.length === 0) {
+              statusBox.textContent = "❌ No PDFs found to merge.";
+              return;
+            }
+
+            const frontFiles = files.filter(f => !f.includes('_Back')).sort();
+            const backFiles = files.filter(f => f.includes('_Back')).sort();
+
+            const mergedPaths = [];
+
+            if (config.separateBackPDF) {
+              const frontOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Front.pdf`;
+              const backOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Back.pdf`;
+
+              const frontPaths = frontFiles.map(f => `${pdfDir}/${f}`);
+              const backPaths = backFiles.map(f => `${pdfDir}/${f}`);
+
+              if (await window.electronAPI.mergePDFs(frontPaths, frontOut)) mergedPaths.push(frontOut);
+              if (await window.electronAPI.mergePDFs(backPaths, backOut)) mergedPaths.push(backOut);
+            } else {
+              const combinedOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Combined.pdf`;
+              const interleaved = [];
+
+              for (const front of frontFiles) {
+                interleaved.push(`${pdfDir}/${front}`);
+                const back = front.replace('.pdf', '_Back.pdf');
+                if (files.includes(back)) {
+                  interleaved.push(`${pdfDir}/${back}`);
+                }
+              }
+
+              if (await window.electronAPI.mergePDFs(interleaved, combinedOut)) mergedPaths.push(combinedOut);
+            }
+
+            const allExist = mergedPaths.every(p => window.electronAPI.fileExists(p));
+            if (!allExist) {
+              statusBox.textContent = "❌ Merged PDF(s) not found after creation.";
+              return;
+            }
+
+            statusBox.textContent = "🧹 Cleaning up temporary files...";
+            await delay(500);
+            await window.electronAPI.cleanupBatchTemp();
+
+            statusBox.textContent = "✅ Batch complete!";
+            await delay(800);
+            overlay.classList.add('hidden');
+          });
+
+          cancelBtn.onclick = () => {
+            stopWatching();
+            overlay.classList.add('hidden');
+          };
+
+
+          await runBatchPages(config);
+        } else {
+          await window.electronAPI.runUserConfigFile(script.filePath);
+        }
+      };
+
 
       const editBtn = document.createElement('button');
       editBtn.textContent = 'Edit';
       editBtn.className = 'edit-btn';
       editBtn.onclick = async () => {
+        resetDefaults();
         const res = await fetch(`file://${script.filePath}`);
         const raw = await res.text();
         const config = {};
@@ -1197,11 +1396,12 @@ function monitorSentinelStatus(onUpdate, onComplete) {
   return () => clearInterval(interval); // return cleanup function
 }
 
-
-
-
-
 // Trigger on tab open
 document.querySelector('[data-tab="configs"]').addEventListener('click', loadUserConfigs);
 document.querySelector('[data-tab="silhouette"]').addEventListener('click', loadSilhouetteTemplates);
 
+// Re-run the configs list when the search input changes
+const configSearchInput = document.getElementById('configSearch');
+if (configSearchInput) {
+  configSearchInput.addEventListener('input', loadUserConfigs);
+}

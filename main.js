@@ -177,6 +177,11 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
     lines.push("\n// --- Silhouette ---");
     lines.push(`var useSilhouette = ${config.useSilhouette};`);
 
+    lines.push("// --- Batch PDF Settings ---");
+    lines.push(`var batchMultiPage = ${config.batchMultiPage};`);
+    lines.push(`var noBackImage = ${config.noBackImage};`);
+    lines.push(`var separateBackPDF = ${config.separateBackPDF};`);
+
     lines.push("\n// --- Notes ---");
     lines.push(`var notesOn = ${config.notesOn};`);
     lines.push(`var noteFontSize = ${config.noteFontSize};`);
@@ -242,6 +247,10 @@ ipcMain.handle('update-folder-sort-order', async (_, order) => {
 
 ipcMain.handle('update-folder-description', async (_, { folder, description }) => {
   return helpers.updateFolderDescription(folder, description);
+});
+
+ipcMain.handle('update-folder-expanded', async (_, { folder, expanded }) => {
+  return helpers.updateFolderExpandedState(folder, expanded);
 });
 
 ipcMain.handle('build-batch-jsx', async (_, filePaths, config, includePath, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath) => {

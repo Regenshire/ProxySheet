@@ -1,4 +1,4 @@
-// Multipage Batch Export > Silhouette - 7 Card
+// Multipage Batch Export > Letter - Silhouette - MPC - 7 Card - Combined Front Back
 
 // === CONFIG - You can edit these values ===
 
@@ -19,8 +19,8 @@ var cutOffset = 3.04;
 var showCropMarks = false;
 
 // --- Color Adjustments ---
-var bright = 27;
-var contr = -3;
+var bright = 0;
+var contr = 0;
 var vib = 0;
 var sat = 0;
 var gmm = 1.05;
@@ -29,20 +29,24 @@ var blackpoint = 0;
 
 // --- Back Alignment ---
 var cardBack = false;
-var backOffsetXmm = -3;
-var backOffsetYmm = -0.02;
+var backOffsetXmm = 0;
+var backOffsetYmm = 0;
 var selectEachCard = false;
 
 // --- Silhouette ---
 var useSilhouette = true;
+// --- Batch PDF Settings ---
+var batchMultiPage = true;
+var noBackImage = false;
+var separateBackPDF = false;
 
 // --- Notes ---
 var notesOn = true;
 var noteFontSize = 10;
-var manualNote = "EPSON ET-85XX | BACK | Match MTG Card Back Colors";
+var manualNote = "";
 
 // --- Meta Info ---
-var configCreateDate = "2025-07-18T22:17:32.328Z";
+var configCreateDate = "2025-07-19T01:27:54.425Z";
 
 // === END CONFIG ===
 
