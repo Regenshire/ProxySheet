@@ -70,32 +70,41 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  document.querySelector('input[name="batchMultiPage"]').addEventListener('change', async (e) => {
-    const summary = document.getElementById('batchInputSummary');
-    summary.textContent = '';
+document.querySelector('input[name="batchMultiPage"]').addEventListener('change', async (e) => {
+  const summary = document.getElementById('batchInputSummary');
+  summary.textContent = '';
 
-    if (e.target.checked) {
-      const folder = await window.electronAPI.selectCardImageFolder();
-      if (folder.canceled) {
-        e.target.checked = false;
-        return;
-      }
+  if (e.target.checked) {
+    const form = document.getElementById('createForm');
+    const noBackImage = form.noBackImage?.checked;
 
+    const folder = await window.electronAPI.selectCardImageFolder();
+    if (folder.canceled) {
+      e.target.checked = false;
+      return;
+    }
+
+    window.batchCardFacePath = folder.path;
+    localStorage.setItem('batchCardFacePath', folder.path);
+
+    if (!noBackImage) {
       const back = await window.electronAPI.selectCardBackImage();
       if (back.canceled) {
         e.target.checked = false;
         return;
       }
 
-      window.batchCardFacePath = folder.path;
       window.batchCardBackFile = { name: back.name, path: back.path };
-      localStorage.setItem('batchCardFacePath', folder.path);
       localStorage.setItem('batchCardBackFile', JSON.stringify({ name: back.name, path: back.path }));
-
       summary.textContent = `📁 Card Folder: ${folder.path} | 🃏 Back: ${back.name}`;
+    } else {
+      window.batchCardBackFile = null;
+      localStorage.removeItem('batchCardBackFile');
+      summary.textContent = `📁 Card Folder: ${folder.path} | ⚠️ No Back Image`;
     }
+  }
+});
 
-  });
 
   const saved = localStorage.getItem('mtgProxyLastConfig');
   if (!saved) return;
@@ -339,7 +348,8 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     noteFontSize: parseInt(form.noteFontSize.value),
     separateBackPDF: form.separateBackPDF.checked,
     //excludeCardSlots: form.excludeCardSlots.value.trim(),
-    manualNote: form.manualNote.value
+    manualNote: form.manualNote.value,
+    noBackImage: form.noBackImage.checked
   };
 
   if (form.batchMultiPage.checked) {
@@ -870,16 +880,14 @@ function isBackSide(name) {
 
 async function prepareBatchCardData() {
   await window.electronAPI.writeLog("****** prepareBatchCardData() started *****");
-  await window.electronAPI.writeLog(` - window.batchCardFacePath value: ${window.batchCardFacePath}`);
-  await window.electronAPI.writeLog(` - window.batchCardBackFile path: ${window.batchCardBackFile?.path || "[undefined]"}`);
   
   const summaryBox = document.getElementById('batchInputSummary');
   summaryBox.textContent = '';
   
-  await window.electronAPI.writeLog(" About to check if (!window.batchCardFacePath || !window.batchCardBackFile) ");
+  const form = document.getElementById('createForm');
+  const noBackImage = form.noBackImage?.checked;
 
-  if (!window.batchCardFacePath || !window.batchCardBackFile) {
-    await window.electronAPI.writeLog("❌ Card face folder or back image missing.");
+  if (!window.batchCardFacePath || (!window.batchCardBackFile && !noBackImage)) {
     summaryBox.textContent = "❌ Card folder or back image missing.";
     return false;
   }
@@ -933,7 +941,8 @@ function createPageBatches(config) {
     batches.push({
       type: 'single',
       frontCards: group,
-      backCards: group.map(() => window.batchCardBackFile)
+      //backCards: group.map(() => window.batchCardBackFile)
+      backCards: config.noBackImage ? [] : group.map(() => window.batchCardBackFile)
     });
   }
 
@@ -981,7 +990,8 @@ async function runBatchPages(config) {
   if (config.separateBackPDF) {
     for (let i = 0; i < pageBatches.length; i++) {
       const batch = pageBatches[i];
-      if (batch.backCards && batch.backCards.length > 0) {
+      //if (batch.backCards && batch.backCards.length > 0) {
+      if (!config.noBackImage && batch.backCards && batch.backCards.length > 0) {
         const firstBackName = `${outputBase}_${i + 1}_Back.jsx`;
         firstBackScript = `TempConfig/${firstBackName}`;
         break;
