@@ -8,8 +8,8 @@ const { Menu } = require('electron');
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1400,
+    height: 1200,
     minWidth: 800,
     minHeight: 600,
     resizable: true,
@@ -125,6 +125,8 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
     lines.push(`var pageWidthInches = ${config.pageWidthInches};`);
     lines.push(`var pageHeightInches = ${config.pageHeightInches};`);
     lines.push(`var dpi = ${config.dpi};`);
+
+    lines.push(`var paperType = "${config.paperType || 'Custom'}";`);
 
     lines.push("\n// --- Card Format ---");
     const skipCardWidth = config.cardFormat === "NoBleed" && config.useSilhouette === true;

@@ -11,6 +11,7 @@ if (typeof cardBack === "undefined") cardBack = false;
 if (typeof backOffsetXmm === "undefined") backOffsetXmm = 0.0;
 if (typeof backOffsetYmm === "undefined") backOffsetYmm = 0.0;
 if (typeof selectEachCard === "undefined") selectEachCard = false;
+if (typeof paperType === "undefined") paperType = "Custom";
 
 // === Apply Format Presets If cardFormat is Specified ===
 if (cardFormat === "MPC") {

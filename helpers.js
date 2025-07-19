@@ -124,6 +124,7 @@ const parseJsxVarsFromFile = (filePath) => {
 
   result.layout = match(/var\s+layout\s*=\s*\"([^\"]+)\"/);
   result.cardFormat = match(/var\s+cardFormat\s*=\s*\"([^\"]+)\"/);
+  result.paperType = match(/var\s+paperType\s*=\s*"([^"]+)"/);
   result.dpi = match(/var\s+dpi\s*=\s*(\d+)/);
 
   result.exportSingles = /var\s+exportSingles\s*=\s*true/.test(content);
@@ -194,6 +195,7 @@ const listUserConfigs = (baseDir) => {
           cardFormat: info.cardFormat,
           dpi: info.dpi,
           cardBack: info.cardBack,
+          paperType: info.paperType || 'Custom',
           date: info.date,
           infoText
         };

@@ -149,7 +149,20 @@ main {
 
 /* Notes section spans two columns */
 .grid-form fieldset.notes-section {
-  grid-column: span 2;
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+@media (min-width: 1236px) {
+  .grid-form fieldset.notes-section {
+    grid-column: span 3;
+  }
+}
+
+@media (min-width: 1530px) {
+  .grid-form fieldset.notes-section {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Button bar */

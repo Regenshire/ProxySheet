@@ -415,7 +415,12 @@ function shiftEntireDocumentByOffset(xOffsetPx, yOffsetPx) {
 // === Silhouette Suppor ===
 function placeSilhouettePSDLayer(doc, scriptFolder) {
     try {
-        var regFile = File(scriptFolder + "/Assets/SIL_LETTER_REG.psd");
+        var regFilename = "SIL_LETTER_REG.psd";
+        if (typeof paperType !== "undefined" && paperType === "A4") {
+            regFilename = "SIL_A4_REG.psd";
+        }
+
+        var regFile = File(scriptFolder + "/Assets/" + regFilename);
         if (!regFile.exists) throw new Error("Silhouette registration PSD not found.");
 
         app.activeDocument = doc; // Make sure it's the frontmost doc

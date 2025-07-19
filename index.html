@@ -52,12 +52,22 @@
 
       <section class="tab-panel" id="tab-create">
         <h2>Create Layout</h2>
-        <p class="tab-description">Configure your print layout using the options below. Hover for help.</p>
+        <p class="tab-description">Configure your print layout using the options below.</p>
 
         <form id="createForm" class="grid-form"  novalidate>
           <!-- Layout -->
           <fieldset>
             <legend>Layout</legend>
+            <label>Paper Size
+              <select name="paperType" id="paperTypeSelect">
+                <option value="Letter">Letter - 8.5 x 11</option>
+                <option value="A4">A4 - 8.27 x 11.69</option>
+                <option value="A3">A3 - 11.69 x 16.54</option>
+                <option value="Legal">Legal - 8.5 x 14</option>
+                <option value="Tabloid">Tabloid - 11 x 17</option>
+                <option value="Custom">Custom</option>
+              </select>
+            </label>
             <label>Layout
               <select name="layout">
                 <option value="horizontal">Horizontal (2x4)</option>
@@ -95,21 +105,17 @@
               <input type="checkbox" name="useSilhouette" />
               Enable Silhouette Registration
             </label>
-          </fieldset>
-
-          <!-- Cut & Bleed -->
-          <fieldset>
-            <legend>Cut & Bleed</legend>
-            <label>Cut Mark Size (mm)
-              <input type="number" name="cutMarkSize" value="4.5" step="any"  />
-            </label>
-            <label>Cut Offset (mm)
-              <input type="number" name="cutOffset" value="3.04" step="any"  />
-            </label>
             <label>
               <input type="checkbox" name="showCropMarks" checked />
-              Show Crop Marks
+              Print Crop/Cut Marks
             </label>
+            <label>Crop/Cut Mark Size (mm)
+              <input type="number" name="cutMarkSize" value="4.5" step="any"  />
+            </label>
+            <label>Crop/Cut Offset (mm)
+              <input type="number" name="cutOffset" value="3.04" step="any"  />
+            </label>
+
           </fieldset>
 
           <!-- Color Adjustments -->
@@ -129,17 +135,17 @@
             <legend>Back Alignment</legend>
             <label>
               <input type="checkbox" name="cardBack" />
-              Card Backs - This is a sheet of Card Backs
+              Card Back Sheet
+            </label>
+            <label>
+              <input type="checkbox" name="selectEachCard" />
+              Prompt for each Card Back
             </label>
             <label>Offset X (mm)
               <input type="number" name="backOffsetXmm" value="0.00" step="any"  />
             </label>
             <label>Offset Y (mm)
               <input type="number" name="backOffsetYmm" value="0.00" step="any"  />
-            </label>
-            <label>
-              <input type="checkbox" name="selectEachCard" />
-              Prompt for each card
             </label>
           </fieldset>
 
@@ -351,7 +357,6 @@
             <input type="checkbox" id="setting_batchHistory" />
             Enable Batch History (default: on)
           </label>
-
 
           <label>
             <input type="checkbox" id="setting_displayBatchNumber" />

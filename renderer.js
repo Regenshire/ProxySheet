@@ -51,6 +51,27 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  document.getElementById('paperTypeSelect').addEventListener('change', () => {
+    const select = document.getElementById('paperTypeSelect');
+    const width = document.querySelector('input[name="pageWidthInches"]');
+    const height = document.querySelector('input[name="pageHeightInches"]');
+
+    const presets = {
+      Letter: [8.5, 11],
+      A4: [8.27, 11.69],
+      A3: [11.69, 16.54],
+      Legal: [8.5, 14],
+      Tabloid: [11, 17]
+    };
+
+    const val = select.value;
+    if (presets[val]) {
+      width.value = presets[val][0];
+      height.value = presets[val][1];
+    }
+  });
+
+
   const savedCardFolder = localStorage.getItem('batchCardFacePath');
   const savedCardBack = localStorage.getItem('batchCardBackFile');
 
@@ -327,6 +348,7 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     pageWidthInches: parseFloat(form.pageWidthInches.value),
     pageHeightInches: parseFloat(form.pageHeightInches.value),
     dpi: parseInt(form.dpi.value),
+    paperType: form.paperType.value,
     cardFormat: form.cardFormat.value,
     cardWidthMM: parseFloat(form.cardWidthMM.value),
     cardHeightMM: parseFloat(form.cardHeightMM.value),
@@ -759,6 +781,7 @@ const dataToRender = query
       const info = document.createElement('div');
       info.className = 'config-info';
       const layoutLine = [
+        script.paperType && script.paperType !== 'Custom' ? `${script.paperType}` : null,
         script.layout,
         script.cardFormat,
         `DPI ${script.dpi}`,

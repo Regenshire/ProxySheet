@@ -1,4 +1,4 @@
-// EPSON ET85XX > Silhouette - 7 Card - Front
+// Printers - EPSON ET85XX > Silhouette - 7 Card - Front
 
 // === CONFIG - You can edit these values ===
 
@@ -7,6 +7,7 @@ var layout = "SevenCard";
 var pageWidthInches = 8.5;
 var pageHeightInches = 11;
 var dpi = 800;
+var paperType = "Letter";
 
 // --- Card Format ---
 var cardFormat = "MPC";
@@ -35,6 +36,10 @@ var selectEachCard = false;
 
 // --- Silhouette ---
 var useSilhouette = true;
+// --- Batch PDF Settings ---
+var batchMultiPage = false;
+var noBackImage = false;
+var separateBackPDF = false;
 
 // --- Notes ---
 var notesOn = true;
@@ -42,7 +47,7 @@ var noteFontSize = 10;
 var manualNote = "EPSON ET-85XX | Koala Double-Sided Gloss Paper | Premium Photo Paper Gloss - HIGH | ICC: ET-8500 - RR UltraPro Gloss Epson ET-85xx v2";
 
 // --- Meta Info ---
-var configCreateDate = "2025-07-16T04:20:27.119Z";
+var configCreateDate = "2025-07-19T02:58:07.299Z";
 
 // === END CONFIG ===
 

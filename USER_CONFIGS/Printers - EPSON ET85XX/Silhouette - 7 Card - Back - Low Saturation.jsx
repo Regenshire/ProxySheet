@@ -1,4 +1,4 @@
-// EPSON ET85XX > Silhouette - 7 Card - Back - Low Saturation
+// Printers - EPSON ET85XX > Silhouette - 7 Card - Back - Low Saturation
 
 // === CONFIG - You can edit these values ===
 
@@ -7,6 +7,7 @@ var layout = "SevenCard";
 var pageWidthInches = 8.5;
 var pageHeightInches = 11;
 var dpi = 800;
+var paperType = "Letter";
 
 // --- Card Format ---
 var cardFormat = "MPC";
@@ -29,12 +30,16 @@ var blackpoint = 0;
 
 // --- Back Alignment ---
 var cardBack = true;
-var backOffsetXmm = -3.00;
+var backOffsetXmm = -3;
 var backOffsetYmm = -0.02;
 var selectEachCard = true;
 
 // --- Silhouette ---
 var useSilhouette = true;
+// --- Batch PDF Settings ---
+var batchMultiPage = false;
+var noBackImage = false;
+var separateBackPDF = false;
 
 // --- Notes ---
 var notesOn = true;
@@ -42,7 +47,7 @@ var noteFontSize = 10;
 var manualNote = "EPSON ET-85XX | BACK | Match MTG Card Back Colors";
 
 // --- Meta Info ---
-var configCreateDate = "2025-07-16T06:52:44.569Z";
+var configCreateDate = "2025-07-19T02:57:48.232Z";
 
 // === END CONFIG ===
 
