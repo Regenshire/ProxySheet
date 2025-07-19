@@ -56,7 +56,7 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
 - **Create**: Design custom layout configurations with full control over page size, layout style, card format, cut marks, color adjustments, and back alignment.
 - **Configs**: Browse saved scripts by folder, search, sort, and rerun or edit existing setups.
 - **History**: Re-run exact config batches with saved image paths and settings. [BETA FEATURE - Does not work for PDF Batches]
-- **Silhouette**: Launch `.studio` or `.studio3` cutting templates. Edit and tag metadata for searchability.  Only have Letter and A4 templates currently built.  Have 8 card and 7 card layouts.  The 7 card layout reduces detection errors and improves cut reliability.
+- **Silhouette**: Launch `.studio` or `.studio3` cutting templates. Edit and tag metadata for searchability. Only have Letter and A4 templates currently built. Have 8 card and 7 card layouts. The 7 card layout reduces detection errors and improves cut reliability.
 - **Tools**: Convert images (format, DPI, bleed), apply color adjustments, and prepare proxy-ready assets.
 
 ---
@@ -101,6 +101,7 @@ Accessed via the **Tools** tab, it allows:
 ---
 
 ## 🛠️ Advanced Features
+
 - Exclude Slots: Hide specific card slots on a sheet by number.
 - Slot Reuse Cache: Optimizes layer usage during export for speed.
 - Back Offsets: Supports X/Y offset shifting for card backs (manual duplex alignment).
@@ -109,7 +110,6 @@ Accessed via the **Tools** tab, it allows:
 - Auto Batch Numbering: Each export is timestamped and saved under batchHistory.
 
 ---
-
 
 ## 📘 License
 
@@ -134,4 +134,3 @@ Feedback and contributions are welcome!
 ## 📋 Changelog
 
 See [CHANGELOG.md](./CHANGELOG.md) for the full changelog and release history.
-

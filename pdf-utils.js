@@ -29,7 +29,7 @@ async function pdfMerge(inputPaths, outputPath) {
     await merger.save(outputPath);
     return true;
   } catch (err) {
-    console.error("❌ Failed to merge PDFs:", err.message);
+    console.error('❌ Failed to merge PDFs:', err.message);
     return false;
   }
 }
@@ -74,7 +74,7 @@ function cleanupBatchTemp() {
 
     return { success: true, removed };
   } catch (err) {
-    console.error("❌ Batch cleanup failed:", err.message);
+    console.error('❌ Batch cleanup failed:', err.message);
     return { success: false, error: err.message };
   }
 }

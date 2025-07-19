@@ -5,7 +5,6 @@ const fs = require('fs');
 const helpers = require('./helpers');
 const { Menu } = require('electron');
 
-
 function createWindow() {
   const win = new BrowserWindow({
     width: 1400,
@@ -24,41 +23,30 @@ function createWindow() {
   win.loadFile('index.html');
 }
 
-Menu.setApplicationMenu(Menu.buildFromTemplate([
-  {
-    label: 'File',
-    submenu: [
-      { role: 'quit' }
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      { role: 'reload' },
-      { role: 'toggleDevTools' },
-      { type: 'separator' },
-      { role: 'resetZoom' },
-      { role: 'zoomIn' },
-      { role: 'zoomOut' },
-      { type: 'separator' },
-      { role: 'togglefullscreen' }
-    ]
-  },
-  {
-    label: 'Help',
-    submenu: [
-      {
-        label: 'GitHub',
-        click: async () => {
-          const { shell } = require('electron');
-          await shell.openExternal('https://github.com/Regenshire/MTGPhotoshopLayout');
+Menu.setApplicationMenu(
+  Menu.buildFromTemplate([
+    {
+      label: 'File',
+      submenu: [{ role: 'quit' }]
+    },
+    {
+      label: 'View',
+      submenu: [{ role: 'reload' }, { role: 'toggleDevTools' }, { type: 'separator' }, { role: 'resetZoom' }, { role: 'zoomIn' }, { role: 'zoomOut' }, { type: 'separator' }, { role: 'togglefullscreen' }]
+    },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'GitHub',
+          click: async () => {
+            const { shell } = require('electron');
+            await shell.openExternal('https://github.com/Regenshire/MTGPhotoshopLayout');
+          }
         }
-      }
-    ]
-  }
-]));
-
-
+      ]
+    }
+  ])
+);
 
 app.whenReady().then(() => {
   createWindow();
@@ -76,11 +64,11 @@ ipcMain.handle('generate-jsx', async (_, config) => {
   const configDir = path.resolve(__dirname, 'TempConfig');
   const outputPath = path.join(configDir, 'MTG_Generated.jsx');
 
-// Add default values if missing
-if (!('batchHistory' in config)) config.batchHistory = true;
-if (!('displayBatchNumber' in config)) config.displayBatchNumber = false;
+  // Add default values if missing
+  if (!('batchHistory' in config)) config.batchHistory = true;
+  if (!('displayBatchNumber' in config)) config.displayBatchNumber = false;
 
-const jsx = helpers.buildJsxContent(config, '../RE_PhotoEngine/RE_PhotoEngine.jsx');
+  const jsx = helpers.buildJsxContent(config, '../RE_PhotoEngine/RE_PhotoEngine.jsx');
 
   try {
     if (!fs.existsSync(configDir)) {
@@ -99,11 +87,11 @@ const jsx = helpers.buildJsxContent(config, '../RE_PhotoEngine/RE_PhotoEngine.js
 ipcMain.handle('save-user-config', async (_, { folderName, configName, config }) => {
   try {
     if (!helpers.isValidName(folderName, 40)) {
-      throw new Error("Invalid folder name. Use only letters, numbers, spaces, dashes, and underscores.");
+      throw new Error('Invalid folder name. Use only letters, numbers, spaces, dashes, and underscores.');
     }
 
     if (!helpers.isValidName(configName, 100)) {
-      throw new Error("Invalid config name. Use only letters, numbers, spaces, dashes, and underscores.");
+      throw new Error('Invalid config name. Use only letters, numbers, spaces, dashes, and underscores.');
     }
 
     const baseDir = path.resolve(__dirname, 'USER_CONFIGS');
@@ -118,9 +106,9 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
 
     const lines = [];
     lines.push(`// ${folderName} > ${configName}`);
-    lines.push("\n// === CONFIG - You can edit these values ===\n");
+    lines.push('\n// === CONFIG - You can edit these values ===\n');
 
-    lines.push("// --- Layout ---");
+    lines.push('// --- Layout ---');
     lines.push(`var layout = \"${config.layout}\";`);
     lines.push(`var pageWidthInches = ${config.pageWidthInches};`);
     lines.push(`var pageHeightInches = ${config.pageHeightInches};`);
@@ -128,19 +116,19 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
 
     lines.push(`var paperType = "${config.paperType || 'Custom'}";`);
 
-    lines.push("\n// --- Card Format ---");
-    const skipCardWidth = config.cardFormat === "NoBleed" && config.useSilhouette === true;
+    lines.push('\n// --- Card Format ---');
+    const skipCardWidth = config.cardFormat === 'NoBleed' && config.useSilhouette === true;
 
     lines.push(`var cardFormat = \"${config.cardFormat}\";`);
-    if (!skipCardWidth && config.cardWidthMM  !== '') {
+    if (!skipCardWidth && config.cardWidthMM !== '') {
       lines.push(`var cardWidthMM = ${config.cardWidthMM};`);
     }
-    if (!skipCardWidth && config.cardHeightMM  !== '') {
+    if (!skipCardWidth && config.cardHeightMM !== '') {
       lines.push(`var cardHeightMM = ${config.cardHeightMM};`);
     }
 
-    lines.push("\n// --- Cut & Bleed ---");
-    const skipCutSettings = config.cardFormat === "NoBleed" && config.useSilhouette === true;
+    lines.push('\n// --- Cut & Bleed ---');
+    const skipCutSettings = config.cardFormat === 'NoBleed' && config.useSilhouette === true;
 
     if (!skipCutSettings && config.cutMarkSize !== '') {
       lines.push(`var cutMarkSize = ${config.cutMarkSize};`);
@@ -156,7 +144,7 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
       lines.push(`var showCropMarks = ${config.showCropMarks};`);
     }
 
-    lines.push("\n// --- Color Adjustments ---");
+    lines.push('\n// --- Color Adjustments ---');
 
     if (config.bright !== '' && config.bright != null) lines.push(`var bright = ${config.bright};`);
     if (config.contr !== '' && config.contr != null) lines.push(`var contr = ${config.contr};`);
@@ -166,7 +154,7 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
     if (config.whitepoint !== '' && config.whitepoint != null) lines.push(`var whitepoint = ${config.whitepoint};`);
     if (config.blackpoint !== '' && config.blackpoint != null) lines.push(`var blackpoint = ${config.blackpoint};`);
 
-    lines.push("\n// --- Back Alignment ---");
+    lines.push('\n// --- Back Alignment ---');
     lines.push(`var cardBack = ${config.cardBack};`);
     lines.push(`var backOffsetXmm = ${config.backOffsetXmm};`);
     lines.push(`var backOffsetYmm = ${config.backOffsetYmm};`);
@@ -176,25 +164,25 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
       lines.push(`var excludeCardSlots = "${config.excludeCardSlots.trim()}";`);
     }
 
-    lines.push("\n// --- Silhouette ---");
+    lines.push('\n// --- Silhouette ---');
     lines.push(`var useSilhouette = ${config.useSilhouette};`);
 
-    lines.push("// --- Batch PDF Settings ---");
+    lines.push('// --- Batch PDF Settings ---');
     lines.push(`var batchMultiPage = ${config.batchMultiPage};`);
     lines.push(`var noBackImage = ${config.noBackImage};`);
     lines.push(`var separateBackPDF = ${config.separateBackPDF};`);
 
-    lines.push("\n// --- Notes ---");
+    lines.push('\n// --- Notes ---');
     lines.push(`var notesOn = ${config.notesOn};`);
     lines.push(`var noteFontSize = ${config.noteFontSize};`);
     lines.push(`var manualNote = ${JSON.stringify(config.manualNote)};`);
 
-    lines.push("\n// --- Meta Info ---");
+    lines.push('\n// --- Meta Info ---');
     lines.push(`var configCreateDate = \"${config.configCreateDate}\";`);
 
-    lines.push("\n// === END CONFIG ===\n");
-    lines.push("// INCLUDE THE RE_PhotoEngine.jsx FILE - DO NOT REMOVE");
-    lines.push("#include \"../../RE_PhotoEngine/RE_PhotoEngine.jsx\"");
+    lines.push('\n// === END CONFIG ===\n');
+    lines.push('// INCLUDE THE RE_PhotoEngine.jsx FILE - DO NOT REMOVE');
+    lines.push('#include "../../RE_PhotoEngine/RE_PhotoEngine.jsx"');
 
     fs.writeFileSync(outputPath, lines.join('\n'));
 
@@ -208,9 +196,7 @@ ipcMain.handle('list-user-config-folders', async () => {
   const dir = path.resolve(__dirname, 'USER_CONFIGS');
   try {
     if (!fs.existsSync(dir)) return [];
-    return fs.readdirSync(dir).filter(f =>
-      fs.lstatSync(path.join(dir, f)).isDirectory()
-    );
+    return fs.readdirSync(dir).filter((f) => fs.lstatSync(path.join(dir, f)).isDirectory());
   } catch (err) {
     return [];
   }
@@ -238,7 +224,6 @@ ipcMain.handle('save-silhouette-template-metadata', async (_, updatedList) => {
   return helpers.saveTemplateMetadata(updatedList);
 });
 
-
 ipcMain.handle('run-user-config-file', async (_, filePath) => {
   return helpers.runJsxFile(filePath);
 });
@@ -256,16 +241,7 @@ ipcMain.handle('update-folder-expanded', async (_, { folder, expanded }) => {
 });
 
 ipcMain.handle('build-batch-jsx', async (_, filePaths, config, includePath, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath) => {
-  const jsx = helpers.buildBatchJsxContent(
-  config,
-  includePath,
-  filePaths,
-  isBackPage,
-  sheetPageNum,
-  pdfExportPath,
-  outputFile,
-  nextConfigPath
-);
+  const jsx = helpers.buildBatchJsxContent(config, includePath, filePaths, isBackPage, sheetPageNum, pdfExportPath, outputFile, nextConfigPath);
   const configDir = path.resolve(__dirname, 'TempConfig');
   if (!fs.existsSync(configDir)) fs.mkdirSync(configDir);
   const outPath = path.resolve(configDir, outputFile);
@@ -275,8 +251,8 @@ ipcMain.handle('build-batch-jsx', async (_, filePaths, config, includePath, isBa
 
 ipcMain.handle('select-card-folder', async () => {
   const result = await dialog.showOpenDialog({
-    title: "Select Your Card Image Folder",
-    buttonLabel: "Use this Folder",
+    title: 'Select Your Card Image Folder',
+    buttonLabel: 'Use this Folder',
     properties: ['openDirectory']
   });
 
@@ -292,10 +268,11 @@ ipcMain.handle('get-card-image-files', async (_, folderPath) => {
   const path = require('path');
 
   try {
-    const files = fs.readdirSync(folderPath)
+    const files = fs
+      .readdirSync(folderPath)
       //.filter(name => /\.(jpg|jpeg|png)$/i.test(name))
-      .filter(name => name.match(/\.(jpg|jpeg|png|webp|tif|tiff|eps|bmp|gif|heic|heif|svg)$/i))
-      .map(name => ({
+      .filter((name) => name.match(/\.(jpg|jpeg|png|webp|tif|tiff|eps|bmp|gif|heic|heif|svg)$/i))
+      .map((name) => ({
         name,
         path: path.join(folderPath, name)
       }));
@@ -308,15 +285,10 @@ ipcMain.handle('get-card-image-files', async (_, folderPath) => {
 
 ipcMain.handle('select-card-back', async () => {
   const result = await dialog.showOpenDialog({
-    title: "Select Default Back Image",
-    buttonLabel: "Use this Card Back",
+    title: 'Select Default Back Image',
+    buttonLabel: 'Use this Card Back',
     properties: ['openFile'],
-    filters: [{ name: 'Images', extensions: [
-      'jpg', 'jpeg', 'png', 'webp',
-      'tif', 'tiff', 'eps',
-      'bmp', 'gif', 'heic', 'heif',
-      'svg'
-    ] }]
+    filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'webp', 'tif', 'tiff', 'eps', 'bmp', 'gif', 'heic', 'heif', 'svg'] }]
   });
 
   if (result.canceled || !result.filePaths.length) {
@@ -339,7 +311,7 @@ ipcMain.handle('write-log', async (_, message) => {
     const entry = `[${timestamp}] ${message}\n`;
     fs.appendFileSync(logFile, entry, 'utf8');
   } catch (err) {
-    console.error("⚠️ Failed to write log:", err.message);
+    console.error('⚠️ Failed to write log:', err.message);
   }
 });
 
@@ -367,7 +339,7 @@ const { pdfMerge } = require('./pdf-utils');
 
 ipcMain.handle('merge-pdfs', async (_, { inputPaths, outputPath }) => {
   const resolvedOutput = path.resolve(__dirname, outputPath);
-  const resolvedInputs = inputPaths.map(p => path.resolve(__dirname, p));
+  const resolvedInputs = inputPaths.map((p) => path.resolve(__dirname, p));
   const success = await pdfMerge(resolvedInputs, resolvedOutput);
   return { success };
 });
@@ -381,7 +353,7 @@ ipcMain.handle('cleanup-batch-temp', async () => {
 ipcMain.handle('read-dir-filtered', async (_, folder, ext = '') => {
   const dirPath = path.resolve(__dirname, folder);
   try {
-    const files = fs.readdirSync(dirPath).filter(f => f.endsWith(ext));
+    const files = fs.readdirSync(dirPath).filter((f) => f.endsWith(ext));
     return { success: true, files };
   } catch (err) {
     return { success: false, message: err.message };
@@ -403,7 +375,7 @@ ipcMain.handle('open-pdf-output-folder', async () => {
     await shell.openPath(outDir);
     return { success: true };
   } catch (err) {
-    console.error("❌ Failed to open PDFOutput folder:", err.message);
+    console.error('❌ Failed to open PDFOutput folder:', err.message);
     return { success: false, message: err.message };
   }
 });

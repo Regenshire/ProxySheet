@@ -627,91 +627,103 @@ function exportSinglesFromFolder(config) {
 
     for (var i = 0; i < files.length; i++) {
         var imgFile = files[i];
-        var doc = open(imgFile);
-        doc.resizeImage(UnitValue(cardWidthPx, "px"), UnitValue(cardHeightPx, "px"), null, ResampleMethod.BICUBIC);
-        // Capture image layer before adding anything
-        var imageLayer = doc.activeLayer;
+        
+        try {
+            var doc = open(imgFile);
+            doc.resizeImage(UnitValue(cardWidthPx, "px"), UnitValue(cardHeightPx, "px"), null, ResampleMethod.BICUBIC);
+            // Capture image layer before adding anything
+            var imageLayer = doc.activeLayer;
 
-        if (cropMarginPx > 0) {
-            doc.crop([
-                cropMarginPx,
-                cropMarginPx,
-                doc.width - cropMarginPx,
-                doc.height - cropMarginPx
-            ]);
+            if (cropMarginPx > 0) {
+                doc.crop([
+                    cropMarginPx,
+                    cropMarginPx,
+                    doc.width - cropMarginPx,
+                    doc.height - cropMarginPx
+                ]);
+            }
+
+            if (config.cardFormat === "NoBleed" && (noBleedAddBleed === "Black")) {
+                var bleedPx = mmToPixels(3.0);
+                addNoBleedPadding(doc, bleedPx, noBleedAddBleed);
+            }
+
+            doc.resizeImage(null, null, dpi, ResampleMethod.NONE);
+        // Capture true image layer AFTER placing it
+        var baseLayer = app.activeDocument.activeLayer;
+
+            // if (bright !== 0 || contr !== 0) { addBrightnessContrastAdjustment(bright, contr, "Brightness/Contrast", null, false); }
+            if (bright !== 0 || contr !== 0) {
+                var adjustLayer = addBrightnessContrastAdjustment(bright, contr, "Brightness/Contrast", null, false);
+                adjustLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
+            }
+            if (vib !== 0 || sat !== 0) {
+                var vibLayer = addVibranceAdjustment(vib, sat, "Vibrance", null, false);
+                vibLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
+            }
+            if (gmm !== 1.0 || whitepoint !== 255 || blackpoint !== 0) {
+            addLevelsAdjustmentLayer(blackpoint, whitepoint, gmm, null);
+            var levelsLayer = app.activeDocument.activeLayer;
+            levelsLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
+            }
+        // Move the image below all adjustment layers
+        imageLayer.move(doc, ElementPlacement.PLACEATEND);
+
+        // Find Bleed Fill layer and move it below the image as final step
+        try {
+        var bleedLayer = doc.artLayers.getByName("Bleed Fill");
+        bleedLayer.move(doc, ElementPlacement.PLACEATEND);
+        } catch (e) {
+        // Do nothing if Bleed Fill doesn't exist
         }
 
-        if (config.cardFormat === "NoBleed" && (noBleedAddBleed === "Black")) {
-            var bleedPx = mmToPixels(3.0);
-            addNoBleedPadding(doc, bleedPx, noBleedAddBleed);
-        }
+            if (debugOn) {
+                alert("DEBUG: Previewing " + imgFile.name + "\nDPI: " + dpi +
+                    "\nBright: " + bright + " | Contrast: " + contr +
+                    "\nVibrance: " + vib + " | Saturation: " + sat +
+                    "\nGamma: " + gmm + " | Whitepoint: " + whitepoint + " | Blackpoint: " + blackpoint);
+            }
 
-        doc.resizeImage(null, null, dpi, ResampleMethod.NONE);
-	// Capture true image layer AFTER placing it
-	var baseLayer = app.activeDocument.activeLayer;
+            doc.flatten();
 
-        // if (bright !== 0 || contr !== 0) { addBrightnessContrastAdjustment(bright, contr, "Brightness/Contrast", null, false); }
-        if (bright !== 0 || contr !== 0) {
-            var adjustLayer = addBrightnessContrastAdjustment(bright, contr, "Brightness/Contrast", null, false);
-            adjustLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
-        }
-        if (vib !== 0 || sat !== 0) {
-            var vibLayer = addVibranceAdjustment(vib, sat, "Vibrance", null, false);
-            vibLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
-        }
-        if (gmm !== 1.0 || whitepoint !== 255 || blackpoint !== 0) {
-          addLevelsAdjustmentLayer(blackpoint, whitepoint, gmm, null);
-          var levelsLayer = app.activeDocument.activeLayer;
-          levelsLayer.move(baseLayer, ElementPlacement.PLACEAFTER);
-        }
-	// Move the image below all adjustment layers
-	imageLayer.move(doc, ElementPlacement.PLACEATEND);
+            var baseName = imgFile.name.replace(/\.[^\.]+$/, "");
+            var saveFile = new File(outputFolder + "/" + baseName + "." + exportFormat);
 
-	// Find Bleed Fill layer and move it below the image as final step
-	try {
-	  var bleedLayer = doc.artLayers.getByName("Bleed Fill");
-	  bleedLayer.move(doc, ElementPlacement.PLACEATEND);
-	} catch (e) {
-	  // Do nothing if Bleed Fill doesn't exist
-	}
+            var suffix = 1;
+            while (saveFile.exists) {
+                saveFile = new File(outputFolder + "/" + baseName + "_" + suffix + "." + exportFormat);
+                suffix++;
+            }
 
-        if (debugOn) {
-            alert("DEBUG: Previewing " + imgFile.name + "\nDPI: " + dpi +
-                "\nBright: " + bright + " | Contrast: " + contr +
-                "\nVibrance: " + vib + " | Saturation: " + sat +
-                "\nGamma: " + gmm + " | Whitepoint: " + whitepoint + " | Blackpoint: " + blackpoint);
-        }
+            if (exportFormat === "jpg" || exportFormat === "jpeg") {
+                var jpgOpts = new JPEGSaveOptions();
+                jpgOpts.quality = 12;
+                jpgOpts.embedColorProfile = true;
+                jpgOpts.formatOptions = FormatOptions.STANDARDBASELINE;
+                jpgOpts.scans = 3;
+                doc.saveAs(saveFile, jpgOpts, true);
 
-        doc.flatten();
+            } else if (exportFormat === "png") {
+                var pngOpts = new PNGSaveOptions();
+                doc.saveAs(saveFile, pngOpts, true);
 
-        var baseName = imgFile.name.replace(/\.[^\.]+$/, "");
-        var saveFile = new File(outputFolder + "/" + baseName + "." + exportFormat);
+            } else {
+                alert("Unsupported export format: " + exportFormat);
+                doc.close(SaveOptions.DONOTSAVECHANGES);
+                return;
+            }
 
-        var suffix = 1;
-        while (saveFile.exists) {
-            saveFile = new File(outputFolder + "/" + baseName + "_" + suffix + "." + exportFormat);
-            suffix++;
-        }
-
-        if (exportFormat === "jpg" || exportFormat === "jpeg") {
-            var jpgOpts = new JPEGSaveOptions();
-            jpgOpts.quality = 12;
-            jpgOpts.embedColorProfile = true;
-            jpgOpts.formatOptions = FormatOptions.STANDARDBASELINE;
-            jpgOpts.scans = 3;
-            doc.saveAs(saveFile, jpgOpts, true);
-
-        } else if (exportFormat === "png") {
-            var pngOpts = new PNGSaveOptions();
-            doc.saveAs(saveFile, pngOpts, true);
-
-        } else {
-            alert("Unsupported export format: " + exportFormat);
             doc.close(SaveOptions.DONOTSAVECHANGES);
-            return;
-        }
 
-        doc.close(SaveOptions.DONOTSAVECHANGES);
+        } catch (err) {
+            alert("⚠️ Failed to process: " + imgFile.name + "\n" + err.message);
+            if (app.documents.length > 0) {
+            try {
+                app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+            } catch (e) { }
+            }
+            continue;
+        }
     }
 
     alert("Export complete: " + files.length + " files processed.");

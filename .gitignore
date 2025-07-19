@@ -7,4 +7,8 @@
 /logs/
 /USER_CONFIGS/Printers - EPSON ET85XX/
 /USER_CONFIGS/00 - Personal/*
+/Config_Default/
+/Config_EPSON_ET8500/
+/Config_Exports/
+/Config_Silhouette/
 .prettierrc
