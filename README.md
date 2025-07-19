@@ -76,8 +76,8 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
   - Toggle crop marks
   - Customize cut size and offset (mm)
 - **Color Adjustments**:
-  - Brightness, Contrast, Vibrance, Saturation
-  - Gamma, Whitepoint, Blackpoint
+  - Brightness, Contrast, Vibrance, Saturation, Gamma, Whitepoint, Blackpoint can all be controlled in the scripts
+  - Cards also receive their own individual Color Adjustment layers for individual adjustment within Photoshop.  This feature is excluded for PDF Batch Exports and Image conversions, but is available for single page configs.
 - **Back Alignment**:
   - Card Back Offset Support
   - Ability to Prompt for each Card Back
@@ -97,6 +97,8 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
 ## 📝 PDF Batch Export
 
 ProxySheet includes a powerful **Batch Export system** designed for high-volume printing of proxies. Instead of building a single layout manually, you can automatically split dozens or hundreds of card images into multiple pages — and generate print-ready PDFs in one pass.  Adobe Photoshop does not natively support multi-page workflows.  This batch system creates each page in Adobe Photoshop (allowing for adjustment layers) and then outputs them as individual PDF files.  It then merges those files together into a single document.
+
+The PDF Batch Export system supports double-sided cards.  It identifies these cards when it searches the folder and detects two cards with the same name, but one with a [Back] or {Back} tag in the filename.  For example, if you have "The Kami War {227}.jpg" and "The Kami War {227} [Back].jpg" in the same folder, it will detect this as a double-sided card with the back of the card being the file with [Back] in the name.  The Batch system seperates Double-Sided cards into their own sheets for printing convenience.
 
 ### 🚀 How It Works
 
@@ -152,10 +154,13 @@ ProxySheet includes a powerful **Batch Export system** designed for high-volume 
 
 ### 📌 Results
 
+Here is an example of a traditional 9 card Letter batch with both front and back.
 <img width="1878" height="1217" alt="Image" src="https://github.com/user-attachments/assets/dbfcef78-b469-4635-9b99-a3d2d4c5841a" />
 
+Here is an example of a 7 card letter layout for Silhouette with the selected card back.  The seven card layout reduces cutting errors by giving space around the left most registration marks.
 <img width="2075" height="805" alt="Image" src="https://github.com/user-attachments/assets/7f9276dc-704e-40ea-8bd3-b7f1679c1619" />
 
+Here is an example of a 7 card letter layout for Silhouette for douhle sided cards. Both of these sets of sheets came from the same batch.  The batch seperated the double-sided cards into their own segment of pages.
 <img width="2074" height="804" alt="Image" src="https://github.com/user-attachments/assets/ee2230b8-ae0b-4e20-b9b6-4ea2ac443499" />
 
 ---
