@@ -1,7 +1,7 @@
-/batchHistory/
-/PDFOutput/
+/batchHistory/*
+/PDFOutput/*
 /node_modules/
-/TempConfig/
+/TempConfig/*
 /node_modules/.prettierrc
 /dist/
 /logs/
