@@ -29,6 +29,11 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
      ```
      ProxySheet.exe
      ```
+     ⚠️ When launching ProxySheet.exe for the first time, you may see a Windows SmartScreen warning. Use your best judgement when evaluating any application you download from the internet.
+
+     Click “More info” > “Run anyway” to proceed. This happens because the app is unsigned.
+
+     If you do not want to use the executable, but want to use the application, you can also download the repository and use the bash commands below.  NPM install does a vulnerability check of the packages it installs as part of its process.
 
    - **macOS / Advanced Users**:\
      Clone the repository and run with Node.js:
@@ -40,12 +45,12 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
      npm start
      ```
 
-2. **Make Sure Photoshop is Installed and Configured**
+1. **Make Sure Photoshop is Installed and Configured**
 
    - Requires **Adobe Photoshop 2021 or later**
    - Photoshop scripting must be enabled (default is enabled)
 
-3. **Begin Using ProxySheet**
+2. **Begin Using ProxySheet**
 
    - Use the **Create** tab to build new layouts
    - Use **Configs** to run and manage saved settings
