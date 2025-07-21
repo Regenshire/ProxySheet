@@ -4,6 +4,13 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
+## [1.03 BETA] – 2025-07-21
+
+- Added catches for size overruns of images
+- Added additional logging for Photoshop scripting to help diagnose issues
+
+---
+
 ## [1.02 BETA] – 2025-07-20
 
 - Bug fix
