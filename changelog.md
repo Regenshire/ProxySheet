@@ -4,6 +4,13 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
+## [1.01 BETA] – 2025-07-18
+
+- Minor updates to the Silhouette registration marks
+- Added a favicon
+
+---
+
 ## [1.00 BETA] – 2025-07-17
 
 - Initial public release
@@ -88,4 +95,3 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 - Added layout toggle (vertical/horizontal)
 - Switched to per-card crop marks (replaced full overlay)
-

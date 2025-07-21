@@ -625,8 +625,8 @@ function main() {
     addLevelsAdjustmentLayer(blackpoint, whitepoint, gmm, sheetGroup);
 
     // === Silhouette Registration Improvement Triangle ===
+    /*
     if (useSilhouette && cardFormat != "NoBleed" && layout != "SevenCard") {
-        // Calculate bottom-left corner of slot 5
         var slot5Index = 4; // zero-based index
         var slot5Col = slot5Index % cols;
         var slot5Row = Math.floor(slot5Index / cols);
@@ -634,7 +634,8 @@ function main() {
         var slot5Y = cardStartY + slot5Row * cardDisplayH + cardHhome - mmToPixels(2); // nudge 2px inward
 
         placeSilhouetteDetectionAid(doc, scriptFolder, slot5X, slot5Y, dpi);
-    }
+    } 
+    */
 
 
     // === Add Note Layer in Lower Right ===

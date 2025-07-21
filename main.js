@@ -13,6 +13,7 @@ function createWindow() {
     minHeight: 600,
     resizable: true,
     title: `ProxySheet - Photoshop Proxy Layout Tool - v${app.getVersion()}`,
+    icon: path.join(__dirname, 'assets', 'favicon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
