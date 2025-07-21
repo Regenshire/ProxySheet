@@ -4,6 +4,12 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
+## [1.02 BETA] – 2025-07-20
+
+- Bug fix
+
+---
+
 ## [1.01 BETA] – 2025-07-20
 
 - Minor updates to the Silhouette registration marks

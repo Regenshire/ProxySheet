@@ -1444,7 +1444,7 @@ function updateLayoutOptions() {
     availableLayouts = [
       { value: 'horizontal', label: 'Horizontal (2x4)', minW: 0, minH: 0, silSupport: true },
       { value: 'vertical', label: 'Vertical (3x3)', minW: 0, minH: 0, silSupport: true },
-      { value: 'SevenCard', label: 'SevenCard', minW: 8.27, minH: 11.69, silSupport: true },
+      { value: 'SevenCard', label: 'SevenCard', minW: 0, minH: 0, silSupport: true },
       { value: 'horizontal2x5', label: 'Horizontal (2x5)', minW: 8, minH: 13, silSupport: false },
       { value: 'horizontal2x6', label: 'Horizontal (2x6)', minW: 11, minH: 16, silSupport: false },
       { value: 'horizontal3x6', label: 'Horizontal (3x6)', minW: 11, minH: 16, silSupport: false },
@@ -1456,7 +1456,7 @@ function updateLayoutOptions() {
     availableLayouts = [
       { value: 'horizontal', label: 'Horizontal (2x4)', minW: 0, minH: 0, silSupport: true },
       { value: 'vertical', label: 'Vertical (3x3)', minW: 0, minH: 0, silSupport: true },
-      { value: 'SevenCard', label: 'SevenCard', minW: 8.27, minH: 11.69, silSupport: true },
+      { value: 'SevenCard', label: 'SevenCard', minW: 0, minH: 0, silSupport: true },
       {
         value: 'horizontal2x5',
         label: 'Horizontal (2x5)',
@@ -1518,6 +1518,7 @@ function updateLayoutOptions() {
 // Trigger on tab open
 document.querySelector('[data-tab="configs"]').addEventListener('click', loadUserConfigs);
 document.querySelector('[data-tab="silhouette"]').addEventListener('click', loadSilhouetteTemplates);
+document.querySelector('[data-tab="create"]').addEventListener('click', updateLayoutOptions);
 
 // Re-run the configs list when the search input changes
 const configSearchInput = document.getElementById('configSearch');
