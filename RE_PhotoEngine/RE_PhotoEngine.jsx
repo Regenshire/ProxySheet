@@ -179,6 +179,12 @@ function main() {
         totalCards = rows * cols;
     }
 
+    if (totalCards > 40) {
+        logError('Error - Layout exceeds safe card limit. Max supported: 40 cards per sheet.');
+        alert("Layout exceeds safe card limit. Max supported: 40 cards per sheet.");
+        throw new Error("Aborted due to layout card overrun.");
+    }
+
     var silhouetteBleedAdjust = 2.0; // in MM – trim the outer edges of each card when using Silhouette by this much on each side. DEFAULT 2.2
     var insetInches = 0.394; // distance specified in Silhouette for Registration Mark Inset
     var insetMM = insetInches * 25.4; // ≈ 10 mm
@@ -507,6 +513,11 @@ function main() {
             var currentFile = cardFiles[i];
             if (!(currentFile instanceof File)) {
                 currentFile = new File(currentFile);
+            }
+
+            if (!currentFile.exists) {
+                logError("Skipped missing card image: " + currentFile.name);
+                continue;
             }
 
             imageIndex++; // Only increment once
