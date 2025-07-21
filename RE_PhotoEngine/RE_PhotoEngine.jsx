@@ -528,24 +528,40 @@ function main() {
 
             // === Paste and position card image
             app.activeDocument = doc;
-            if (cardFormat === "NoBleed" && useSilhouette) {
-                baseLayer.translate(
-                    x +
-                        (cardFormat === "NoBleed" ? mmToPixels(3) : 0) -
-                        baseLayer.bounds[0].as("px"),
-                    y +
-                        (cardFormat === "NoBleed" ? mmToPixels(3) : 0) -
-                        baseLayer.bounds[1].as("px")
-                );
-            } else {
-                baseLayer.translate(
-                    x +
-                        (cardFormat === "NoBleed" ? mmToPixels(1) : 0) -
-                        baseLayer.bounds[0].as("px"),
-                    y +
-                        (cardFormat === "NoBleed" ? mmToPixels(1) : 0) -
-                        baseLayer.bounds[1].as("px")
-                );
+
+            try {
+                if (
+                    baseLayer.bounds[2].as("px") > baseLayer.bounds[0].as("px") &&
+                    baseLayer.bounds[3].as("px") > baseLayer.bounds[1].as("px")
+                )
+                {
+                    if (cardFormat === "NoBleed" && useSilhouette) {
+                        baseLayer.translate(
+                            x +
+                                (cardFormat === "NoBleed" ? mmToPixels(3) : 0) -
+                                baseLayer.bounds[0].as("px"),
+                            y +
+                                (cardFormat === "NoBleed" ? mmToPixels(3) : 0) -
+                                baseLayer.bounds[1].as("px")
+                        );
+                    } else {
+                        baseLayer.translate(
+                            x +
+                                (cardFormat === "NoBleed" ? mmToPixels(1) : 0) -
+                                baseLayer.bounds[0].as("px"),
+                            y +
+                                (cardFormat === "NoBleed" ? mmToPixels(1) : 0) -
+                                baseLayer.bounds[1].as("px")
+                        );
+                    }
+                } else {
+                    throw new Error("Layer has invalid bounds and was skipped.");
+                }
+            } catch (e) {
+                logError('Error - Paste and position card image ' + currentFile.name);
+                logError('e: ' + e.message);
+                alert("Skipped card placement due to image error:\n" + e.message);
+                continue;
             }
             baseLayer.move(group, ElementPlacement.INSIDE);
 
@@ -572,24 +588,39 @@ function main() {
 
         // === Brightness/Contrast Adjustment ===
         if (addPerCardAdjustLayer && !batchLightMode) {
-            addBrightnessContrastAdjustment(
-                0, // brightness
-                0, // contrast
-                "Brightness/Contrast for Card " + (i + 1),
-                group,
-                true // clip to card image
-            );
+            try {
+                addBrightnessContrastAdjustment(
+                    0, // brightness
+                    0, // contrast
+                    "Brightness/Contrast for Card " + (i + 1),
+                    group,
+                    true // clip to card image
+                );
+            } catch (e) {
+                logError('Error - Card Brightness/Contrast Adjustment Layer - ' + group.name);
+                logError('e: ' + e.message);
+                alert("Error:\n" + e.message);
+                continue;
+            }
+
         }    
 
         // === Vibrance Adjustment ===
         if (addPerCardAdjustLayer && !batchLightMode) {
-            addVibranceAdjustment(
-                0, // vibrance
-                0, // saturation
-                "Vibrance for Card " + (i + 1),
-                group,
-                true // clip to card image
-            );
+            try {
+                addVibranceAdjustment(
+                    0, // vibrance
+                    0, // saturation
+                    "Vibrance for Card " + (i + 1),
+                    group,
+                    true // clip to card image
+                );
+            } catch (e) {
+                logError('Error - Card Vibrance Adjustment Layer - ' + group.name);
+                logError('e: ' + e.message);
+                alert("Error:\n" + e.message);
+                continue;
+            }
         }   
 
         // === Load and position CutMarkOverlay.png if not excluded ===
@@ -720,6 +751,8 @@ function main() {
 
             docRef.saveAs(pdfFile, pdfOptions, true);
         } catch (e) {
+            logError('Error - PDF export failed using preset ' + pdfExportPreset);
+            logError('e: ' + e.message);
             alert("PDF export failed using preset '" + pdfExportPreset + "':\n\n" + e.message);
         }
 
