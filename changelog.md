@@ -4,14 +4,14 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
-## [1.01 BETA] – 2025-07-18
+## [1.01 BETA] – 2025-07-20
 
 - Minor updates to the Silhouette registration marks
 - Added a favicon
 
 ---
 
-## [1.00 BETA] – 2025-07-17
+## [1.00 BETA] – 2025-07-19
 
 - Initial public release
 - Renamed application to **ProxySheet – Photoshop Proxy Layout Tool**
