@@ -582,7 +582,13 @@ function main() {
                 alert("Skipped card placement due to image error:\n" + e.message);
                 continue;
             }
-            baseLayer.move(group, ElementPlacement.INSIDE);
+            try {
+                baseLayer.move(group, ElementPlacement.INSIDE);
+            }
+            catch (e) {
+                logError('Error - Placing Layer in Group ' + currentFile.name);
+            }
+            
 
             if (displayBatchNumber === true && batchNumber !== null) {
             //  var formattedNumber = "# " + batchNumber.toString().padStart(3, "0");
@@ -591,18 +597,22 @@ function main() {
                 addBatchNumberLabel(group, x, y, dpi, formattedNumber);
             }
 
-        // === Add batchumber ===
         } else {
-            // Fallback blank card
-            baseLayer = drawCardBackground(
-                x,
-                y,
-                cardWhome,
-                cardHhome,
-                white,
-                "Blank " + slotNumber,
-                group
-            );
+                // Fallback blank card
+                try {
+                baseLayer = drawCardBackground(
+                    x,
+                    y,
+                    cardWhome,
+                    cardHhome,
+                    white,
+                    "Blank " + slotNumber,
+                    group
+                );
+            }
+            catch (e) {
+                logError('Error - Drawing Blank Card');
+            }            
         }
 
         // === Brightness/Contrast Adjustment ===
@@ -660,7 +670,13 @@ function main() {
             ];
         
             for (var c = 0; c < corners.length; c++) {
-                drawCropMark(corners[c][0], corners[c][1], markSize);
+                try {
+                    drawCropMark(corners[c][0], corners[c][1], markSize);
+                }
+                catch (e) {
+                    logError('Error - Draw Crop Mark - ' + currentFile.name);
+                    logError('e: ' + e.message);
+                }                
             }
         }
         
