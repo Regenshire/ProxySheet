@@ -147,7 +147,23 @@ function placeImageInDocument(
   }
   // Crop margins from all sides if requested (e.g., to remove bleed)
   if (cropMarginPx && cropMarginPx > 0) {
+    var cropWidth = imgDoc.width.as('px') - cropMarginPx * 2;
+    var cropHeight = imgDoc.height.as('px') - cropMarginPx * 2;
+
+    if (cropWidth <= 0 || cropHeight <= 0) {
+      logError('Skipped cropping due to invalid crop margin on image: ' + imageFile.name);
+      imgDoc.close(SaveOptions.DONOTSAVECHANGES);
+      return null;
+    }
+
     imgDoc.crop([cropMarginPx, cropMarginPx, imgDoc.width - cropMarginPx, imgDoc.height - cropMarginPx]);
+
+    if (imgDoc.width.as('px') > 36000 || imgDoc.height.as('px') > 36000) {
+      logError('Error - Image too large after crop: ' + imageFile.name);
+      alert('⚠️ Image too large after crop: ' + imageFile.name);
+      imgDoc.close(SaveOptions.DONOTSAVECHANGES);
+      return null;
+    }
   }
   // Copy all contents and close the source document without saving
   imgDoc.selection.selectAll();
@@ -880,23 +896,6 @@ function writeSentinal(sentinalFilename, sentinalMessage) {
   logFile.close();
 }
 
-/*
-function logError(message) {
-  try {
-    var logsFolder = new Folder(scriptFolder.fullName + '/../logs');
-    if (!logsFolder.exists) logsFolder.create();
-
-    //var logFile = new File(logsFolder + '/photoengine.log');
-    var logFile = new File(logsFolder.fsName + "/photoengine.log");
-    logFile.open('a');
-    logFile.writeln('[' + new Date().toISOString() + '] ' + message);
-    logFile.close();
-  } catch (e) {
-    // Fail silently if logging fails
-  }
-}
- */
-
 function logError(message) {
   try {
     var logsFolder = new Folder(scriptFolder.fullName + '/../logs');
@@ -906,13 +905,13 @@ function logError(message) {
 
     var opened = logFile.open('a');
     if (!opened) {
-      alert('Could not open log file: ' + logFile.fsName);
+      alert('⚠️ Could not open log file: ' + logFile.fsName);
       return;
     }
     logFile.encoding = 'UTF-8';
     logFile.writeln('[' + new Date().toLocaleString() + '] ' + message);
     logFile.close();
   } catch (e) {
-    alert('Logging error: ' + e.message);
+    alert('⚠️ Logging error: ' + e.message);
   }
 }
