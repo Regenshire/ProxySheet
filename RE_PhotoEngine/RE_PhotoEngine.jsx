@@ -76,7 +76,11 @@ if (typeof batchNextConfig === "undefined") batchNextConfig = "";
 
 
 // HELPER FUNCTIONS
+var scriptFolder = File($.fileName).parent;
+
 #include "RE_HelperFunctions.jsx"
+
+logError("Script Started - Logging initialized");
 
 if (batchHistory === true && batchNumber === null){
     determineBatchNumber();
@@ -232,6 +236,21 @@ function main() {
         }
     }
 
+    // === Log and sanity check document dimensions before creation
+    logError(
+    "Creating document with pageWidthPx = " + pageWidthPx +
+    ", pageHeightPx = " + pageHeightPx +
+    ", dpi=" + dpi
+    );
+
+    if (pageWidthPx > 40000 || pageHeightPx > 40000 || dpi > 4000) {
+        alert("Document creation skipped: invalid page size or DPI.\n" +
+        "Width: " + pageWidthPx + "px\n" +
+        "Height: " + pageHeightPx + "px\n" +
+        "DPI: " + dpi);
+    throw new Error("Aborted due to oversized document parameters");
+    }
+
     var white = new SolidColor();
     white.rgb.red = 255;
     white.rgb.green = 255;
@@ -245,7 +264,7 @@ function main() {
         NewDocumentMode.RGB
     );
 
-    var scriptFolder = File($.fileName).parent;
+    
 
     if (outputPDF === true) {
         var sentinelPath = scriptFolder.fullName + "/../TempConfig/sentinal_batch_status.txt";
