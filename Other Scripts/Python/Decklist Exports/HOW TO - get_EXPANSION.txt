@@ -43,7 +43,7 @@ This ensures the exported list favors visually impressive printings while remain
 
 4. Enter a set code when prompted  
    Example inputs:  
-   - `EOE` → for Outlaws of Eldraine  
+   - `EOE` → for Edge of Eternity 
    - `MH2` → for Modern Horizons 2  
    - `OTJ` → for Outlaws of Thunder Junction
 
