@@ -1,11 +1,11 @@
 <templates>
-  <template fileName="silh_legal_horizontal.studio3">
+  <template fileName="silh_letter_horizontal.studio3">
     <sortOrder>1</sortOrder>
     <title>Standard - Silhouette 8 Card MTG Card Template</title>
     <description>8 Card Silhouette cutting template for MTG cards on Standard size paper. This template maximizes yield.  It is recommended that you use the post-it trick with 8 card templates to avoid registration issues.</description>
     <tags>Letter, 8 Card</tags>
   </template>
-  <template fileName="silh_legal_sevencard.studio3">
+  <template fileName="silh_letter_sevencard.studio3">
     <sortOrder>2</sortOrder>
     <title>Standard - Silhouette 7 Card MTG Card Template</title>
     <description>7 Card Silhouette cutting template for MTG cards on Standard size paper. This template is more reliable for some users than the traditional 8 card template because it allows more room around the registration marks and improves registration detection.</description>
@@ -22,5 +22,11 @@
     <title>A4 - Silhouette 7 Card MTG Card Template</title>
     <description>7 Card Silhouette cutting template for MTG cards on A4 size paper. This template is more reliable for some users than the traditional 8 card template because it allows more room around the registration marks and improves registration detection.</description>
     <tags>Letter, 7 Card</tags>
+  </template>
+  <template fileName="silh_legal_tencard.studio3">
+    <sortOrder>5</sortOrder>
+    <title>Legal - Silhouette 10 Card MTG Card Template</title>
+    <description>10 Card Silhouette cutting template for MTG cards on Legal size paper. This template maximizes the space available on Legal sized paper while keeping space around the key lower left and upper right registration marks.</description>
+    <tags>Legal, 10 Card</tags>
   </template>
 </templates>

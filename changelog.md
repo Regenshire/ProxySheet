@@ -4,6 +4,15 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
+## [1.05 BETA] – 2025-07-27
+
+- Added a new LEGAL Sized Vertical Layout for Silhouette cutting called Silhouette Legal (10-Card). This new layout allows for the placement of 10 cards on a legal sized piece of paper with Silhouette marks. The cards are layouted with two horizontal rows and 2 vertical rows to allow for fitting 10 cards on the sheet and providing space for the Silhouette marks.
+- Added additional logging
+- Added an Other Scripts folder for additional tools
+- Added a get_Expansion.py script for downloading deck lists based on a MTG Expansion codes
+
+---
+
 ## [1.03 BETA] – 2025-07-21
 
 - Added catches for size overruns of images

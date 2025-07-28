@@ -17,7 +17,7 @@ async function pdfMerge(inputPaths, outputPath) {
       if (fs.existsSync(file)) {
         await merger.add(file);
       } else {
-        console.warn(`⚠️ File not found: ${file}`);
+        console.warn(`File not found: ${file}`);
       }
     }
 
@@ -29,7 +29,6 @@ async function pdfMerge(inputPaths, outputPath) {
     await merger.save(outputPath);
     return true;
   } catch (err) {
-    console.error('❌ Failed to merge PDFs:', err.message);
     return false;
   }
 }

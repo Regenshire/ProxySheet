@@ -2,30 +2,31 @@
 // --- This file contains the code for the script.  The Config scripts must use an #include to this script to operate
 
 // === SAFETY: Fallback Defaults for Missing Config Variables ===
-// Page/Layout
-if (typeof pageWidthInches === "undefined") pageWidthInches = 8.5;
-if (typeof pageHeightInches === "undefined") pageHeightInches = 11;
-if (typeof layout === "undefined") layout = "horizontal";
-if (typeof cardFormat === "undefined") cardFormat = "MPC";
-if (typeof cardBack === "undefined") cardBack = false;
-if (typeof backOffsetXmm === "undefined") backOffsetXmm = 0.0;
-if (typeof backOffsetYmm === "undefined") backOffsetYmm = 0.0;
-if (typeof selectEachCard === "undefined") selectEachCard = false;
-if (typeof paperType === "undefined") paperType = "Custom";
+// Page/Layout defaults
+if (typeof pageWidthInches === "undefined" || pageWidthInches === "") pageWidthInches = 8.5;
+if (typeof pageHeightInches === "undefined" || pageHeightInches === "") pageHeightInches = 11;
+if (typeof layout === "undefined" || layout === "") layout = "horizontal";
+if (typeof cardFormat === "undefined" || cardFormat === "") cardFormat = "MPC";
+if (typeof cardBack === "undefined" || cardBack === "") cardBack = false;
+if (typeof backOffsetXmm === "undefined" || backOffsetXmm === "") backOffsetXmm = 0.0;
+if (typeof backOffsetYmm === "undefined" || backOffsetYmm === "") backOffsetYmm = 0.0;
+if (typeof selectEachCard === "undefined" || selectEachCard === "") selectEachCard = false;
+if (typeof paperType === "undefined" || paperType === "") paperType = "Custom";
+
 
 // === Apply Format Presets If cardFormat is Specified ===
 if (cardFormat === "MPC") {
-    if (typeof cardWidthMM === "undefined") cardWidthMM = 69;
-    if (typeof cardHeightMM === "undefined") cardHeightMM = 94;
-    if (typeof cutOffset === "undefined") cutOffset = 3.04;
-    if (typeof cutMarkSize === "undefined") cutMarkSize = 4.5;
-    if (typeof showCropMarks === "undefined") showCropMarks = true;
+    if (typeof cardWidthMM === "undefined" || cardWidthMM === "") cardWidthMM = 69;
+    if (typeof cardHeightMM === "undefined" || cardHeightMM === "") cardHeightMM = 94;
+    if (typeof cutOffset === "undefined" || cutOffset === "") cutOffset = 3.04;
+    if (typeof cutMarkSize === "undefined" || cutMarkSize === "") cutMarkSize = 4.5;
+    if (typeof showCropMarks === "undefined" || showCropMarks === "") showCropMarks = true;
 } else if (cardFormat === "NoBleed") {
-    if (typeof cardWidthMM === "undefined") cardWidthMM = 63;
-    if (typeof cardHeightMM === "undefined") cardHeightMM = 88;
-    if (typeof cutOffset === "undefined") cutOffset = 1.0;
-    if (typeof cutMarkSize === "undefined") cutMarkSize = 4.5;
-    if (typeof showCropMarks === "undefined") showCropMarks = true;
+    if (typeof cardWidthMM === "undefined" || cardWidthMM === "") cardWidthMM = 63;
+    if (typeof cardHeightMM === "undefined" || cardHeightMM === "") cardHeightMM = 88;
+    if (typeof cutOffset === "undefined" || cutOffset === "") cutOffset = 1.0;
+    if (typeof cutMarkSize === "undefined" || cutMarkSize === "") cutMarkSize = 4.5;
+    if (typeof showCropMarks === "undefined" || showCropMarks === "") showCropMarks = true;
 }
 
 // Card dimensions / DPI
@@ -48,13 +49,13 @@ if (typeof noteFontSize === "undefined") noteFontSize = 9;
 if (typeof manualNote === "undefined") manualNote = "";
 
 // Color Adjustments
-if (typeof bright === "undefined") bright = 0;
-if (typeof contr === "undefined") contr = 0;
-if (typeof vib === "undefined") vib = 0;
-if (typeof sat === "undefined") sat = 0;
-if (typeof gmm === "undefined") gmm = 1.0;
-if (typeof whitepoint === "undefined") whitepoint = 255;
-if (typeof blackpoint === "undefined") blackpoint = 0;
+if (typeof bright === "undefined" || bright === "") bright = 0;
+if (typeof contr === "undefined" || contr === "") contr = 0;
+if (typeof vib === "undefined" || vib === "") vib = 0;
+if (typeof sat === "undefined" || sat === "") sat = 0;
+if (typeof gmm === "undefined" || gmm === "") gmm = 1.0;
+if (typeof whitepoint === "undefined" || whitepoint === "") whitepoint = 255;
+if (typeof blackpoint === "undefined" || blackpoint === "") blackpoint = 0;
 if (typeof addPerCardAdjustLayer === "undefined") addPerCardAdjustLayer = true;
 
 // Export Functions
@@ -172,7 +173,11 @@ function main() {
     } else if (layout === "SevenCard") {
         rows = 2;
         cols = 4;
-        totalCards = 7; // Only 7 active cards    
+        totalCards = 7; // Only 7 active cards
+    } else if (layout === "Silhouette10Card") {
+        rows = 4;
+        cols = 3;
+        totalCards = 10;  
     } else {
         rows = layout === "vertical" ? 3 : 2;
         cols = layout === "vertical" ? 3 : 4;
@@ -404,11 +409,28 @@ function main() {
         cardStartY = silhouetteInsetPx + Math.round((availableH - cardBlockH) / 2);
     }
 
-    // === Load and place each card ===
-    var imageIndex = 0;
-    var layerReuseCache = {};
+        // === Load and place each card ===
+        var imageIndex = 0;
+        var layerReuseCache = {};
 
-    for (var i = 0; i < totalCards; i++) {
+        // PREDEFINE slotPositions if using Silhouette10Card
+        var slotPositions = null;
+        if (layout === "Silhouette10Card") {
+        slotPositions = [
+            [cardStartX, cardStartY], // 1
+            [cardStartX + cardDisplayW, cardStartY], // 2
+            [cardStartX, cardStartY + cardDisplayH], // 3
+            [cardStartX + cardDisplayW, cardStartY + cardDisplayH], // 4
+            [cardStartX + 2 * cardDisplayW, cardStartY + cardDisplayH], // 5
+            [cardStartX, cardStartY + 2 * cardDisplayH], // 6
+            [cardStartX + cardDisplayW, cardStartY + 2 * cardDisplayH], // 7
+            [cardStartX + 2 * cardDisplayW, cardStartY + 2 * cardDisplayH], // 8
+            [cardStartX + cardDisplayW, cardStartY + 3 * cardDisplayH], // 9
+            [cardStartX + 2 * cardDisplayW, cardStartY + 3 * cardDisplayH] // 10
+        ];
+        }
+
+        for (var i = 0; i < totalCards; i++) {
         var group = doc.layerSets.add();
         group.name = "Card Group " + (i + 1);
 
@@ -416,215 +438,163 @@ function main() {
         var isExcluded = excludedSlots[slotNumber] === true;
         var cardHadImage = false;
 
-        // === Card placement logic ===
         var x, y;
 
-        if (layout === "SevenCard") {
+        if (layout === "Silhouette10Card") {
             if (i === 0) {
-                // Card 1: vertically centered, far left or far right
-                y = Math.round((pageHeightPx - cardDisplayH) / 2);
-
-                if (cardBack) {
-                    x = cardStartX + 3 * cardDisplayW;
-                } else {
-                    x = cardStartX;
-                }
+                // Slot 1 (Row 1, left-aligned, rotated)
+                x = cardStartX;
+                y = cardStartY + cardDisplayH - cardDisplayW;
+            } else if (i === 1) {
+                // Slot 2 (next to Slot 1)
+                x = cardStartX + cardDisplayH;
+                y = cardStartY + cardDisplayH - cardDisplayW;
+            } else if (i === 8) {
+                // Slot 9 - Bottom left of Slot 10
+                var slot10Right = cardStartX + 3 * cardDisplayW;
+                var slot10X = slot10Right - cardDisplayH;
+                x = slot10X - cardDisplayH;
+                y = cardStartY + 3 * cardDisplayH;
+            } else if (i === 9) {
+                // Slot 10 - Aligned to right edge of Slot 8
+                x = cardStartX + 3 * cardDisplayW - cardDisplayH;
+                y = cardStartY + 3 * cardDisplayH;
             } else {
-                // Cards 2–7: grid
-                var localIndex = i - 1;
-                var row = Math.floor(localIndex / 3);
-                var col = localIndex % 3;
-                var colFlipped = cardBack ? (2 - col) : col;
+                // All other slots (3–8)
+                var pos = slotPositions[i];
+                x = pos[0];
+                y = pos[1];
+            }
 
-                if (cardBack) {
-                    x = cardStartX + colFlipped * cardDisplayW;
-                } else {
-                    x = cardStartX + cardDisplayW + colFlipped * cardDisplayW;
-                }
-
-                y = cardStartY + row * cardDisplayH;
+            // Rotation anchor correction for rotated cards (1,2,9,10)
+            if (i < 2 || i >= 8) {
+                var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
+                var shiftY = Math.round((cardDisplayW - cardDisplayH) / 2);
+                x += shiftX;
+                y += shiftY;
+            }
+        } else if (layout === "SevenCard") {
+            if (i === 0) {
+            y = Math.round((pageHeightPx - cardDisplayH) / 2);
+            x = cardBack ? cardStartX + 3 * cardDisplayW : cardStartX;
+            } else {
+            var localIndex = i - 1;
+            var row = Math.floor(localIndex / 3);
+            var col = localIndex % 3;
+            var colFlipped = cardBack ? 2 - col : col;
+            x = cardBack
+                ? cardStartX + colFlipped * cardDisplayW
+                : cardStartX + cardDisplayW + colFlipped * cardDisplayW;
+            y = cardStartY + row * cardDisplayH;
             }
         } else {
-            // General layout (2x4, 2x5, 2x6, 3x5, etc.)
             var row = Math.floor(i / cols);
             var col = i % cols;
             x = col * cardDisplayW + cardStartX;
             y = row * cardDisplayH + cardStartY;
         }
 
-        /*
-        var x, y;
-
-        if (layout === "SevenCard") {
-            if (i === 0) {
-                // Card 1: vertically centered, far left or right
-                y = Math.round((pageHeightPx - cardDisplayH) / 2);
-
-                if (cardBack) {
-                    // BACK: Card 1 on far right
-                    x = cardStartX + 3 * cardDisplayW;
-                } else {
-                    // FRONT: Card 1 on far left
-                    x = cardStartX;
-                }
-
-            } else {
-                // Cards 2-4 (top row), 6-8 (bottom row) — 3x2 grid
-                var localIndex = i - 1;
-                var row = Math.floor(localIndex / 3);
-                var col = localIndex % 3;
-
-                var colFlipped = !cardBack ? col : 2 - col;  // ← flip entire grid
-
-                if (cardBack) {
-                    // CARD BACK
-                    x = cardStartX + colFlipped * cardDisplayW;
-                } else {
-                    // CARD FRONTS
-                    x = cardStartX + cardDisplayW + colFlipped * cardDisplayW;
-                }
-
-                y = cardStartY + row * cardDisplayH;
-            }
-        }
-        else {
-            x = (i % cols) * cardDisplayW + cardStartX;
-            y = Math.floor(i / cols) * cardDisplayH + cardStartY;
-        }
-        */
         var baseLayer;
 
         if (isExcluded) {
-            // Excluded slot: render blank, no image, no overlays, no adjustments
-            baseLayer = drawCardBackground(
-                x,
-                y,
-                cardWhome,
-                cardHhome,
-                white,
-                "Excluded " + slotNumber,
-                group
-            );
+            baseLayer = drawCardBackground(x, y, cardWhome, cardHhome, white, "Excluded " + slotNumber, group);
             continue;
         }
 
-        // Batch Mode
+        // === Place card image ===
         if (cardFiles != null && cardFiles[i] != null) {
             var currentFile = cardFiles[i];
-            if (!(currentFile instanceof File)) {
-                currentFile = new File(currentFile);
-            }
-
+            if (!(currentFile instanceof File)) currentFile = new File(currentFile);
             if (!currentFile.exists) {
-                logError("Skipped missing card image: " + currentFile.name);
-                continue;
+            logError("Skipped missing card image: " + currentFile.name);
+            continue;
             }
 
-            imageIndex++; // Only increment once
+            imageIndex++;
             var trimPx = useSilhouette ? mmToPixels(silhouetteBleedAdjust) : 0;
 
             baseLayer = placeImageInDocument(
-                currentFile,
-                cardW,
-                cardH,
-                trimPx,
-                doc,
-                group,
-                "Card " + slotNumber,
-                x,
-                y,
-                layerReuseCache
+            currentFile,
+            cardW,
+            cardH,
+            trimPx,
+            doc,
+            group,
+            "Card " + slotNumber,
+            x,
+            y,
+            layerReuseCache
             );
             cardHadImage = true;
 
-            // === Draw outer black background if NoBleed
+            // Add black border for NoBleed
             if (cardFormat === "NoBleed") {
-                var black = new SolidColor();
-                black.rgb.red = 0;
-                black.rgb.green = 0;
-                black.rgb.blue = 0;
-                
-                drawCardBackground(
-                    x,
-                    y,
-                    cardDisplayW,
-                    cardDisplayH,
-                    black,
-                    "Black Border for Card " + slotNumber,
-                    group
-                );
-                
+            var black = new SolidColor();
+            black.rgb.red = 0;
+            black.rgb.green = 0;
+            black.rgb.blue = 0;
+            drawCardBackground(x, y, cardDisplayW, cardDisplayH, black, "Black Border for Card " + slotNumber, group);
             }
 
-            // === Paste and position card image
             app.activeDocument = doc;
 
             try {
-                if (
-                    baseLayer.bounds[2].as("px") > baseLayer.bounds[0].as("px") &&
-                    baseLayer.bounds[3].as("px") > baseLayer.bounds[1].as("px")
-                )
-                {
-                    if (cardFormat === "NoBleed" && useSilhouette) {
-                        baseLayer.translate(
-                            x +
-                                (cardFormat === "NoBleed" ? mmToPixels(3) : 0) -
-                                baseLayer.bounds[0].as("px"),
-                            y +
-                                (cardFormat === "NoBleed" ? mmToPixels(3) : 0) -
-                                baseLayer.bounds[1].as("px")
-                        );
-                    } else {
-                        baseLayer.translate(
-                            x +
-                                (cardFormat === "NoBleed" ? mmToPixels(1) : 0) -
-                                baseLayer.bounds[0].as("px"),
-                            y +
-                                (cardFormat === "NoBleed" ? mmToPixels(1) : 0) -
-                                baseLayer.bounds[1].as("px")
-                        );
-                    }
-                } else {
-                    throw new Error("Layer has invalid bounds and was skipped.");
-                }
+            if (
+                baseLayer.bounds[2].as("px") > baseLayer.bounds[0].as("px") &&
+                baseLayer.bounds[3].as("px") > baseLayer.bounds[1].as("px")
+            ) {
+                var xAdj = cardFormat === "NoBleed" ? (useSilhouette ? mmToPixels(3) : mmToPixels(1)) : 0;
+                var yAdj = xAdj;
+                baseLayer.translate(x + xAdj - baseLayer.bounds[0].as("px"), y + yAdj - baseLayer.bounds[1].as("px"));
+            } else {
+                throw new Error("Layer has invalid bounds and was skipped.");
+            }
             } catch (e) {
-                logError('Error - Paste and position card image ' + currentFile.name);
-                logError('e: ' + e.message);
-                alert("Skipped card placement due to image error:\n" + e.message);
-                continue;
+            logError("Error - Paste and position card image " + currentFile.name);
+            logError("e: " + e.message);
+            alert("Skipped card placement due to image error:\n" + e.message);
+            continue;
             }
+
             try {
-                baseLayer.move(group, ElementPlacement.INSIDE);
-            }
-            catch (e) {
-                logError('Error - Placing Layer in Group ' + currentFile.name);
-            }
-            
-
-            if (displayBatchNumber === true && batchNumber !== null) {
-            //  var formattedNumber = "# " + batchNumber.toString().padStart(3, "0");
-                var formattedNumber = padNumber(batchNumber, 3);
-
-                addBatchNumberLabel(group, x, y, dpi, formattedNumber);
+            baseLayer.move(group, ElementPlacement.INSIDE);
+            } catch (e) {
+            logError("Error - Placing Layer in Group " + currentFile.name);
             }
 
+            // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
+            if (layout === "Silhouette10Card" && (i < 2 || i >= 8)) {
+            try {
+                var groupName = "Card Group " + (i + 1);
+                var currentGroup = doc.layerSets.getByName(groupName);
+
+                var idselect = charIDToTypeID("slct");
+                var desc = new ActionDescriptor();
+                var ref = new ActionReference();
+                ref.putName(charIDToTypeID("Lyr "), groupName);
+                desc.putReference(charIDToTypeID("null"), ref);
+                executeAction(idselect, desc, DialogModes.NO);
+
+                var rotateDesc = new ActionDescriptor();
+                var rotateRef = new ActionReference();
+                rotateRef.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
+                rotateDesc.putReference(charIDToTypeID("null"), rotateRef);
+                rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), 90.0);
+                executeAction(charIDToTypeID("Trnf"), rotateDesc, DialogModes.NO);
+            } catch (e) {
+                logError("❌ Rotation failed for Card Group " + (i + 1));
+                logError("e: " + e.message);
+            }
+            }
         } else {
-                // Fallback blank card
-                try {
-                baseLayer = drawCardBackground(
-                    x,
-                    y,
-                    cardWhome,
-                    cardHhome,
-                    white,
-                    "Blank " + slotNumber,
-                    group
-                );
+            // Fallback blank card
+            try {
+            baseLayer = drawCardBackground(x, y, cardWhome, cardHhome, white, "Blank " + slotNumber, group);
+            } catch (e) {
+            logError("Error - Drawing Blank Card");
             }
-            catch (e) {
-                logError('Error - Drawing Blank Card');
-            }            
         }
+
 
         // === Brightness/Contrast Adjustment ===
         if (addPerCardAdjustLayer && !batchLightMode) {
@@ -665,6 +635,7 @@ function main() {
 
         // === Load and position CutMarkOverlay.png if not excluded ===
         //if (showCropMarks && cardHadImage && !batchLightMode) {
+        /*
         if (showCropMarks && cardHadImage) {
             var markSize = mmToPixels(cutMarkSize);
             var adjustedCutOffset = cutOffset - (useSilhouette ? silhouetteBleedAdjust : 0);
@@ -690,6 +661,66 @@ function main() {
                 }                
             }
         }
+            */
+
+        if (showCropMarks && cardHadImage) {
+            var markSize = mmToPixels(cutMarkSize);
+            var adjustedCutOffset = cutOffset - (useSilhouette ? silhouetteBleedAdjust : 0);
+            var offset = mmToPixels(adjustedCutOffset);
+
+            var cardOffsetX = getCardOffsetX(x);
+            var cardOffsetY = getCardOffsetY(y);
+
+            var w = cardWhome;
+            var h = cardHhome;
+
+            // Correct for rotation
+            var rotated = (layout === "Silhouette10Card" && (i === 0 || i === 1 || i === 8 || i === 9));
+            if (rotated) {
+                // Apply 90° CW rotation math around the center
+                var cx = cardOffsetX + w / 2;
+                var cy = cardOffsetY + h / 2;
+
+                // Rotate each corner from the unrotated position
+                var points = new Array(
+                    [-w / 2 + offset, -h / 2 + offset], // TL
+                    [ w / 2 - offset, -h / 2 + offset], // TR
+                    [-w / 2 + offset,  h / 2 - offset], // BL
+                    [ w / 2 - offset,  h / 2 - offset]  // BR
+                );
+
+                var corners = [];
+                for (var j = 0; j < points.length; j++) {
+                    var px = points[j][0];
+                    var py = points[j][1];
+                    var xRot = py;   // 90° rotation: x' = y
+                    var yRot = -px;  // y' = -x
+                    corners.push([Math.round(cx + xRot), Math.round(cy + yRot)]);
+                }
+
+            } else {
+                // Standard non-rotated card
+                var corners = [
+                    [cardOffsetX + offset, cardOffsetY + offset],                             // top-left
+                    [cardOffsetX + w - offset, cardOffsetY + offset],                         // top-right
+                    [cardOffsetX + offset, cardOffsetY + h - offset],                         // bottom-left
+                    [cardOffsetX + w - offset, cardOffsetY + h - offset]                      // bottom-right
+                ];
+            }
+
+            for (var c = 0; c < corners.length; c++) {
+                try {
+                    var mark = drawCropMark(corners[c][0], corners[c][1], markSize);
+                    mark.move(group, ElementPlacement.INSIDE); // still group it
+                } catch (e) {
+                    logError('Error - Draw Crop Mark');
+                    logError('e: ' + e.message);
+                }
+            }
+        }
+
+
+
         
     }
 
@@ -767,7 +798,22 @@ function main() {
         var textPosX = cardStartX + cardBlockW - textMargin;
         var textPosY = cardStartY + cardBlockH + textMargin;
 
-        textItem.position = [textPosX, textPosY];
+        if (layout === "Silhouette10Card") {
+            // Custom note position and font size for Silhouette10Card
+            var scale = dpi / 800.0;
+            textItem.position = [Math.round(800 * scale), Math.round(10758 * scale)];
+            textItem.size = 9;
+            textItem.justification = Justification.LEFT;
+        } else if (paperType === "Legal") {
+            // Custom note position and font size for Silhouette10Card
+            var scale = dpi / 800.0;
+            textItem.position = [Math.round(800 * scale), Math.round(10950 * scale)];
+            textItem.size = 9;
+            textItem.justification = Justification.LEFT;
+        } else {
+            textItem.position = [textPosX, textPosY];
+        }
+
     }
 
     if (cardBack && (backOffsetXmm !== 0 || backOffsetYmm !== 0)) {

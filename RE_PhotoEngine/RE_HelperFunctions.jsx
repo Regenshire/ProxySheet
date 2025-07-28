@@ -367,8 +367,15 @@ function shiftEntireDocumentByOffset(xOffsetPx, yOffsetPx) {
 function placeSilhouettePSDLayer(doc, scriptFolder) {
   try {
     var regFilename = 'SIL_LETTER_REG.psd';
-    if (typeof paperType !== 'undefined' && paperType === 'A4') {
-      regFilename = 'SIL_A4_REG.psd';
+
+    if (typeof paperType !== 'undefined') {
+      if (paperType === 'A4') {
+        regFilename = 'SIL_A4_REG.psd';
+      }
+
+      if (paperType === 'Legal' && typeof layout !== 'undefined' && (layout === 'Silhouette10Card' || layout === 'vertical')) {
+        regFilename = 'SIL_LEGAL_VERTICAL.psd';
+      }
     }
 
     var regFile = File(scriptFolder + '/Assets/' + regFilename);

@@ -466,13 +466,25 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
           const frontOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Front.pdf`;
           const frontPaths = frontFiles.map((f) => `${pdfDir}/${f}`);
           const mergedFront = await window.electronAPI.mergePDFs(frontPaths, frontOut);
-          if (mergedFront) mergedPaths.push(frontOut);
+          if (mergedFront) {
+            mergedPaths.push(frontOut);
+          } else {
+            await window.electronAPI.writeLog('!!! Failed to merge Front PDFs');
+            statusBox.textContent = 'Failed to merge Front PDFs.';
+          }
+
+          await delay(500);
 
           // Merge backs
           const backOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Back.pdf`;
           const backPaths = backFiles.map((f) => `${pdfDir}/${f}`);
           const mergedBack = await window.electronAPI.mergePDFs(backPaths, backOut);
-          if (mergedBack) mergedPaths.push(backOut);
+          if (mergedBack) {
+            mergedPaths.push(backOut);
+          } else {
+            await window.electronAPI.writeLog('!!! Failed to merge Back PDFs');
+            statusBox.textContent = 'Failed to merge Back PDFs.';
+          }
         } else {
           // Interleave front and back
           const combinedOut = `${outDir}/ProxySheet_Batch_${paddedBatch}_Combined.pdf`;
@@ -487,7 +499,9 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
           }
 
           const merged = await window.electronAPI.mergePDFs(interleaved, combinedOut);
-          if (merged) mergedPaths.push(combinedOut);
+          if (merged) {
+            mergedPaths.push(combinedOut);
+          }
         }
 
         // Step 3: Validate output
@@ -960,12 +974,52 @@ const loadUserConfigs = async () => {
         localStorage.setItem('mtgProxyLastConfig', JSON.stringify(config));
         document.querySelector('[data-tab="create"]').click();
         const form = document.getElementById('createForm');
+
+        // STEP 1: Apply dimension-related values first
+        const order = ['pageWidthInches', 'pageHeightInches', 'cardWidthMM', 'cardHeightMM'];
+        order.forEach((key) => {
+          if (key in config) {
+            const field = form.elements[key];
+            if (field) field.value = config[key];
+          }
+        });
+
+        // STEP 2: Update layout options based on dimensions
+        updateLayoutOptions();
+
+        // STEP 3: Apply remaining fields (but layout goes LAST)
+        for (const [key, value] of Object.entries(config)) {
+          if (order.includes(key)) continue; // already handled above
+
+          const field = form.elements[key];
+          if (!field) continue;
+
+          if (key === 'layout') {
+            // Skip for now — set last
+            continue;
+          }
+
+          if (field.type === 'checkbox') {
+            field.checked = value;
+          } else {
+            field.value = value;
+          }
+        }
+
+        // STEP 4: Finally set layout
+        if ('layout' in config) {
+          const layoutField = form.elements['layout'];
+          if (layoutField) layoutField.value = config['layout'];
+        }
+
+        /*
         for (const [key, value] of Object.entries(config)) {
           const field = form.elements[key];
           if (!field) continue;
           if (field.type === 'checkbox') field.checked = value;
           else field.value = value;
         }
+        */
 
         document.getElementById('configName').value = script.fileName.replace('.jsx', '');
         document.getElementById('configFolder').value = folderData.folder;
@@ -1167,6 +1221,8 @@ function createPageBatches(config) {
 
   if (layout === 'SevenCard') {
     cardsPerPage = 7;
+  } else if (layout === 'Silhouette10Card') {
+    cardsPerPage = 10;
   } else if (layout === 'horizontal') {
     cardsPerPage = 8;
   } else if (layout === 'vertical') {
@@ -1322,7 +1378,7 @@ async function runBatchPages(config) {
       await window.electronAPI.writeLog(` - backPath Set`);
 
       if (i === 0) {
-        await window.electronAPI.writeLog(` Setting firstBackScript: ${frontPath}`);
+        await window.electronAPI.writeLog(` Setting firstBackScript: ${backPath}`);
         //firstBackScript = buildConfigPath(backName);
         firstBackScript = backPath;
       }
@@ -1450,7 +1506,8 @@ function updateLayoutOptions() {
       { value: 'horizontal3x6', label: 'Horizontal (3x6)', minW: 11, minH: 16, silSupport: false },
       { value: 'vertical4x3', label: 'Vertical (4x3)', minW: 8.27, minH: 14, silSupport: false },
       { value: 'vertical4x4', label: 'Vertical (4x4)', minW: 10.8, minH: 14, silSupport: false },
-      { value: 'vertical5x3', label: 'Vertical (5x3)', minW: 10, minH: 18, silSupport: false }
+      { value: 'vertical5x3', label: 'Vertical (5x3)', minW: 10, minH: 18, silSupport: false },
+      { value: 'Silhouette10Card', label: 'Silhouette Legal (10-Card)', minW: 8.5, minH: 14, silSupport: true }
     ];
   } else {
     availableLayouts = [
@@ -1480,7 +1537,8 @@ function updateLayoutOptions() {
       },
       { value: 'vertical4x3', label: 'Vertical (4x3)', minW: 9, minH: 16, silSupport: false },
       { value: 'vertical4x4', label: 'Vertical (4x4)', minW: 12, minH: 18, silSupport: false },
-      { value: 'vertical5x3', label: 'Vertical (5x3)', minW: 11, minH: 20, silSupport: false }
+      { value: 'vertical5x3', label: 'Vertical (5x3)', minW: 11, minH: 20, silSupport: false },
+      { value: 'Silhouette10Card', label: 'Silhouette Legal (10-Card)', minW: 8.5, minH: 14, silSupport: true }
     ];
   }
 
