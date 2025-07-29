@@ -33,28 +33,24 @@ No setup required — the script automatically installs `requests` and `beautifu
 
 ▶️ Step-by-Step Instructions
 
-1. Place `get_EXPANSION.py` in a folder on your machine.
-
-2. Open PowerShell or Terminal in that folder:
+1. Open PowerShell or Terminal in that folder:
    - Right-click the folder → “Open PowerShell window here”
 
-3. Run the script:
-   ```bash
+2. Run the command:
    python get_EXPANSION.py
-   ```
 
-4. When prompted, enter a set code. Examples:
+3. When prompted, enter a set code. Examples:
    - `EOE` → Edge of Eternity
    - `MH2` → Modern Horizons 2
    - `SLD` → Secret Lair Drop
 
-5. If you entered `SLD`, you'll be prompted for a drop name search term (e.g. `Final Fantasy`)
+4. If you entered `SLD`, you'll be prompted for a drop name search term (e.g. `Final Fantasy`)
    - The script will match partial names across all known Secret Lair Drops
    - If multiple drops match, you can choose a specific one or select `0` to include all matches
 
-6. Choose your preferred card art priority order (or press Enter to use the default).
+5. Choose your preferred card art priority order (or press Enter to use the default).
 
-7. Wait while the script fetches, filters, and writes the decklist.
+6. Wait while the script fetches, filters, and writes the decklist.
 
 ---
 
