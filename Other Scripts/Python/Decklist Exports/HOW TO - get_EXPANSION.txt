@@ -1,17 +1,22 @@
+
 🧾 About This Tool
 
-`get_EXPANSION.py` is a command-line tool that generates a full Moxfield-compatible decklist for a specified Magic: The Gathering expansion set. It uses the Scryfall API to fetch all cards in the set and intelligently selects the best available printing for each card.
+`get_EXPANSION.py` is a command-line utility that exports a full Moxfield-compatible decklist for any Magic: The Gathering expansion — including Secret Lair Drops.
 
-🎨 Printing Selection Priorities
+It uses the Scryfall API to pull all cards from the specified set, and intelligently selects the most visually impressive version available.
 
-For each card, the script evaluates all available printings from the selected expansion and chooses the "best" version using the following priorities (in order):
+---
 
-1. Showcase frame art (highest priority)
-2. Borderless variants
-3. Extended Art printings
-4. Standard frame, English, non-foil
+🎨 Card Art Priorities
 
-This ensures the exported list favors visually impressive printings while remaining practical for proxying or collection tracking.
+For each card, the script prefers printings in the following order:
+
+1. Showcase frame
+2. Borderless
+3. Extended Art
+4. Standard frame (non-foil, English)
+
+You can customize this priority order at runtime.
 
 ---
 
@@ -21,44 +26,48 @@ This ensures the exported list favors visually impressive printings while remain
 
 - Python 3.x installed
 - Internet connection
-- `requests` module  
-  → Install it if needed by running:  
-  `pip install requests`
+
+No setup required — the script automatically installs `requests` and `beautifulsoup4` if they are missing.
 
 ---
 
 ▶️ Step-by-Step Instructions
 
-1. Locate the script file  
-   Ensure `get_EXPANSION.py` is saved on your machine.
+1. Place `get_EXPANSION.py` in a folder on your machine.
 
-2. Open PowerShell in the script folder  
-   - Right-click in the folder where the script is located  
-   - Select “Open PowerShell window here”
+2. Open PowerShell or Terminal in that folder:
+   - Right-click the folder → “Open PowerShell window here”
 
-3. Run the script  
-   In the PowerShell window, enter:
+3. Run the script:
+   ```bash
+   python get_EXPANSION.py
+   ```
 
-   `python get_EXPANSION.py`
+4. When prompted, enter a set code. Examples:
+   - `EOE` → Edge of Eternity
+   - `MH2` → Modern Horizons 2
+   - `SLD` → Secret Lair Drop
 
-4. Enter a set code when prompted  
-   Example inputs:  
-   - `EOE` → for Edge of Eternity 
-   - `MH2` → for Modern Horizons 2  
-   - `OTJ` → for Outlaws of Thunder Junction
+5. If you entered `SLD`, you'll be prompted for a drop name search term (e.g. `Final Fantasy`)
+   - The script will match partial names across all known Secret Lair Drops
+   - If multiple drops match, you can choose a specific one or select `0` to include all matches
 
-5. Wait while the script processes  
-   - It will fetch cards from the Scryfall API  
-   - Prioritize the best printing for each card  
-   - Save a decklist in the same folder
+6. Choose your preferred card art priority order (or press Enter to use the default).
+
+7. Wait while the script fetches, filters, and writes the decklist.
 
 ---
 
 📂 Output
 
-- A `.txt` file named after the expansion (e.g., `EOE.txt`) will be created.
-- Each line in the file will follow this format:
+- A `.txt` file will be saved in a subfolder called `Decklist/`
+- The filename will follow one of these formats:
+  - `EOE.txt`
+  - `SLD-Final_Fantasy.txt`
 
-  `1 Card Name (SET) CollectorNumber`
+- Each line will follow this format:
+  ```
+  1 Card Name (SET) CollectorNumber
+  ```
 
-- This file can be directly imported into Moxfield or used for printing proxies.
+These files are ready to import into Moxfield compatible tools to use for fetching proxies.
