@@ -477,13 +477,32 @@ function main() {
                     }                
 
                     // Correct for rotated cards (1, 2, 9, 10 in front)
-                    if (i < 2 || i >= 8) {
+                    /*if (i < 2 || i >= 8) {
                         // Rotated placement logic
                         var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
                         var shiftY = Math.round((cardDisplayW - cardDisplayH) / 2);
                         x += shiftX;
                         y += shiftY;
                     }
+                    
+                    if (i < 2 || i >= 8) {
+                        // Rotated placement logic (for -90° rotation)
+                        var shiftX = Math.round((cardDisplayW - cardDisplayH) / 2);
+                        var shiftY = Math.round((cardDisplayH - cardDisplayW) / 2);
+                        x += shiftX;
+                        y += shiftY;
+                    }
+                    */
+
+                    if (i < 2 || i >= 8) {
+                        // Adjust for -90° rotation
+                        var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
+                        var shiftY = Math.round((cardDisplayW - cardDisplayH) / 2);
+                        x += shiftX;
+                        y += shiftY;
+                    }
+
+
                 } else {
                     // Front Card Logic
                     if (i === 0) {
@@ -576,74 +595,49 @@ function main() {
 
                 // Add black border for NoBleed
                 if (cardFormat === "NoBleed") {
-                var black = new SolidColor();
-                black.rgb.red = 0;
-                black.rgb.green = 0;
-                black.rgb.blue = 0;
-                drawCardBackground(x, y, cardDisplayW, cardDisplayH, black, "Black Border for Card " + slotNumber, group);
+                    var black = new SolidColor();
+                    black.rgb.red = 0;
+                    black.rgb.green = 0;
+                    black.rgb.blue = 0;
+                    drawCardBackground(x, y, cardDisplayW, cardDisplayH, black, "Black Border for Card " + slotNumber, group);
                 }
 
                 app.activeDocument = doc;
 
                 try {
-                if (
-                    baseLayer.bounds[2].as("px") > baseLayer.bounds[0].as("px") &&
-                    baseLayer.bounds[3].as("px") > baseLayer.bounds[1].as("px")
-                ) {
-                    var xAdj = cardFormat === "NoBleed" ? (useSilhouette ? mmToPixels(3) : mmToPixels(1)) : 0;
-                    var yAdj = xAdj;
-                    baseLayer.translate(x + xAdj - baseLayer.bounds[0].as("px"), y + yAdj - baseLayer.bounds[1].as("px"));
-                } else {
-                    throw new Error("Layer has invalid bounds and was skipped.");
-                }
+                    if (
+                        baseLayer.bounds[2].as("px") > baseLayer.bounds[0].as("px") &&
+                        baseLayer.bounds[3].as("px") > baseLayer.bounds[1].as("px")
+                    ) {
+                        var xAdj = cardFormat === "NoBleed" ? (useSilhouette ? mmToPixels(3) : mmToPixels(1)) : 0;
+                        var yAdj = xAdj;
+                        baseLayer.translate(x + xAdj - baseLayer.bounds[0].as("px"), y + yAdj - baseLayer.bounds[1].as("px"));
+                    } else {
+                        throw new Error("Layer has invalid bounds and was skipped.");
+                    }
                 } catch (e) {
-                logError("Error - Paste and position card image " + currentFile.name);
-                logError("e: " + e.message);
-                alert("Skipped card placement due to image error:\n" + e.message);
-                continue;
+                    logError("Error - Paste and position card image " + currentFile.name);
+                    logError("e: " + e.message);
+                    alert("Skipped card placement due to image error:\n" + e.message);
+                    continue;
                 }
 
                 try {
-                baseLayer.move(group, ElementPlacement.INSIDE);
+                    baseLayer.move(group, ElementPlacement.INSIDE);
                 } catch (e) {
-                logError("Error - Placing Layer in Group " + currentFile.name);
+                    logError("Error - Placing Layer in Group " + currentFile.name);
                 }
 
-                // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
-            /*if (layout === "Silhouette10Card") {
-                    var actualSlot = cardBack ? [8, 9, 5, 6, 7, 2, 3, 4, 0, 1][i] : i;
-                    if (actualSlot < 2 || actualSlot >= 8) {
-                        try {
-                            var groupName = "Card Group " + (i + 1);
-                            var currentGroup = doc.layerSets.getByName(groupName);
 
-                            var idselect = charIDToTypeID("slct");
-                            var desc = new ActionDescriptor();
-                            var ref = new ActionReference();
-                            ref.putName(charIDToTypeID("Lyr "), groupName);
-                            desc.putReference(charIDToTypeID("null"), ref);
-                            executeAction(idselect, desc, DialogModes.NO);
-
-                            var rotateDesc = new ActionDescriptor();
-                            var rotateRef = new ActionReference();
-                            rotateRef.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
-                            rotateDesc.putReference(charIDToTypeID("null"), rotateRef);
-                            rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), 90.0);
-                            executeAction(charIDToTypeID("Trnf"), rotateDesc, DialogModes.NO);
-                        } catch (e) {
-                            logError("❌ Rotation failed for Card Group " + (i + 1));
-                            logError("e: " + e.message);
-                        }
-                    }
-                }
-                */
             // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
             if (layout === "Silhouette10Card") {
                 var shouldRotate = false;
+                var rotateDegree = 90.0;
 
                 if (cardBack === true) {
                     // mappedIndex is already declared earlier in your layout logic
                     shouldRotate = (mappedIndex === 0 || mappedIndex === 1 || mappedIndex === 8 || mappedIndex === 9);
+                    rotateDegree = -90.0;
                 } else {
                     shouldRotate = (i === 0 || i === 1 || i === 8 || i === 9); // Front-side rotated slots
                 }
@@ -666,7 +660,7 @@ function main() {
                         var rotateRef = new ActionReference();
                         rotateRef.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
                         rotateDesc.putReference(charIDToTypeID("null"), rotateRef);
-                        rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), 90.0);
+                        rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), rotateDegree);
                         executeAction(charIDToTypeID("Trnf"), rotateDesc, DialogModes.NO);
                     } catch (e) {
                         logError("❌ Rotation failed for Card Group " + (i + 1));
