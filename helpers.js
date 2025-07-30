@@ -45,6 +45,7 @@ const buildBatchJsxContent = (config, includePath, imageFiles, isBackPage, sheet
 
   Object.entries(config).forEach(([key, val]) => {
     if (val === '' || val == null) return;
+    if (isBackPage && key === 'cardBack') return; // prevent conflicting cardBack assignments
     const safeVal = typeof val === 'string' ? JSON.stringify(val) : val;
     lines.push(`var ${key} = ${safeVal};`);
   });

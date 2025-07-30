@@ -121,6 +121,7 @@ function placeImageInDocument(
   reuseCache // ← optional object to prevent re-opening
 ) {
   // Reuse cached copy if one exists
+  /*
   var imagePath = imageFile instanceof File ? imageFile.fsName : imageFile;
   if (reuseCache && reuseCache[imagePath]) {
     var cachedLayer = reuseCache[imagePath].duplicate();
@@ -131,6 +132,38 @@ function placeImageInDocument(
     }
     if (destGroup) cachedLayer.move(destGroup, ElementPlacement.INSIDE);
     return cachedLayer;
+  }*/
+
+  // Reuse cached copy if one exists
+  var imagePath = imageFile instanceof File ? imageFile.fsName : imageFile;
+  if (reuseCache && reuseCache[imagePath]) {
+    var cachedFile = new File(imagePath);
+
+    // Place fresh image without caching (to avoid reusing rotated layer)
+    var freshLayer = placeImageInDocument(
+      cachedFile,
+      targetWidthPx,
+      targetHeightPx,
+      cropMarginPx,
+      destDoc,
+      null, // we will manually move to destGroup
+      layerName,
+      posX,
+      posY,
+      null // no reuse on this second pass
+    );
+
+    // Name and move the fresh layer (mimicking previous caching block)
+    if (freshLayer) {
+      if (destDoc) app.activeDocument = destDoc;
+      freshLayer.name = layerName;
+      if (typeof posX !== 'undefined' && typeof posY !== 'undefined') {
+        freshLayer.translate(posX - freshLayer.bounds[0].as('px'), posY - freshLayer.bounds[1].as('px'));
+      }
+      if (destGroup) freshLayer.move(destGroup, ElementPlacement.INSIDE);
+    }
+
+    return freshLayer;
   }
 
   // Open the image file as a new document

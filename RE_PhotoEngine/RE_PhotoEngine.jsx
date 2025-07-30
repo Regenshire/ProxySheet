@@ -432,212 +432,226 @@ function main() {
         }
 
         for (var i = 0; i < totalCards; i++) {
-        var group = doc.layerSets.add();
-        group.name = "Card Group " + (i + 1);
+            var mappedIndex = i; // default slot index, remapped later for cardBack
+            var group = doc.layerSets.add();
+            group.name = "Card Group " + (i + 1);
 
-        var slotNumber = i + 1;
-        var isExcluded = excludedSlots[slotNumber] === true;
-        var cardHadImage = false;
+            var slotNumber = i + 1;
+            var isExcluded = excludedSlots[slotNumber] === true;
+            var cardHadImage = false;
 
-        var x, y;
+            var x, y;
+            
+            if (layout === "Silhouette10Card") {
+                if (cardBack === true) {
+                    // Silhouette10Card BACK layout mapping
+                    // BACK slot order: 9,10,6,7,8,3,4,5,1,2
+                    backSlotMap = [8, 9, 5, 6, 7, 2, 3, 4, 0, 1];
+                    mappedIndex = backSlotMap[i];
 
-        
-        if (layout === "Silhouette10Card") {
+                    logError("Placing card " + (i + 1) + " | mappedIndex: " + mappedIndex + " | Back: " + cardBack);
 
-             if (cardBack === true) {
-                // Silhouette10Card BACK layout mapping
-                // BACK slot order: 9,10,6,7,8,3,4,5,1,2
-                backSlotMap = [8, 9, 5, 6, 7, 2, 3, 4, 0, 1];
-                var mappedIndex = backSlotMap[i];
+                    if (mappedIndex === 0) {
+                        // Slot 9 (Row 1, right-aligned, rotated)
+                        var slot10Right = cardStartX + 3 * cardDisplayW;
+                        var slot10X = slot10Right - cardDisplayH;
+                        x = slot10X - cardDisplayH;
+                        y = cardStartY + cardDisplayH - cardDisplayW;
+                    } else if (mappedIndex === 1) {
+                        // Slot 10 (next to Slot 9)
+                        x = cardStartX + 3 * cardDisplayW - cardDisplayH;
+                        y = cardStartY + cardDisplayH - cardDisplayW;
+                    } else if (mappedIndex === 8) {
+                        // Slot 1 - Bottom left of Slot 2
+                        x = cardStartX;
+                        y = cardStartY + 3 * cardDisplayH;
+                    } else if (mappedIndex === 9) {
+                        // Slot 2 - Aligned to left edge of Slot 3
+                        x = cardStartX + cardDisplayH;
+                        y = cardStartY + 3 * cardDisplayH;
+                    } else {
+                        // All other slots (3–8)
+                        var pos = slotPositions[mappedIndex];
+                        x = pos[0];
+                        y = pos[1];
+                    }                
 
-                if (mappedIndex === 0) {
-                    // Slot 9 (Row 1, right-aligned, rotated)
-                    var slot10Right = cardStartX + 3 * cardDisplayW;
-                    var slot10X = slot10Right - cardDisplayH;
-                    x = slot10X - cardDisplayH;
-                    y = cardStartY + cardDisplayH - cardDisplayW;
-                } else if (mappedIndex === 1) {
-                    // Slot 10 (next to Slot 9)
-                    x = cardStartX + 3 * cardDisplayW - cardDisplayH;
-                    y = cardStartY + cardDisplayH - cardDisplayW;
-                } else if (mappedIndex === 8) {
-                    // Slot 1 - Bottom left of Slot 2
-                    x = cardStartX;
-                    y = cardStartY + 3 * cardDisplayH;
-                } else if (mappedIndex === 9) {
-                    // Slot 2 - Aligned to left edge of Slot 3
-                    x = cardStartX + cardDisplayH;
-                    y = cardStartY + 3 * cardDisplayH;
+                    // Correct for rotated cards (1, 2, 9, 10 in front)
+                    if (i < 2 || i >= 8) {
+                        // Rotated placement logic
+                        var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
+                        var shiftY = Math.round((cardDisplayW - cardDisplayH) / 2);
+                        x += shiftX;
+                        y += shiftY;
+                    }
                 } else {
-                    // All other slots (3–8)
-                    var pos = slotPositions[mappedIndex];
-                    x = pos[0];
-                    y = pos[1];
-                }                
+                    // Front Card Logic
+                    if (i === 0) {
+                        // Slot 1 (Row 1, left-aligned, rotated)
+                        x = cardStartX;
+                        y = cardStartY + cardDisplayH - cardDisplayW;
+                    } else if (i === 1) {
+                        // Slot 2 (next to Slot 1)
+                        x = cardStartX + cardDisplayH;
+                        y = cardStartY + cardDisplayH - cardDisplayW;
+                    } else if (i === 8) {
+                        // Slot 9 - Bottom left of Slot 10
+                        var slot10Right = cardStartX + 3 * cardDisplayW;
+                        var slot10X = slot10Right - cardDisplayH;
+                        x = slot10X - cardDisplayH;
+                        y = cardStartY + 3 * cardDisplayH;
+                    } else if (i === 9) {
+                        // Slot 10 - Aligned to right edge of Slot 8
+                        x = cardStartX + 3 * cardDisplayW - cardDisplayH;
+                        y = cardStartY + 3 * cardDisplayH;
+                    } else {
+                        // All other slots (3–8)
+                        var pos = slotPositions[i];
+                        x = pos[0];
+                        y = pos[1];
+                    }
 
-                // Correct for rotated cards (1, 2, 9, 10 in front)
-                if (i < 2 || i >= 8) {
-                    // Rotated placement logic
-                    var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
-                    var shiftY = Math.round((cardDisplayW - cardDisplayH) / 2);
-                    x += shiftX;
-                    y += shiftY;
+                    // Rotation anchor correction for rotated cards (1,2,9,10)
+                    if (i < 2 || i >= 8) {
+                        var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
+                        var shiftY = Math.round((cardDisplayW - cardDisplayH) / 2);
+                        x += shiftX;
+                        y += shiftY;
+                    }
                 }
-            } else {
-                // Front Card Logic
+            }
+            else if (layout === "SevenCard") {
                 if (i === 0) {
-                    // Slot 1 (Row 1, left-aligned, rotated)
-                    x = cardStartX;
-                    y = cardStartY + cardDisplayH - cardDisplayW;
-                } else if (i === 1) {
-                    // Slot 2 (next to Slot 1)
-                    x = cardStartX + cardDisplayH;
-                    y = cardStartY + cardDisplayH - cardDisplayW;
-                } else if (i === 8) {
-                    // Slot 9 - Bottom left of Slot 10
-                    var slot10Right = cardStartX + 3 * cardDisplayW;
-                    var slot10X = slot10Right - cardDisplayH;
-                    x = slot10X - cardDisplayH;
-                    y = cardStartY + 3 * cardDisplayH;
-                } else if (i === 9) {
-                    // Slot 10 - Aligned to right edge of Slot 8
-                    x = cardStartX + 3 * cardDisplayW - cardDisplayH;
-                    y = cardStartY + 3 * cardDisplayH;
+                y = Math.round((pageHeightPx - cardDisplayH) / 2);
+                x = cardBack ? cardStartX + 3 * cardDisplayW : cardStartX;
                 } else {
-                    // All other slots (3–8)
-                    var pos = slotPositions[i];
-                    x = pos[0];
-                    y = pos[1];
+                var localIndex = i - 1;
+                var row = Math.floor(localIndex / 3);
+                var col = localIndex % 3;
+                var colFlipped = cardBack ? 2 - col : col;
+                x = cardBack
+                    ? cardStartX + colFlipped * cardDisplayW
+                    : cardStartX + cardDisplayW + colFlipped * cardDisplayW;
+                y = cardStartY + row * cardDisplayH;
+                }
+            } else {
+                var row = Math.floor(i / cols);
+                var col = i % cols;
+                x = col * cardDisplayW + cardStartX;
+                y = row * cardDisplayH + cardStartY;
+            }
+
+            var baseLayer;
+
+            if (isExcluded) {
+                baseLayer = drawCardBackground(x, y, cardWhome, cardHhome, white, "Excluded " + slotNumber, group);
+                continue;
+            }
+
+            // === Place card image ===
+            if (cardFiles != null && cardFiles[i] != null) {
+                var currentFile = cardFiles[i];
+                if (!(currentFile instanceof File)) currentFile = new File(currentFile);
+                if (!currentFile.exists) {
+                logError("Skipped missing card image: " + currentFile.name);
+                continue;
                 }
 
-                // Rotation anchor correction for rotated cards (1,2,9,10)
-                if (i < 2 || i >= 8) {
-                    var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
-                    var shiftY = Math.round((cardDisplayW - cardDisplayH) / 2);
-                    x += shiftX;
-                    y += shiftY;
+                imageIndex++;
+                var trimPx = useSilhouette ? mmToPixels(silhouetteBleedAdjust) : 0;
+
+                baseLayer = placeImageInDocument(
+                currentFile,
+                cardW,
+                cardH,
+                trimPx,
+                doc,
+                group,
+                "Card " + slotNumber,
+                x,
+                y,
+                layerReuseCache
+                );
+                cardHadImage = true;
+
+                // Add black border for NoBleed
+                if (cardFormat === "NoBleed") {
+                var black = new SolidColor();
+                black.rgb.red = 0;
+                black.rgb.green = 0;
+                black.rgb.blue = 0;
+                drawCardBackground(x, y, cardDisplayW, cardDisplayH, black, "Black Border for Card " + slotNumber, group);
                 }
-            }
 
+                app.activeDocument = doc;
 
-        }
-        else if (layout === "SevenCard") {
-            if (i === 0) {
-            y = Math.round((pageHeightPx - cardDisplayH) / 2);
-            x = cardBack ? cardStartX + 3 * cardDisplayW : cardStartX;
-            } else {
-            var localIndex = i - 1;
-            var row = Math.floor(localIndex / 3);
-            var col = localIndex % 3;
-            var colFlipped = cardBack ? 2 - col : col;
-            x = cardBack
-                ? cardStartX + colFlipped * cardDisplayW
-                : cardStartX + cardDisplayW + colFlipped * cardDisplayW;
-            y = cardStartY + row * cardDisplayH;
-            }
-        } else {
-            var row = Math.floor(i / cols);
-            var col = i % cols;
-            x = col * cardDisplayW + cardStartX;
-            y = row * cardDisplayH + cardStartY;
-        }
-
-        var baseLayer;
-
-        if (isExcluded) {
-            baseLayer = drawCardBackground(x, y, cardWhome, cardHhome, white, "Excluded " + slotNumber, group);
-            continue;
-        }
-
-        // === Place card image ===
-        if (cardFiles != null && cardFiles[i] != null) {
-            var currentFile = cardFiles[i];
-            if (!(currentFile instanceof File)) currentFile = new File(currentFile);
-            if (!currentFile.exists) {
-            logError("Skipped missing card image: " + currentFile.name);
-            continue;
-            }
-
-            imageIndex++;
-            var trimPx = useSilhouette ? mmToPixels(silhouetteBleedAdjust) : 0;
-
-            baseLayer = placeImageInDocument(
-            currentFile,
-            cardW,
-            cardH,
-            trimPx,
-            doc,
-            group,
-            "Card " + slotNumber,
-            x,
-            y,
-            layerReuseCache
-            );
-            cardHadImage = true;
-
-            // Add black border for NoBleed
-            if (cardFormat === "NoBleed") {
-            var black = new SolidColor();
-            black.rgb.red = 0;
-            black.rgb.green = 0;
-            black.rgb.blue = 0;
-            drawCardBackground(x, y, cardDisplayW, cardDisplayH, black, "Black Border for Card " + slotNumber, group);
-            }
-
-            app.activeDocument = doc;
-
-            try {
-            if (
-                baseLayer.bounds[2].as("px") > baseLayer.bounds[0].as("px") &&
-                baseLayer.bounds[3].as("px") > baseLayer.bounds[1].as("px")
-            ) {
-                var xAdj = cardFormat === "NoBleed" ? (useSilhouette ? mmToPixels(3) : mmToPixels(1)) : 0;
-                var yAdj = xAdj;
-                baseLayer.translate(x + xAdj - baseLayer.bounds[0].as("px"), y + yAdj - baseLayer.bounds[1].as("px"));
-            } else {
-                throw new Error("Layer has invalid bounds and was skipped.");
-            }
-            } catch (e) {
-            logError("Error - Paste and position card image " + currentFile.name);
-            logError("e: " + e.message);
-            alert("Skipped card placement due to image error:\n" + e.message);
-            continue;
-            }
-
-            try {
-            baseLayer.move(group, ElementPlacement.INSIDE);
-            } catch (e) {
-            logError("Error - Placing Layer in Group " + currentFile.name);
-            }
-
-            // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
-            /*if (layout === "Silhouette10Card" && (i < 2 || i >= 8)) {
                 try {
-                    var groupName = "Card Group " + (i + 1);
-                    var currentGroup = doc.layerSets.getByName(groupName);
-
-                    var idselect = charIDToTypeID("slct");
-                    var desc = new ActionDescriptor();
-                    var ref = new ActionReference();
-                    ref.putName(charIDToTypeID("Lyr "), groupName);
-                    desc.putReference(charIDToTypeID("null"), ref);
-                    executeAction(idselect, desc, DialogModes.NO);
-
-                    var rotateDesc = new ActionDescriptor();
-                    var rotateRef = new ActionReference();
-                    rotateRef.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
-                    rotateDesc.putReference(charIDToTypeID("null"), rotateRef);
-                    rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), 90.0);
-                    executeAction(charIDToTypeID("Trnf"), rotateDesc, DialogModes.NO);
-                } catch (e) {
-                    logError("❌ Rotation failed for Card Group " + (i + 1));
-                    logError("e: " + e.message);
+                if (
+                    baseLayer.bounds[2].as("px") > baseLayer.bounds[0].as("px") &&
+                    baseLayer.bounds[3].as("px") > baseLayer.bounds[1].as("px")
+                ) {
+                    var xAdj = cardFormat === "NoBleed" ? (useSilhouette ? mmToPixels(3) : mmToPixels(1)) : 0;
+                    var yAdj = xAdj;
+                    baseLayer.translate(x + xAdj - baseLayer.bounds[0].as("px"), y + yAdj - baseLayer.bounds[1].as("px"));
+                } else {
+                    throw new Error("Layer has invalid bounds and was skipped.");
                 }
-            }*/
-           if (layout === "Silhouette10Card") {
-                var actualSlot = cardBack ? [8, 9, 5, 6, 7, 2, 3, 4, 0, 1][i] : i;
-                if (actualSlot < 2 || actualSlot >= 8) {
+                } catch (e) {
+                logError("Error - Paste and position card image " + currentFile.name);
+                logError("e: " + e.message);
+                alert("Skipped card placement due to image error:\n" + e.message);
+                continue;
+                }
+
+                try {
+                baseLayer.move(group, ElementPlacement.INSIDE);
+                } catch (e) {
+                logError("Error - Placing Layer in Group " + currentFile.name);
+                }
+
+                // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
+            /*if (layout === "Silhouette10Card") {
+                    var actualSlot = cardBack ? [8, 9, 5, 6, 7, 2, 3, 4, 0, 1][i] : i;
+                    if (actualSlot < 2 || actualSlot >= 8) {
+                        try {
+                            var groupName = "Card Group " + (i + 1);
+                            var currentGroup = doc.layerSets.getByName(groupName);
+
+                            var idselect = charIDToTypeID("slct");
+                            var desc = new ActionDescriptor();
+                            var ref = new ActionReference();
+                            ref.putName(charIDToTypeID("Lyr "), groupName);
+                            desc.putReference(charIDToTypeID("null"), ref);
+                            executeAction(idselect, desc, DialogModes.NO);
+
+                            var rotateDesc = new ActionDescriptor();
+                            var rotateRef = new ActionReference();
+                            rotateRef.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
+                            rotateDesc.putReference(charIDToTypeID("null"), rotateRef);
+                            rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), 90.0);
+                            executeAction(charIDToTypeID("Trnf"), rotateDesc, DialogModes.NO);
+                        } catch (e) {
+                            logError("❌ Rotation failed for Card Group " + (i + 1));
+                            logError("e: " + e.message);
+                        }
+                    }
+                }
+                */
+            // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
+            if (layout === "Silhouette10Card") {
+                var shouldRotate = false;
+
+                if (cardBack === true) {
+                    // mappedIndex is already declared earlier in your layout logic
+                    shouldRotate = (mappedIndex === 0 || mappedIndex === 1 || mappedIndex === 8 || mappedIndex === 9);
+                } else {
+                    shouldRotate = (i === 0 || i === 1 || i === 8 || i === 9); // Front-side rotated slots
+                }
+
+                if (shouldRotate) {
                     try {
+                        logError("Rotating card " + (i + 1) + " | mappedIndex: " + mappedIndex + " | Back: " + cardBack);
+
                         var groupName = "Card Group " + (i + 1);
                         var currentGroup = doc.layerSets.getByName(groupName);
 
@@ -661,143 +675,107 @@ function main() {
                 }
             }
 
-
         } else {
-            // Fallback blank card
-            try {
-            baseLayer = drawCardBackground(x, y, cardWhome, cardHhome, white, "Blank " + slotNumber, group);
-            } catch (e) {
-            logError("Error - Drawing Blank Card");
-            }
-        }
-
-
-        // === Brightness/Contrast Adjustment ===
-        if (addPerCardAdjustLayer && !batchLightMode) {
-            try {
-                addBrightnessContrastAdjustment(
-                    0, // brightness
-                    0, // contrast
-                    "Brightness/Contrast for Card " + (i + 1),
-                    group,
-                    true // clip to card image
-                );
-            } catch (e) {
-                logError('Error - Card Brightness/Contrast Adjustment Layer - ' + group.name);
-                logError('e: ' + e.message);
-                alert("Error:\n" + e.message);
-                continue;
-            }
-
-        }    
-
-        // === Vibrance Adjustment ===
-        if (addPerCardAdjustLayer && !batchLightMode) {
-            try {
-                addVibranceAdjustment(
-                    0, // vibrance
-                    0, // saturation
-                    "Vibrance for Card " + (i + 1),
-                    group,
-                    true // clip to card image
-                );
-            } catch (e) {
-                logError('Error - Card Vibrance Adjustment Layer - ' + group.name);
-                logError('e: ' + e.message);
-                alert("Error:\n" + e.message);
-                continue;
-            }
-        }   
-
-        // === Load and position CutMarkOverlay.png if not excluded ===
-        //if (showCropMarks && cardHadImage && !batchLightMode) {
-        /*
-        if (showCropMarks && cardHadImage) {
-            var markSize = mmToPixels(cutMarkSize);
-            var adjustedCutOffset = cutOffset - (useSilhouette ? silhouetteBleedAdjust : 0);
-            var offset = mmToPixels(adjustedCutOffset);
-        
-            var cardOffsetX = getCardOffsetX(x);
-            var cardOffsetY = getCardOffsetY(y);
-        
-            var corners = [
-                [cardOffsetX + offset, cardOffsetY + offset], // top-left
-                [cardOffsetX + cardWhome - offset, cardOffsetY + offset], // top-right
-                [cardOffsetX + offset, cardOffsetY + cardHhome - offset], // bottom-left
-                [cardOffsetX + cardWhome - offset, cardOffsetY + cardHhome - offset] // bottom-right
-            ];
-        
-            for (var c = 0; c < corners.length; c++) {
+                // Fallback blank card
                 try {
-                    drawCropMark(corners[c][0], corners[c][1], markSize);
-                }
-                catch (e) {
-                    logError('Error - Draw Crop Mark - ' + currentFile.name);
-                    logError('e: ' + e.message);
-                }                
-            }
-        }
-            */
-
-        if (showCropMarks && cardHadImage) {
-            var markSize = mmToPixels(cutMarkSize);
-            var adjustedCutOffset = cutOffset - (useSilhouette ? silhouetteBleedAdjust : 0);
-            var offset = mmToPixels(adjustedCutOffset);
-
-            var cardOffsetX = getCardOffsetX(x);
-            var cardOffsetY = getCardOffsetY(y);
-
-            var w = cardWhome;
-            var h = cardHhome;
-
-            // Correct for rotation
-            var rotated = (layout === "Silhouette10Card" && (i === 0 || i === 1 || i === 8 || i === 9));
-            if (rotated) {
-                // Apply 90° CW rotation math around the center
-                var cx = cardOffsetX + w / 2;
-                var cy = cardOffsetY + h / 2;
-
-                // Rotate each corner from the unrotated position
-                var points = new Array(
-                    [-w / 2 + offset, -h / 2 + offset], // TL
-                    [ w / 2 - offset, -h / 2 + offset], // TR
-                    [-w / 2 + offset,  h / 2 - offset], // BL
-                    [ w / 2 - offset,  h / 2 - offset]  // BR
-                );
-
-                var corners = [];
-                for (var j = 0; j < points.length; j++) {
-                    var px = points[j][0];
-                    var py = points[j][1];
-                    var xRot = py;   // 90° rotation: x' = y
-                    var yRot = -px;  // y' = -x
-                    corners.push([Math.round(cx + xRot), Math.round(cy + yRot)]);
-                }
-
-            } else {
-                // Standard non-rotated card
-                var corners = [
-                    [cardOffsetX + offset, cardOffsetY + offset],                             // top-left
-                    [cardOffsetX + w - offset, cardOffsetY + offset],                         // top-right
-                    [cardOffsetX + offset, cardOffsetY + h - offset],                         // bottom-left
-                    [cardOffsetX + w - offset, cardOffsetY + h - offset]                      // bottom-right
-                ];
-            }
-
-            for (var c = 0; c < corners.length; c++) {
-                try {
-                    var mark = drawCropMark(corners[c][0], corners[c][1], markSize);
-                    mark.move(group, ElementPlacement.INSIDE); // still group it
+                    baseLayer = drawCardBackground(x, y, cardWhome, cardHhome, white, "Blank " + slotNumber, group);
                 } catch (e) {
-                    logError('Error - Draw Crop Mark');
-                    logError('e: ' + e.message);
+                logError("Error - Drawing Blank Card");
                 }
             }
-        }
 
+            // === Brightness/Contrast Adjustment ===
+            if (addPerCardAdjustLayer && !batchLightMode) {
+                try {
+                    addBrightnessContrastAdjustment(
+                        0, // brightness
+                        0, // contrast
+                        "Brightness/Contrast for Card " + (i + 1),
+                        group,
+                        true // clip to card image
+                    );
+                } catch (e) {
+                    logError('Error - Card Brightness/Contrast Adjustment Layer - ' + group.name);
+                    logError('e: ' + e.message);
+                    alert("Error:\n" + e.message);
+                    continue;
+                }
+            }    
 
+            // === Vibrance Adjustment ===
+            if (addPerCardAdjustLayer && !batchLightMode) {
+                try {
+                    addVibranceAdjustment(
+                        0, // vibrance
+                        0, // saturation
+                        "Vibrance for Card " + (i + 1),
+                        group,
+                        true // clip to card image
+                    );
+                } catch (e) {
+                    logError('Error - Card Vibrance Adjustment Layer - ' + group.name);
+                    logError('e: ' + e.message);
+                    alert("Error:\n" + e.message);
+                    continue;
+                }
+            }   
 
-        
+            // === Load and position CutMarkOverlay.png if not excluded ===
+            if (showCropMarks && cardHadImage) {
+                var markSize = mmToPixels(cutMarkSize);
+                var adjustedCutOffset = cutOffset - (useSilhouette ? silhouetteBleedAdjust : 0);
+                var offset = mmToPixels(adjustedCutOffset);
+
+                var cardOffsetX = getCardOffsetX(x);
+                var cardOffsetY = getCardOffsetY(y);
+
+                var w = cardWhome;
+                var h = cardHhome;
+
+                // Correct for rotation
+                var rotated = (layout === "Silhouette10Card" && (i === 0 || i === 1 || i === 8 || i === 9));
+                if (rotated) {
+                    // Apply 90° CW rotation math around the center
+                    var cx = cardOffsetX + w / 2;
+                    var cy = cardOffsetY + h / 2;
+
+                    // Rotate each corner from the unrotated position
+                    var points = new Array(
+                        [-w / 2 + offset, -h / 2 + offset], // TL
+                        [ w / 2 - offset, -h / 2 + offset], // TR
+                        [-w / 2 + offset,  h / 2 - offset], // BL
+                        [ w / 2 - offset,  h / 2 - offset]  // BR
+                    );
+
+                    var corners = [];
+                    for (var j = 0; j < points.length; j++) {
+                        var px = points[j][0];
+                        var py = points[j][1];
+                        var xRot = py;   // 90° rotation: x' = y
+                        var yRot = -px;  // y' = -x
+                        corners.push([Math.round(cx + xRot), Math.round(cy + yRot)]);
+                    }
+
+                } else {
+                    // Standard non-rotated card
+                    var corners = [
+                        [cardOffsetX + offset, cardOffsetY + offset],                             // top-left
+                        [cardOffsetX + w - offset, cardOffsetY + offset],                         // top-right
+                        [cardOffsetX + offset, cardOffsetY + h - offset],                         // bottom-left
+                        [cardOffsetX + w - offset, cardOffsetY + h - offset]                      // bottom-right
+                    ];
+                }
+
+                for (var c = 0; c < corners.length; c++) {
+                    try {
+                        var mark = drawCropMark(corners[c][0], corners[c][1], markSize);
+                        mark.move(group, ElementPlacement.INSIDE); // still group it
+                    } catch (e) {
+                        logError('Error - Draw Crop Mark');
+                        logError('e: ' + e.message);
+                    }
+                }
+            }        
     }
 
     // === Sheet Adjustment Layers ===
@@ -807,21 +785,7 @@ function main() {
     addBrightnessContrastAdjustment(bright, contr, "Brightness/Contrast (Global)", sheetGroup, false);
     addVibranceAdjustment(vib, sat, "Vibrance (Global)", sheetGroup, false);
     addLevelsAdjustmentLayer(blackpoint, whitepoint, gmm, sheetGroup);
-
-    // === Silhouette Registration Improvement Triangle ===
-    /*
-    if (useSilhouette && cardFormat != "NoBleed" && layout != "SevenCard") {
-        var slot5Index = 4; // zero-based index
-        var slot5Col = slot5Index % cols;
-        var slot5Row = Math.floor(slot5Index / cols);
-        var slot5X = cardStartX + slot5Col * cardDisplayW;
-        var slot5Y = cardStartY + slot5Row * cardDisplayH + cardHhome - mmToPixels(2); // nudge 2px inward
-
-        placeSilhouetteDetectionAid(doc, scriptFolder, slot5X, slot5Y, dpi);
-    } 
-    */
-
-
+  
     // === Add Note Layer in Lower Right ===
     if (notesOn) {
         var noteText =
@@ -889,7 +853,6 @@ function main() {
         } else {
             textItem.position = [textPosX, textPosY];
         }
-
     }
 
     if (cardBack && (backOffsetXmm !== 0 || backOffsetYmm !== 0)) {
@@ -899,7 +862,6 @@ function main() {
     }
 
     if (outputPDF === true) {
-        //var pdfFolder = new Folder(scriptFolder.fullName + "/../PDFOutput");
         var pdfFolder = new Folder(scriptFolder.fullName + "/../TempConfig/TempPDF");
         if (!pdfFolder.exists) pdfFolder.create();
 
