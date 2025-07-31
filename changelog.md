@@ -4,6 +4,13 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
+## [1.06 BETA] – 2025-07-30
+
+- Tested and made adjustments to the new LEGAL Sized Vertical Layout for Silhouette cutting called Silhouette Legal (10-Card).
+- Added corrected support for mirrored back cards to the Silhouette Legal (10-Card) layout.
+
+---
+
 ## [1.05 BETA] – 2025-07-27
 
 - Added a new LEGAL Sized Vertical Layout for Silhouette cutting called Silhouette Legal (10-Card). This new layout allows for the placement of 10 cards on a legal sized piece of paper with Silhouette marks. The cards are layouted with two horizontal rows and 2 vertical rows to allow for fitting 10 cards on the sheet and providing space for the Silhouette marks.
