@@ -162,14 +162,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('applyOffsetToAllConfigs').addEventListener('click', async () => {
     const form = document.getElementById('adjustmentForm');
-    const offsetX = parseFloat(form.offsetX.value) || 0;
-    const offsetY = parseFloat(form.offsetY.value) || 0;
+    const offsetX = form.offsetX.value.trim();
+    const offsetY = form.offsetY.value.trim();
 
     const confirmMsg = `⚠️ This will overwrite the Offset X (mm) and Offset Y (mm) values in all your saved config files.  Use this with caution.  You cannot undo this action.\n\n` + `New values: X = ${offsetX}, Y = ${offsetY}\n\nAre you sure you want to overwrite all configs?`;
 
     if (!confirm(confirmMsg)) return;
 
-    const result = await window.electronAPI.applyOffsetToAllConfigs(offsetX, offsetY);
+    localStorage.setItem('adjustmentOffsetX', offsetX);
+    localStorage.setItem('adjustmentOffsetY', offsetY);
+
+    const result = await window.electronAPI.applyOffsetToAllConfigs(offsetX || 0, offsetY || 0);
     if (result.success) {
       alert(`✅ Offset applied to ${result.updated} config files.`);
     } else {
@@ -267,8 +270,8 @@ document.getElementById('conversionForm').addEventListener('submit', async (e) =
 document.getElementById('adjustmentForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = e.target;
-  const offsetX = parseFloat(form.offsetX.value) || 0;
-  const offsetY = parseFloat(form.offsetY.value) || 0;
+  const offsetX = form.offsetX.value.trim();
+  const offsetY = form.offsetY.value.trim();
 
   localStorage.setItem('adjustmentOffsetX', offsetX);
   localStorage.setItem('adjustmentOffsetY', offsetY);
@@ -279,8 +282,8 @@ document.getElementById('adjustmentForm').addEventListener('submit', async (e) =
 
   const config = {
     adjustmentMeasureSheet: true,
-    backOffsetXmm: offsetX,
-    backOffsetYmm: offsetY,
+    backOffsetXmm: parseFloat(offsetX) || 0,
+    backOffsetYmm: parseFloat(offsetY) || 0,
     dpi: 800,
     pageWidthInches: 8.5,
     pageHeightInches: 11

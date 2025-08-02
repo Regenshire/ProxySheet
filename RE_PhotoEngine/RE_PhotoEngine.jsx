@@ -481,24 +481,6 @@ function main() {
                         y = pos[1];
                     }                
 
-                    // Correct for rotated cards (1, 2, 9, 10 in front)
-                    /*if (i < 2 || i >= 8) {
-                        // Rotated placement logic
-                        var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
-                        var shiftY = Math.round((cardDisplayW - cardDisplayH) / 2);
-                        x += shiftX;
-                        y += shiftY;
-                    }
-                    
-                    if (i < 2 || i >= 8) {
-                        // Rotated placement logic (for -90° rotation)
-                        var shiftX = Math.round((cardDisplayW - cardDisplayH) / 2);
-                        var shiftY = Math.round((cardDisplayH - cardDisplayW) / 2);
-                        x += shiftX;
-                        y += shiftY;
-                    }
-                    */
-
                     if (i < 2 || i >= 8) {
                         // Adjust for -90° rotation
                         var shiftX = Math.round((cardDisplayH - cardDisplayW) / 2);
@@ -506,7 +488,6 @@ function main() {
                         x += shiftX;
                         y += shiftY;
                     }
-
 
                 } else {
                     // Front Card Logic
@@ -633,54 +614,91 @@ function main() {
                     logError("Error - Placing Layer in Group " + currentFile.name);
                 }
 
+                // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
+                if (layout === "Silhouette10Card") {
+                    var shouldRotate = false;
+                    var rotateDegree = 90.0;
 
-            // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
-            if (layout === "Silhouette10Card") {
-                var shouldRotate = false;
-                var rotateDegree = 90.0;
+                    if (cardBack === true) {
+                        shouldRotate = true;
 
-                if (cardBack === true) {
-                    // mappedIndex is already declared earlier in your layout logic
-                    shouldRotate = (mappedIndex === 0 || mappedIndex === 1 || mappedIndex === 8 || mappedIndex === 9);
-                    rotateDegree = -90.0;
-                } else {
-                    shouldRotate = (i === 0 || i === 1 || i === 8 || i === 9); // Front-side rotated slots
-                }
+                        // Determine rotation degree per mappedIndex
+                        if (mappedIndex === 0 || mappedIndex === 1 || mappedIndex === 8 || mappedIndex === 9) {
+                            rotateDegree = -270.0;
+                        } else {
+                            rotateDegree = -180.0;
+                        }
+                    } else {
+                        shouldRotate = (i === 0 || i === 1 || i === 8 || i === 9); // Front-side rotated slots
+                        rotateDegree = 90.0;
+                    }
 
-                if (shouldRotate) {
-                    try {
-                        logError("Rotating card " + (i + 1) + " | mappedIndex: " + mappedIndex + " | Back: " + cardBack);
+                    if (shouldRotate) {
+                        try {
+                            logError("Rotating card " + (i + 1) + " | mappedIndex: " + mappedIndex + " | Back: " + cardBack);
 
-                        var groupName = "Card Group " + (i + 1);
-                        var currentGroup = doc.layerSets.getByName(groupName);
+                            var groupName = "Card Group " + (i + 1);
+                            var currentGroup = doc.layerSets.getByName(groupName);
 
-                        var idselect = charIDToTypeID("slct");
-                        var desc = new ActionDescriptor();
-                        var ref = new ActionReference();
-                        ref.putName(charIDToTypeID("Lyr "), groupName);
-                        desc.putReference(charIDToTypeID("null"), ref);
-                        executeAction(idselect, desc, DialogModes.NO);
+                            var idselect = charIDToTypeID("slct");
+                            var desc = new ActionDescriptor();
+                            var ref = new ActionReference();
+                            ref.putName(charIDToTypeID("Lyr "), groupName);
+                            desc.putReference(charIDToTypeID("null"), ref);
+                            executeAction(idselect, desc, DialogModes.NO);
 
-                        var rotateDesc = new ActionDescriptor();
-                        var rotateRef = new ActionReference();
-                        rotateRef.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
-                        rotateDesc.putReference(charIDToTypeID("null"), rotateRef);
-                        rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), rotateDegree);
-                        executeAction(charIDToTypeID("Trnf"), rotateDesc, DialogModes.NO);
-                    } catch (e) {
-                        logError("❌ Rotation failed for Card Group " + (i + 1));
-                        logError("e: " + e.message);
+                            var rotateDesc = new ActionDescriptor();
+                            var rotateRef = new ActionReference();
+                            rotateRef.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
+                            rotateDesc.putReference(charIDToTypeID("null"), rotateRef);
+                            rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), rotateDegree);
+                            executeAction(charIDToTypeID("Trnf"), rotateDesc, DialogModes.NO);
+                        } catch (e) {
+                            logError("❌ Rotation failed for Card Group " + (i + 1));
+                            logError("e: " + e.message);
+                        }
                     }
                 }
-            }
-
-        } else {
+            } else {
                 // Fallback blank card
                 try {
                     baseLayer = drawCardBackground(x, y, cardWhome, cardHhome, white, "Blank " + slotNumber, group);
                 } catch (e) {
-                logError("Error - Drawing Blank Card");
+                    logError("Error - Drawing Blank Card");
                 }
+
+                 // === ROTATE Silhouette10Card slots 1, 2, 9, 10 ===
+                if (layout === "Silhouette10Card") {
+                    var shouldRotate = false;
+                    var rotateDegree = 90.0;
+
+                    if (cardBack === true) {
+                        // mappedIndex is already declared earlier in your layout logic
+                        shouldRotate = (mappedIndex === 0 || mappedIndex === 1 || mappedIndex === 8 || mappedIndex === 9);
+                        rotateDegree = -90.0;
+                    } else {
+                        shouldRotate = (i === 0 || i === 1 || i === 8 || i === 9); // Front-side rotated slots
+                    }
+
+                    if (shouldRotate && baseLayer) {
+                        try {
+                            app.activeDocument.activeLayer = baseLayer;
+
+                            var rotateDesc = new ActionDescriptor();
+                            var rotateRef = new ActionReference();
+                            rotateRef.putEnumerated(charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt"));
+                            rotateDesc.putReference(charIDToTypeID("null"), rotateRef);
+                            rotateDesc.putUnitDouble(charIDToTypeID("Angl"), charIDToTypeID("#Ang"), rotateDegree);
+                            executeAction(charIDToTypeID("Trnf"), rotateDesc, DialogModes.NO);
+
+                            logError("Rotated fallback blank card " + slotNumber + " by " + rotateDegree + " degrees");
+                        } catch (e) {
+                            logError("Rotation failed for fallback blank card " + slotNumber);
+                            logError("e: " + e.message);
+                        }
+                    }
+                }
+
             }
 
             // === Brightness/Contrast Adjustment ===
