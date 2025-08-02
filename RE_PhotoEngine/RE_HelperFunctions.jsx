@@ -912,6 +912,89 @@ function padNumber(num, digits) {
   return str;
 }
 
+function generateAlignmentBackWithOffset(offsetXmm, offsetYmm) {
+  try {
+    var offsetX = mmToPixels(offsetXmm || 0);
+    var offsetY = mmToPixels(offsetYmm || 0);
+
+    var docName = 'Align_Back_Offset';
+    var docWidthPx = Math.round(11 * dpi);
+    var docHeightPx = Math.round(8.5 * dpi);
+
+    var doc = app.documents.add(docWidthPx, docHeightPx, dpi, docName, NewDocumentMode.RGB);
+    var white = new SolidColor();
+    white.rgb.red = 255;
+    white.rgb.green = 255;
+    white.rgb.blue = 255;
+    doc.selection.selectAll();
+    doc.selection.fill(white);
+    doc.selection.deselect();
+
+    // === Place align_Back.pdf as Smart Object ===
+    var alignFile = File(scriptFolder.fullName + '/../RE_Utilities/align_Back.pdf');
+    if (!alignFile.exists) {
+      alert('❌ align_Back.pdf not found.');
+      return;
+    }
+
+    var idPlc = charIDToTypeID('Plc ');
+    var desc = new ActionDescriptor();
+    desc.putPath(charIDToTypeID('null'), alignFile);
+    desc.putEnumerated(charIDToTypeID('FTcs'), charIDToTypeID('QCSt'), charIDToTypeID('Qcsa'));
+    desc.putUnitDouble(charIDToTypeID('Wdth'), charIDToTypeID('#Prc'), 100.0);
+    desc.putUnitDouble(charIDToTypeID('Hght'), charIDToTypeID('#Prc'), 100.0);
+    desc.putBoolean(charIDToTypeID('Lnkd'), false);
+    executeAction(idPlc, desc, DialogModes.NO);
+    doc.activeLayer.name = 'Align Back';
+
+    // === Add Offset Note BEFORE shifting ===
+    var noteText = 'CURRENT OFFSET SETTINGS ';
+    noteText += ' | Offset: ' + offsetXmm + ' / ' + offsetYmm;
+
+    var textLayer = doc.artLayers.add();
+    textLayer.kind = LayerKind.TEXT;
+    textLayer.name = 'NOTE';
+
+    var textItem = textLayer.textItem;
+    textItem.contents = noteText;
+    textItem.font = 'ArialMT';
+    textItem.size = 7.1;
+    textItem.justification = Justification.LEFT;
+
+    var black = new SolidColor();
+    black.rgb.red = 0;
+    black.rgb.green = 0;
+    black.rgb.blue = 0;
+    textItem.color = black;
+
+    var scale = dpi / 800.0;
+    textItem.position = [Math.round(648 * scale), Math.round(1320 * scale)];
+
+    // === Apply offset after everything is placed ===
+    shiftEntireDocumentByOffset(offsetX, offsetY);
+
+    // === Save PDF ===
+    var outputFolder = new Folder(scriptFolder.fullName + '/../TempConfig/TempPDF');
+    if (!outputFolder.exists) outputFolder.create();
+    var outFile = new File(outputFolder.fullName + '/align_Back_Offset.pdf');
+
+    var pdfOptions = new PDFSaveOptions();
+    pdfOptions.pDFPreset = 'High Quality Print';
+    doc.saveAs(outFile, pdfOptions, true);
+    doc.close(SaveOptions.DONOTSAVECHANGES);
+
+    // === Write Sentinel ===
+    var sentinelPath = scriptFolder.fullName + '/../TempConfig/sentinal_batch_status.txt';
+    writeSentinal(sentinelPath, 'DONE');
+
+    $.writeln('✅ Saved: ' + outFile.fsName);
+  } catch (e) {
+    logError('Error - generateAlignmentBackWithOffset');
+    logError('e: ' + e.message);
+    alert('❌ Failed to generate offset align_Back PDF:\n' + e.message);
+  }
+}
+
 function callNextConfig(configLocation) {
   if (typeof configLocation !== 'undefined' && configLocation.length > 0) {
     try {

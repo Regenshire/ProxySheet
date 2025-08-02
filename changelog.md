@@ -4,6 +4,12 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
+## [1.07 BETA] – 2025-08-01
+
+- Added an Adjument Measurement Tool to ProxySheet. This helps with configuring adjustments for back alignment.
+
+---
+
 ## [1.06 BETA] – 2025-07-30
 
 - Tested and made adjustments to the new LEGAL Sized Vertical Layout for Silhouette cutting called Silhouette Legal (10-Card).

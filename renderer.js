@@ -136,6 +136,13 @@ window.addEventListener('DOMContentLoaded', () => {
   if (!saved) return;
 
   try {
+    const savedOffsetX = localStorage.getItem('adjustmentOffsetX');
+    const savedOffsetY = localStorage.getItem('adjustmentOffsetY');
+    if (savedOffsetX !== null) document.querySelector('#adjustmentForm input[name="offsetX"]').value = savedOffsetX;
+    if (savedOffsetY !== null) document.querySelector('#adjustmentForm input[name="offsetY"]').value = savedOffsetY;
+  } catch (err) {}
+
+  try {
     const config = JSON.parse(saved);
     const form = document.getElementById('createForm');
 
@@ -152,6 +159,23 @@ window.addEventListener('DOMContentLoaded', () => {
   } catch (err) {
     console.warn('⚠️ Failed to restore previous settings:', err);
   }
+
+  document.getElementById('applyOffsetToAllConfigs').addEventListener('click', async () => {
+    const form = document.getElementById('adjustmentForm');
+    const offsetX = parseFloat(form.offsetX.value) || 0;
+    const offsetY = parseFloat(form.offsetY.value) || 0;
+
+    const confirmMsg = `⚠️ This will overwrite the Offset X (mm) and Offset Y (mm) values in all your saved config files.  Use this with caution.  You cannot undo this action.\n\n` + `New values: X = ${offsetX}, Y = ${offsetY}\n\nAre you sure you want to overwrite all configs?`;
+
+    if (!confirm(confirmMsg)) return;
+
+    const result = await window.electronAPI.applyOffsetToAllConfigs(offsetX, offsetY);
+    if (result.success) {
+      alert(`✅ Offset applied to ${result.updated} config files.`);
+    } else {
+      alert(`❌ Failed to update configs:\n${result.message}`);
+    }
+  });
 });
 
 // Handle "Run Now" form submission
@@ -237,6 +261,86 @@ document.getElementById('conversionForm').addEventListener('submit', async (e) =
     //statusBox.textContent = "❌ " + result.message;
     statusBox.className = 'status-message error';
   }
+});
+
+// Adjustment Measurement Sheet Tool
+document.getElementById('adjustmentForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const offsetX = parseFloat(form.offsetX.value) || 0;
+  const offsetY = parseFloat(form.offsetY.value) || 0;
+
+  localStorage.setItem('adjustmentOffsetX', offsetX);
+  localStorage.setItem('adjustmentOffsetY', offsetY);
+
+  const statusBox = document.getElementById('adjustmentStatus');
+  statusBox.className = 'status-message';
+  statusBox.textContent = '🟡 Running Photoshop script...';
+
+  const config = {
+    adjustmentMeasureSheet: true,
+    backOffsetXmm: offsetX,
+    backOffsetYmm: offsetY,
+    dpi: 800,
+    pageWidthInches: 8.5,
+    pageHeightInches: 11
+  };
+
+  const runResult = await window.electronAPI.generateJSX(config);
+  if (!runResult.success) {
+    statusBox.textContent = '❌ Failed to launch script.';
+    statusBox.classList.add('error');
+    return;
+  }
+
+  const sentinalPath = 'TempConfig/sentinal_batch_status.txt';
+  const stopWatcher = monitorSentinelStatus(
+    (line) => (statusBox.textContent = '🔁 ' + line),
+    async () => {
+      statusBox.textContent = '✅ Photoshop finished. Merging final PDF...';
+
+      const inputPaths = ['RE_Utilities/align_Front.pdf', 'TempConfig/TempPDF/align_Back_Offset.pdf'];
+      const outputPath = 'PDFOutput/ProxySheet_AdjustmentSheet.pdf';
+
+      const success = await window.electronAPI.mergePDFs(inputPaths, outputPath);
+      if (!success) {
+        statusBox.textContent = '❌ Failed to merge final PDF.';
+        return;
+      }
+
+      // ✅ Wait for file to exist before trying to open it
+      let tries = 0;
+      while (tries < 10) {
+        const exists = await window.electronAPI.fileExists(outputPath);
+        if (exists) break;
+        await delay(300); // wait 300ms
+        tries++;
+      }
+
+      if (tries >= 10) {
+        statusBox.textContent = 'PDF merge succeeded, but final file could not be found.';
+        return;
+      }
+
+      //await window.electronAPI.writeLog('✅ Adjustment Sheet complete.');
+      try {
+        const launchResult = await window.electronAPI.openFileWithDefaultApp(outputPath);
+        if (launchResult && typeof launchResult === 'string' && launchResult.includes('could not')) {
+          throw new Error(launchResult);
+        }
+        statusBox.textContent = '✅ Adjustment Sheet opened! Please close sheet before Re-running.';
+      } catch {
+        await window.electronAPI.openPdfOutputFolder();
+        statusBox.textContent = '📂 Opened output folder';
+      }
+
+      // Final Cleanup
+      await delay(1000); // brief delay to ensure no file locks
+      await window.electronAPI.cleanupBatchTemp();
+    }
+  );
+
+  // Optional: add Cancel button later
 });
 
 // === Save Config Modal ===

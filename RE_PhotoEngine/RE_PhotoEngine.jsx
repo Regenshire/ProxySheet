@@ -13,7 +13,6 @@ if (typeof backOffsetYmm === "undefined" || backOffsetYmm === "") backOffsetYmm 
 if (typeof selectEachCard === "undefined" || selectEachCard === "") selectEachCard = false;
 if (typeof paperType === "undefined" || paperType === "") paperType = "Custom";
 
-
 // === Apply Format Presets If cardFormat is Specified ===
 if (cardFormat === "MPC") {
     if (typeof cardWidthMM === "undefined" || cardWidthMM === "") cardWidthMM = 69;
@@ -42,6 +41,7 @@ if (typeof showCropMarks === "undefined") showCropMarks = true;
 // Silhouette & Image Adjustments
 if (typeof useSilhouette === "undefined") useSilhouette = false;
 if (typeof excludeCardSlots === "undefined") excludeCardSlots = "";
+if (typeof adjustmentMeasureSheet === "undefined") adjustmentMeasureSheet = false;
 
 // Notes
 if (typeof notesOn === "undefined") notesOn = false;
@@ -91,6 +91,11 @@ if (batchHistory === true && batchNumber === null){
 var initialConfigVars = getInitialConfigSnapshot();
 
 function main() {
+
+    if (adjustmentMeasureSheet === true) {
+        generateAlignmentBackWithOffset(backOffsetXmm, backOffsetYmm);
+        return;
+    }
 
     // === Check for Export Singles Mode ===
     if (exportSingles) {

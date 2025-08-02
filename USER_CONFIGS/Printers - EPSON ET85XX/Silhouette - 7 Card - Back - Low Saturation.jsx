@@ -30,8 +30,8 @@ var blackpoint = 0;
 
 // --- Back Alignment ---
 var cardBack = true;
-var backOffsetXmm = -3;
-var backOffsetYmm = -0.02;
+var backOffsetXmm = 0;
+var backOffsetYmm = 0;
 var selectEachCard = true;
 
 // --- Silhouette ---

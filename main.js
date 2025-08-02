@@ -380,3 +380,55 @@ ipcMain.handle('open-pdf-output-folder', async () => {
     return { success: false, message: err.message };
   }
 });
+
+ipcMain.handle('open-file-with-default-app', async (_, relativePath) => {
+  const { shell } = require('electron');
+  const fullPath = path.resolve(__dirname, relativePath);
+
+  try {
+    await shell.openPath(fullPath);
+    return { success: true };
+  } catch (err) {
+    console.error('❌ Failed to open file:', err.message);
+    return { success: false, message: err.message };
+  }
+});
+
+ipcMain.handle('apply-offset-to-all-configs', async (_, { offsetX, offsetY }) => {
+  try {
+    const configRoot = path.resolve(__dirname, 'USER_CONFIGS');
+    const folders = fs.readdirSync(configRoot).filter((f) => fs.statSync(path.join(configRoot, f)).isDirectory());
+
+    let updatedFiles = 0;
+
+    for (const folder of folders) {
+      const folderPath = path.join(configRoot, folder);
+      const files = fs.readdirSync(folderPath).filter((f) => f.endsWith('.jsx'));
+
+      for (const file of files) {
+        const fullPath = path.join(folderPath, file);
+        let content = fs.readFileSync(fullPath, 'utf-8');
+
+        // Replace backOffsetXmm and backOffsetYmm if they exist
+        const hasBackX = /var\s+backOffsetXmm\s*=/.test(content);
+        const hasBackY = /var\s+backOffsetYmm\s*=/.test(content);
+
+        if (!hasBackX && !hasBackY) continue;
+
+        if (hasBackX) {
+          content = content.replace(/var\s+backOffsetXmm\s*=\s*[-.\d]+;/, `var backOffsetXmm = ${offsetX};`);
+        }
+        if (hasBackY) {
+          content = content.replace(/var\s+backOffsetYmm\s*=\s*[-.\d]+;/, `var backOffsetYmm = ${offsetY};`);
+        }
+
+        fs.writeFileSync(fullPath, content, 'utf-8');
+        updatedFiles++;
+      }
+    }
+
+    return { success: true, updated: updatedFiles };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+});

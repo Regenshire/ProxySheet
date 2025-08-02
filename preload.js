@@ -25,5 +25,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   readDirFiltered: (folder, ext) => ipcRenderer.invoke('read-dir-filtered', folder, ext),
   fileExists: (path) => ipcRenderer.invoke('file-exists', path),
   runUserConfigFile: (filePath) => ipcRenderer.invoke('run-user-config-file', filePath),
+  openFileWithDefaultApp: (path) => ipcRenderer.invoke('open-file-with-default-app', path),
+  applyOffsetToAllConfigs: (offsetX, offsetY) => ipcRenderer.invoke('apply-offset-to-all-configs', { offsetX, offsetY }),
   openPdfOutputFolder: () => ipcRenderer.invoke('open-pdf-output-folder')
 });

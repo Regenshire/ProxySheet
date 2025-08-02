@@ -47,7 +47,7 @@ var noteFontSize = 10;
 var manualNote = "EPSON ET-85XX | Koala Double-Sided Gloss Paper | Premium Photo Paper Gloss - HIGH | ICC: ET-8500 - RR UltraPro Gloss Epson ET-85xx v2";
 
 // --- Meta Info ---
-var configCreateDate = "2025-07-19T02:58:07.299Z";
+var configCreateDate = "2025-08-02T07:11:44.722Z";
 
 // === END CONFIG ===
 

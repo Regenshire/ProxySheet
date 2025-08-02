@@ -198,6 +198,16 @@ main {
   transition: background-color 0.3s ease;
 }
 
+.danger-button {
+  background-color: #aa4444;
+  color: white;
+  font-weight: bold;
+}
+
+.danger-button:hover {
+  background-color: #992f2f;
+}
+
 #saveConfigBtn {
   background-color: #3478f6;
   color: white;
