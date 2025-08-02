@@ -267,40 +267,40 @@
         <section class="tab-panel" id="tab-tools">
           <h2>Tools</h2>
           <p>Utility functions and tools to assist in working with various card images.</p>
+          <div class="tool-card" id="adjustmentTool">
+            <div class="tool-header" data-target="#adjustmentToolBody">
+              <h3>Adjustment Measurement Sheet</h3>
+              <span class="chevron">▼</span>
+            </div>
+            <div class="tool-body" id="adjustmentToolBody">
+              <p class="tool-description">This tool creates a test sheet using <code>align_Front.pdf</code> and <code>align_Back.pdf</code> to measure X/Y misalignment when printing duplex.</p>
+
+              <form id="adjustmentForm" class="grid-form">
+                <fieldset>
+                  <legend>Offset Settings</legend>
+                  <label
+                    >Offset X (mm)
+                    <input type="number" name="offsetX" value="0" step="any" />
+                  </label>
+                  <label
+                    >Offset Y (mm)
+                    <input type="number" name="offsetY" value="0" step="any" />
+                  </label>
+                </fieldset>
+
+                <div class="form-actions">
+                  <button type="submit" id="runAdjustmentBtn">Run Measurement Tool</button>
+                  <button type="button" id="applyOffsetToAllConfigs" class="danger-button">Apply Offset to All Configs</button>
+                </div>
+
+                <div id="adjustmentStatus" class="status-message"></div>
+              </form>
+            </div>
+          </div>
           <div class="tool-card">
             <div class="tool-header" data-target="#conversionToolBody">
               <h3>Card Conversion Tool</h3>
               <span class="chevron">▼</span>
-            </div>
-            <div class="tool-card" id="adjustmentTool">
-              <div class="tool-header" data-target="#adjustmentToolBody">
-                <h3>Adjustment Measurement Sheet</h3>
-                <span class="chevron">▼</span>
-              </div>
-              <div class="tool-body" id="adjustmentToolBody">
-                <p class="tool-description">This tool creates a test sheet using <code>align_Front.pdf</code> and <code>align_Back.pdf</code> to measure X/Y misalignment when printing duplex.</p>
-
-                <form id="adjustmentForm" class="grid-form">
-                  <fieldset>
-                    <legend>Offset Settings</legend>
-                    <label
-                      >Offset X (mm)
-                      <input type="number" name="offsetX" value="0" step="any" />
-                    </label>
-                    <label
-                      >Offset Y (mm)
-                      <input type="number" name="offsetY" value="0" step="any" />
-                    </label>
-                  </fieldset>
-
-                  <div class="form-actions">
-                    <button type="submit" id="runAdjustmentBtn">Run Measurement Tool</button>
-                    <button type="button" id="applyOffsetToAllConfigs" class="danger-button">Apply Offset to All Configs</button>
-                  </div>
-
-                  <div id="adjustmentStatus" class="status-message"></div>
-                </form>
-              </div>
             </div>
             <div class="tool-body" id="conversionToolBody">
               <p class="tool-description">
