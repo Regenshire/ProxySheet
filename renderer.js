@@ -3,6 +3,22 @@ function debugLog(msg) {
   logEl.textContent = `[DEBUG] ${msg}`;
 }
 
+// === Cut Mark fields toggle (global) ===
+window._toggleCutMarkFields = function () {
+  const showCropMarksCheckbox = document.querySelector('input[name="showCropMarks"]');
+  const cutMarkSizeInput = document.querySelector('input[name="cutMarkSize"]');
+  const cutOffsetInput = document.querySelector('input[name="cutOffset"]');
+
+  if (!showCropMarksCheckbox || !cutMarkSizeInput || !cutOffsetInput) return;
+
+  const cutMarkSizeLabel = cutMarkSizeInput.closest('label');
+  const cutOffsetLabel = cutOffsetInput.closest('label');
+
+  const show = !!showCropMarksCheckbox.checked;
+  if (cutMarkSizeLabel) cutMarkSizeLabel.style.display = show ? '' : 'none';
+  if (cutOffsetLabel) cutOffsetLabel.style.display = show ? '' : 'none';
+};
+
 // Tab switching logic
 document.querySelectorAll('.tab-button').forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -43,12 +59,90 @@ const loadGlobalSettings = () => {
 
 // Load saved config from localStorage
 window.addEventListener('DOMContentLoaded', () => {
+  // Keep Cut Mark fields in sync with "Print Cut Marks"
+  const showCropMarksCheckboxNow = document.querySelector('input[name="showCropMarks"]');
+  if (showCropMarksCheckboxNow) {
+    showCropMarksCheckboxNow.addEventListener('change', () => window._toggleCutMarkFields());
+  }
+  // Apply initial state on load
+  window._toggleCutMarkFields();
+
+  // Prevent negative values for Card Gap and Crop Bleed
+  ['cardGap', 'cropBleed'].forEach((fieldName) => {
+    const inputEl = document.querySelector(`input[name="${fieldName}"]`);
+    if (inputEl) {
+      inputEl.addEventListener('input', () => {
+        if (parseFloat(inputEl.value) < 0) {
+          inputEl.value = '0.00';
+        }
+      });
+    }
+  });
+
+  // Hide Cut Mark Size & Cut Mark Offset unless "Print Cut Marks" is checked
+  const showCropMarksCheckbox = document.querySelector('input[name="showCropMarks"]');
+  const cutMarkSizeInput = document.querySelector('input[name="cutMarkSize"]');
+  const cutOffsetInput = document.querySelector('input[name="cutOffset"]');
+  const cutMarkSizeLabel = cutMarkSizeInput.closest('label');
+  const cutOffsetLabel = cutOffsetInput.closest('label');
+
+  const toggleCutMarkFields = () => {
+    if (showCropMarksCheckbox.checked) {
+      cutMarkSizeLabel.style.display = '';
+      cutOffsetLabel.style.display = '';
+    } else {
+      cutMarkSizeLabel.style.display = 'none';
+      cutOffsetLabel.style.display = 'none';
+    }
+  };
+
+  // Initial toggle on page load
+  toggleCutMarkFields();
+
+  // Watch for changes
+  showCropMarksCheckbox.addEventListener('change', toggleCutMarkFields);
+
+  // Hide Card Gap & Crop Bleed if Silhouette is already checked
+  const useSilhouetteCheckbox = document.querySelector('input[name="useSilhouette"]');
+  const cropBleedInput = document.querySelector('input[name="cropBleed"]');
+  const cardGapInput = document.querySelector('input[name="cardGap"]');
+  const cropBleedLabel = cropBleedInput.closest('label');
+  const cardGapLabel = cardGapInput.closest('label');
+
+  if (useSilhouetteCheckbox.checked) {
+    cropBleedLabel.style.display = 'none';
+    cardGapLabel.style.display = 'none';
+    cropBleedInput.value = '0.00';
+    cardGapInput.value = '0.00';
+  }
+
   // When Silhouette is checked, uncheck Show Crop Marks
   document.querySelector('input[name="useSilhouette"]').addEventListener('change', (e) => {
     const cropMarksCheckbox = document.querySelector('input[name="showCropMarks"]');
+    const cropBleedInput = document.querySelector('input[name="cropBleed"]');
+    const cardGapInput = document.querySelector('input[name="cardGap"]');
+
+    // Find their parent label elements so we can hide them
+    const cropBleedLabel = cropBleedInput.closest('label');
+    const cardGapLabel = cardGapInput.closest('label');
+
     if (e.target.checked) {
+      // Disable and hide both fields
+      cropBleedLabel.style.display = 'none';
+      cardGapLabel.style.display = 'none';
+
+      cropBleedInput.value = '0.00';
+      cardGapInput.value = '0.00';
+
       cropMarksCheckbox.checked = false;
+    } else {
+      // Show both fields again
+      cropBleedLabel.style.display = '';
+      cardGapLabel.style.display = '';
     }
+
+    // Ensure Cut Mark fields hide if Print Cut Marks was just unchecked
+    window._toggleCutMarkFields();
   });
 
   document.getElementById('paperTypeSelect').addEventListener('change', () => {
@@ -71,7 +165,29 @@ window.addEventListener('DOMContentLoaded', () => {
       height.value = presets[val][1];
     }
 
-    updateLayoutOptions(); // ← Add this line
+    updateLayoutOptions();
+
+    // Restore last-used layout if it’s available for the current page size + silhouette setting
+    try {
+      const savedLayout = localStorage.getItem('lastLayout');
+      const layoutSelect = document.querySelector('select[name="layout"]');
+      if (savedLayout && layoutSelect) {
+        // only apply if the option exists (i.e., updateLayoutOptions added it)
+        const optionExists = Array.from(layoutSelect.options).some((o) => o.value === savedLayout);
+        if (optionExists) {
+          layoutSelect.value = savedLayout;
+          // If you have any “on change” side effects for layout, trigger them here:
+          layoutSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    } catch {}
+
+    // Refresh layout options when page size changes by hand
+    document.querySelector('input[name="pageWidthInches"]').addEventListener('input', updateLayoutOptions);
+    document.querySelector('input[name="pageHeightInches"]').addEventListener('input', updateLayoutOptions);
+
+    // Also refresh when toggling Silhouette checkbox so unsupported layouts get disabled
+    document.querySelector('input[name="useSilhouette"]').addEventListener('change', updateLayoutOptions);
   });
 
   // === Open PDF Output Folder ===
@@ -156,6 +272,9 @@ window.addEventListener('DOMContentLoaded', () => {
         field.value = value;
       }
     }
+
+    // Config may have showCropMarks = false — reflect it in the UI
+    window._toggleCutMarkFields?.();
   } catch (err) {
     console.warn('⚠️ Failed to restore previous settings:', err);
   }
@@ -452,7 +571,11 @@ function resetDefaults() {
 // Dynamically update layout options if page size is changed manually
 document.querySelector('input[name="pageWidthInches"]').addEventListener('input', updateLayoutOptions);
 document.querySelector('input[name="pageHeightInches"]').addEventListener('input', updateLayoutOptions);
-document.querySelector('select[name="layout"]').addEventListener('change', updateLayoutOptions);
+document.querySelector('select[name="layout"]').addEventListener('change', (e) => {
+  // remember last used layout
+  localStorage.setItem('lastLayout', e.target.value);
+  updateLayoutOptions();
+});
 
 // Handle Reset to Defaults
 document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
@@ -476,6 +599,8 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     cardHeightMM: parseFloat(form.cardHeightMM.value),
     cutMarkSize: parseFloat(form.cutMarkSize.value),
     cutOffset: parseFloat(form.cutOffset.value),
+    cropBleed: parseFloat(form.cropBleed.value),
+    cardGap: parseFloat(form.cardGap.value),
     showCropMarks: form.showCropMarks.checked,
     bright: parseInt(form.bright.value),
     contr: parseInt(form.contr.value),
@@ -1119,6 +1244,9 @@ const loadUserConfigs = async () => {
           if (layoutField) layoutField.value = config['layout'];
         }
 
+        // Ensure Cut Mark fields match the config's Print Cut Marks value
+        window._toggleCutMarkFields?.();
+
         /*
         for (const [key, value] of Object.entries(config)) {
           const field = form.elements[key];
@@ -1614,7 +1742,8 @@ function updateLayoutOptions() {
       { value: 'vertical4x3', label: 'Vertical (4x3)', minW: 8.27, minH: 14, silSupport: false },
       { value: 'vertical4x4', label: 'Vertical (4x4)', minW: 10.8, minH: 14, silSupport: false },
       { value: 'vertical5x3', label: 'Vertical (5x3)', minW: 10, minH: 18, silSupport: false },
-      { value: 'Silhouette10Card', label: 'Silhouette Legal (10-Card)', minW: 8.5, minH: 14, silSupport: true }
+      { value: 'Silhouette10Card', label: 'Silhouette Legal (10-Card)', minW: 8.5, minH: 14, silSupport: true },
+      { value: 'grid5x23', label: 'Grid (5x23, 115 cards)', minW: 60, minH: 18, silSupport: false }
     ];
   } else {
     availableLayouts = [
@@ -1645,7 +1774,8 @@ function updateLayoutOptions() {
       { value: 'vertical4x3', label: 'Vertical (4x3)', minW: 9, minH: 16, silSupport: false },
       { value: 'vertical4x4', label: 'Vertical (4x4)', minW: 12, minH: 18, silSupport: false },
       { value: 'vertical5x3', label: 'Vertical (5x3)', minW: 11, minH: 20, silSupport: false },
-      { value: 'Silhouette10Card', label: 'Silhouette Legal (10-Card)', minW: 8.5, minH: 14, silSupport: true }
+      { value: 'Silhouette10Card', label: 'Silhouette Legal (10-Card)', minW: 8.5, minH: 14, silSupport: true },
+      { value: 'grid5x23', label: 'Grid (5x23, 115 cards)', minW: 60, minH: 18, silSupport: false }
     ];
   }
 

@@ -135,8 +135,16 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
       lines.push(`var cutMarkSize = ${config.cutMarkSize};`);
     }
 
+    if (!skipCutSettings && config.cropBleed !== '') {
+      lines.push(`var cropBleed = ${config.cropBleed};`);
+    }
+
     if (!skipCutSettings && config.cutOffset !== '') {
       lines.push(`var cutOffset = ${config.cutOffset};`);
+    }
+
+    if (!skipCutSettings && config.cardGap !== '') {
+      lines.push(`var cardGap = ${config.cardGap};`);
     }
 
     if (skipCutSettings) {

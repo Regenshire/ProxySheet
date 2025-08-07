@@ -4,6 +4,15 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
+## [1.08 BETA] – 2025-08-07
+
+- Added support for large UV Printers in the form of a Grid (5x23, 115 Cards) layout.
+- Added Card Gap funcationality to add gaps between cards (non-Silhouette prints)
+- Added a Crop Bleed (mm) field to allow a user to specify a crop of the bleed to reduce how much bleed is printed (non-Silhouette prints)
+- Renamed the Cut Mark fields and set those fields to be hidden when not using Cut Marks
+
+---
+
 ## [1.07 BETA] – 2025-08-01
 
 - Added an Adjument Measurement Tool to ProxySheet. This helps with configuring adjustments for back alignment.

@@ -20,12 +20,16 @@ if (cardFormat === "MPC") {
     if (typeof cutOffset === "undefined" || cutOffset === "") cutOffset = 3.04;
     if (typeof cutMarkSize === "undefined" || cutMarkSize === "") cutMarkSize = 4.5;
     if (typeof showCropMarks === "undefined" || showCropMarks === "") showCropMarks = true;
+    if (typeof cardGap === "undefined" || cardGap === "") cardGap = 0.00;
+    if (typeof cropBleed === "undefined" || cropBleed === "") cropBleed = 0.00;
 } else if (cardFormat === "NoBleed") {
     if (typeof cardWidthMM === "undefined" || cardWidthMM === "") cardWidthMM = 63;
     if (typeof cardHeightMM === "undefined" || cardHeightMM === "") cardHeightMM = 88;
     if (typeof cutOffset === "undefined" || cutOffset === "") cutOffset = 1.0;
     if (typeof cutMarkSize === "undefined" || cutMarkSize === "") cutMarkSize = 4.5;
     if (typeof showCropMarks === "undefined" || showCropMarks === "") showCropMarks = true;
+    if (typeof cardGap === "undefined" || cardGap === "") cardGap = 0.00;
+    if (typeof cropBleed === "undefined" || cropBleed === "") cropBleed = 0.00;
 }
 
 // Card dimensions / DPI
@@ -184,19 +188,28 @@ function main() {
         rows = 4;
         cols = 3;
         totalCards = 10;  
+    } else if (layout === "grid5x23") {
+        rows = 5;
+        cols = 23;
+        totalCards = rows * cols;
     } else {
         rows = layout === "vertical" ? 3 : 2;
         cols = layout === "vertical" ? 3 : 4;
         totalCards = rows * cols;
     }
 
-    if (totalCards > 40) {
+    if (totalCards > 40 && layout !== "grid5x23") {
         logError('Error - Layout exceeds safe card limit. Max supported: 40 cards per sheet.');
         alert("Layout exceeds safe card limit. Max supported: 40 cards per sheet.");
         throw new Error("Aborted due to layout card overrun.");
     }
 
-    var silhouetteBleedAdjust = 2.0; // in MM – trim the outer edges of each card when using Silhouette by this much on each side. DEFAULT 2.2
+    var silhouetteBleedAdjust = cropBleed; // in MM – trim the outer edges of each card when using Silhouette by this much on each side. DEFAULT 2.0 for Silhouette
+
+    if (useSilhouette && cropBleed == 0.00){
+        silhouetteBleedAdjust = 2.00;
+    }
+
     var insetInches = 0.394; // distance specified in Silhouette for Registration Mark Inset
     var insetMM = insetInches * 25.4; // ≈ 10 mm
     var insetX = mmToPixels(insetMM); // distance from left edge to reg mark
@@ -204,12 +217,18 @@ function main() {
 
     var cardW = mmToPixels(cardWidthMM); // 69 mm
     var cardH = mmToPixels(cardHeightMM); // 94 mm
+
+    /*
     var cardWhome = mmToPixels(
         cardWidthMM - (useSilhouette ? silhouetteBleedAdjust * 2 : 0)
     );
     var cardHhome = mmToPixels(
         cardHeightMM - (useSilhouette ? silhouetteBleedAdjust * 2 : 0)
     );
+    */
+
+    var cardWhome = mmToPixels(cardWidthMM - silhouetteBleedAdjust * 2);
+    var cardHhome = mmToPixels(cardHeightMM - silhouetteBleedAdjust * 2);
 
     // === Adjust layout size for outer black border (NoBleed format only)
     var cardDisplayW, cardDisplayH;
@@ -260,12 +279,18 @@ function main() {
     ", dpi=" + dpi
     );
 
-    if (pageWidthPx > 40000 || pageHeightPx > 40000 || dpi > 4000) {
-        alert("Document creation skipped: invalid page size or DPI.\n" +
-        "Width: " + pageWidthPx + "px\n" +
-        "Height: " + pageHeightPx + "px\n" +
-        "DPI: " + dpi);
-    throw new Error("Aborted due to oversized document parameters");
+    // Expanded limits to support very large print-shop pages
+    var MAX_SIDE_PX = 151000;   // allow up to 90,000 px per side
+    var MAX_DPI    = 4000;     // sanity guard
+
+    if (pageWidthPx > MAX_SIDE_PX || pageHeightPx > MAX_SIDE_PX || dpi > MAX_DPI) {
+        alert(
+            "Document creation skipped: invalid page size or DPI.\n" +
+            "Width: " + pageWidthPx + " px (limit " + MAX_SIDE_PX + ")\n" +
+            "Height: " + pageHeightPx + " px (limit " + MAX_SIDE_PX + ")\n" +
+            "DPI: " + dpi + " (limit " + MAX_DPI + ")"
+        );
+        throw new Error("Aborted due to oversized document parameters");
     }
 
     var white = new SolidColor();
@@ -400,12 +425,16 @@ function main() {
     var silhouetteInsetPx = useSilhouette ? insetX : 0;
 
     // Total width/height of card block (not the document)
-    var cardBlockW = cardDisplayW * cols;
-    var cardBlockH = cardDisplayH * rows;
+    var gapPx = mmToPixels(cardGap);
+    //var cardBlockW = cardDisplayW * cols;
+    //var cardBlockH = cardDisplayH * rows;
+    var cardBlockW = cardDisplayW * cols + gapPx * (cols - 1);
+    var cardBlockH = cardDisplayH * rows + gapPx * (rows - 1);
 
     // Compute X and Y offset to center the cards WITHIN the page with an inset
     var cardStartX = Math.round((pageWidthPx - cardBlockW) / 2);
     var cardStartY = Math.round((pageHeightPx - cardBlockH) / 2);
+
 
     if (useSilhouette) {
         var availableW = pageWidthPx - silhouetteInsetPx * 2;
@@ -526,24 +555,56 @@ function main() {
                 }
             }
             else if (layout === "SevenCard") {
+                // Respect gap only when not using Silhouette
+                var gX = gapPx, gY = gapPx;
+
                 if (i === 0) {
-                y = Math.round((pageHeightPx - cardDisplayH) / 2);
-                x = cardBack ? cardStartX + 3 * cardDisplayW : cardStartX;
+                    // Center vertically, left or right column depending on back/front
+                    y = Math.round((pageHeightPx - (cardDisplayH)) / 2); // single card, no vertical grid math
+                    // For SevenCard, there are 4 columns total → three gaps between columns
+                    // Slot 1 sits in the outer column; add gap between columns where appropriate
+                    x = cardBack
+                        ? cardStartX + 3 * cardDisplayW + 3 * gX
+                        : cardStartX;
                 } else {
-                var localIndex = i - 1;
-                var row = Math.floor(localIndex / 3);
-                var col = localIndex % 3;
-                var colFlipped = cardBack ? 2 - col : col;
-                x = cardBack
-                    ? cardStartX + colFlipped * cardDisplayW
-                    : cardStartX + cardDisplayW + colFlipped * cardDisplayW;
-                y = cardStartY + row * cardDisplayH;
+                    var localIndex = i - 1;
+                    var row = Math.floor(localIndex / 3);
+                    var col = localIndex % 3;
+                    var colFlipped = cardBack ? 2 - col : col;
+
+                    // Front: slots 2–7 occupy columns 2–4 visually (1 gap before them)
+                    // Back: mirrored horizontally
+                    x = cardBack
+                        ? cardStartX + colFlipped * (cardDisplayW + gX) + (cardDisplayW + gX) // columns 2–4 mirrored
+                        : cardStartX + (cardDisplayW + gX) + colFlipped * (cardDisplayW + gX); // shift one column to the right
+
+                    y = cardStartY + row * (cardDisplayH + gY);
                 }
-            } else {
+            }
+
+            /* else if (layout === "SevenCard") {
+                
+                if (i === 0) {
+                    y = Math.round((pageHeightPx - cardDisplayH) / 2);
+                    x = cardBack ? cardStartX + 3 * cardDisplayW : cardStartX;
+                } else {
+                    var localIndex = i - 1;
+                    var row = Math.floor(localIndex / 3);
+                    var col = localIndex % 3;
+                    var colFlipped = cardBack ? 2 - col : col;
+                    x = cardBack
+                        ? cardStartX + colFlipped * cardDisplayW
+                        : cardStartX + cardDisplayW + colFlipped * cardDisplayW;
+                    y = cardStartY + row * cardDisplayH;
+                }
+            } */
+            else {
                 var row = Math.floor(i / cols);
                 var col = i % cols;
-                x = col * cardDisplayW + cardStartX;
-                y = row * cardDisplayH + cardStartY;
+                //x = col * cardDisplayW + cardStartX;
+                //y = row * cardDisplayH + cardStartY;
+                x = col * (cardDisplayW + gapPx) + cardStartX;
+                y = row * (cardDisplayH + gapPx) + cardStartY;
             }
 
             var baseLayer;
@@ -563,7 +624,8 @@ function main() {
                 }
 
                 imageIndex++;
-                var trimPx = useSilhouette ? mmToPixels(silhouetteBleedAdjust) : 0;
+                //var trimPx = useSilhouette ? mmToPixels(silhouetteBleedAdjust) : 0;
+                var trimPx = mmToPixels(silhouetteBleedAdjust);
 
                 baseLayer = placeImageInDocument(
                 currentFile,

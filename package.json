@@ -1,6 +1,6 @@
 {
   "name": "proxysheet",
-  "version": "1.0.7 BETA",
+  "version": "1.0.8 BETA",
   "description": "ProxySheet - Photoshop Proxy Layout Tool",
   "main": "main.js",
   "scripts": {

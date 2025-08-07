@@ -1,13 +1,13 @@
-// Printers - EPSON ET85XX > Silhouette - 7 Card - Front
+// Print Shop > Roland UV Printer - 100 Cards 1575x465mm
 
 // === CONFIG - You can edit these values ===
 
 // --- Layout ---
-var layout = "SevenCard";
-var pageWidthInches = 8.5;
-var pageHeightInches = 11;
+var layout = "grid5x23";
+var pageWidthInches = 62.00787;
+var pageHeightInches = 18.3071;
 var dpi = 800;
-var paperType = "Letter";
+var paperType = "Custom";
 
 // --- Card Format ---
 var cardFormat = "MPC";
@@ -16,16 +16,16 @@ var cardHeightMM = 94;
 
 // --- Cut & Bleed ---
 var cutMarkSize = 4.5;
-var cropBleed = 0;
+var cropBleed = 1;
 var cutOffset = 3.04;
-var cardGap = 0.00;
+var cardGap = 1;
 var showCropMarks = false;
 
 // --- Color Adjustments ---
-var bright = 15;
-var contr = 18;
+var bright = 0;
+var contr = 0;
 var vib = 0;
-var sat = 50;
+var sat = 0;
 var gmm = 1.05;
 var whitepoint = 255;
 var blackpoint = 0;
@@ -37,19 +37,19 @@ var backOffsetYmm = 0;
 var selectEachCard = false;
 
 // --- Silhouette ---
-var useSilhouette = true;
+var useSilhouette = false;
 // --- Batch PDF Settings ---
 var batchMultiPage = false;
 var noBackImage = false;
 var separateBackPDF = false;
 
 // --- Notes ---
-var notesOn = true;
+var notesOn = false;
 var noteFontSize = 10;
-var manualNote = "EPSON ET-85XX | Koala Double-Sided Gloss Paper | Premium Photo Paper Gloss - HIGH | ICC: ET-8500 - RR UltraPro Gloss Epson ET-85xx v2";
+var manualNote = "UV Printer";
 
 // --- Meta Info ---
-var configCreateDate = "2025-08-07T18:12:10.061Z";
+var configCreateDate = "2025-08-07T19:50:27.826Z";
 
 // === END CONFIG ===
 
