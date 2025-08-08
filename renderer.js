@@ -666,6 +666,18 @@ saveConfigForm.addEventListener('submit', async (e) => {
     config[element.name] = element.type === 'checkbox' ? element.checked : element.value;
   }
 
+  // Force width/height to be saved in INCHES regardless of current display units
+  {
+    const { wIn, hIn } = getPageSizeInches(); // converts mm->in when needed
+    config.pageWidthInches = wIn;
+    config.pageHeightInches = hIn;
+    // Optional: persist the unit and paper type for clarity
+    config.pageUnits = document.getElementById('pageUnits')?.value || 'in';
+    config.paperType = document.getElementById('paperTypeSelect')?.value || config.paperType;
+    // Debug (no await)
+    window.electronAPI.writeLog(`[SaveConfig] units=${config.pageUnits} saving wIn=${wIn} hIn=${hIn} paper=${config.paperType}`);
+  }
+
   const result = await window.electronAPI.saveUserConfig(folderName, configName, config);
 
   if (result.success) {
