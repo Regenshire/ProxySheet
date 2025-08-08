@@ -123,15 +123,29 @@ function main() {
         return;
     }
 
-    // Save original 
-
     // === Page Size Calculations ===
-    if (layout === "horizontal" || layout === "horizontal2x5" || layout === "horizontal2x6" || layout === "horizontal3x6" ||layout === "SevenCard") {
-        // Swap width and height for landscape
-        var temp = pageWidthInches;
-        pageWidthInches = pageHeightInches;
-        pageHeightInches = temp;
+    // Force orientation only when the page is “wrong” for the requested layout.
+    var isHorizontalLayout =
+        (layout === "horizontal" || layout === "horizontal2x5" || layout === "horizontal2x6" ||
+        layout === "horizontal3x6" || layout === "SevenCard"   || layout === "horizontalAuto");
+
+    var isVerticalLayout =
+        (layout === "vertical" || layout === "vertical3x3" || layout === "verticalAuto"); // keep any names you use
+
+    // If a horizontal layout was requested but the page is portrait, rotate to landscape.
+    if (isHorizontalLayout && pageWidthInches < pageHeightInches) {
+        var __t1 = pageWidthInches;
+        pageWidthInches  = pageHeightInches;
+        pageHeightInches = __t1;
     }
+
+    // If a vertical layout was requested but the page is landscape, rotate to portrait.
+    if (isVerticalLayout && pageWidthInches > pageHeightInches) {
+        var __t2 = pageWidthInches;
+        pageWidthInches  = pageHeightInches;
+        pageHeightInches = __t2;
+    }
+
 
     var inchToPx = function (inches) {
         return Math.round(inches * dpi);
@@ -141,7 +155,6 @@ function main() {
     var pageHeightPx = inchToPx(pageHeightInches); // 3300 at 300 DPI, 8800 at 800 DPI
 
     // === Layout-specific values ===
-
     var rows, cols, totalCards;
 
     if (layout === "vertical") {
@@ -180,6 +193,16 @@ function main() {
         rows = 3;
         cols = 6;
         totalCards = rows * cols;
+    } else if (layout === "verticalAuto") {
+        var autoV = CalculatePageSlots('vertical');
+        rows = autoV.rows;
+        cols = autoV.cols;
+        totalCards = rows * cols;
+    } else if (layout === "horizontalAuto") {
+        var autoH = CalculatePageSlots('horizontal');
+        rows = autoH.rows;
+        cols = autoH.cols;
+        totalCards = rows * cols;
     } else if (layout === "SevenCard") {
         rows = 2;
         cols = 4;
@@ -198,7 +221,7 @@ function main() {
         totalCards = rows * cols;
     }
 
-    if (totalCards > 40 && layout !== "grid5x23") {
+    if (totalCards > 40 && layout !== "grid5x23" && layout != "horizontalAuto" && layout != "verticalAuto") {
         logError('Error - Layout exceeds safe card limit. Max supported: 40 cards per sheet.');
         alert("Layout exceeds safe card limit. Max supported: 40 cards per sheet.");
         throw new Error("Aborted due to layout card overrun.");
@@ -304,9 +327,7 @@ function main() {
         dpi,
         "ProxySheet",
         NewDocumentMode.RGB
-    );
-
-    
+    );    
 
     if (outputPDF === true) {
         var sentinelPath = scriptFolder.fullName + "/../TempConfig/sentinal_batch_status.txt";
@@ -414,6 +435,26 @@ function main() {
                 " will be used."
         );
         cardFiles = cardFiles.slice(0, allowedImages);
+    }
+
+    // === If Card Back Sheet (bulk), allow a single selection to fill all slots ===
+    if (cardBack === true && selectEachCard !== true && cardFiles && cardFiles.length === 1) {
+        var useAll = confirm(
+            "You selected 1 card back image.\n\nUse it for all " + (totalCards - excludedCount) + " cards?"
+        );
+        if (useAll) {
+            var singleBack = cardFiles[0];
+            var expanded = [];
+            for (var s = 0; s < totalCards; s++) {
+                var slotNum = s + 1;
+                if (excludedSlots[slotNum] === true) {
+                    expanded.push(null); // preserve index alignment for excluded slots
+                } else {
+                    expanded.push(singleBack); // use the same file for every active slot
+                }
+            }
+            cardFiles = expanded;
+        }
     }
 
     // === Add Silhouette Cameo 5 registration marks ===
@@ -575,7 +616,8 @@ function main() {
                     // Front: slots 2–7 occupy columns 2–4 visually (1 gap before them)
                     // Back: mirrored horizontally
                     x = cardBack
-                        ? cardStartX + colFlipped * (cardDisplayW + gX) + (cardDisplayW + gX) // columns 2–4 mirrored
+                        //? cardStartX + colFlipped * (cardDisplayW + gX) + (cardDisplayW + gX) // columns 2–4 mirrored
+                        ? cardStartX + colFlipped * (cardDisplayW + gX) // columns 1–3 mirrored, no extra shift
                         : cardStartX + (cardDisplayW + gX) + colFlipped * (cardDisplayW + gX); // shift one column to the right
 
                     y = cardStartY + row * (cardDisplayH + gY);

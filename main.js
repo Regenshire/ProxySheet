@@ -154,7 +154,6 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
     }
 
     lines.push('\n// --- Color Adjustments ---');
-
     if (config.bright !== '' && config.bright != null) lines.push(`var bright = ${config.bright};`);
     if (config.contr !== '' && config.contr != null) lines.push(`var contr = ${config.contr};`);
     if (config.vib !== '' && config.vib != null) lines.push(`var vib = ${config.vib};`);
@@ -162,6 +161,9 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
     if (config.gmm !== '' && config.gmm != null) lines.push(`var gmm = ${config.gmm};`);
     if (config.whitepoint !== '' && config.whitepoint != null) lines.push(`var whitepoint = ${config.whitepoint};`);
     if (config.blackpoint !== '' && config.blackpoint != null) lines.push(`var blackpoint = ${config.blackpoint};`);
+
+    const addAdj = typeof config.addPerCardAdjustLayer === 'undefined' ? true : !!config.addPerCardAdjustLayer;
+    lines.push(`var addPerCardAdjustLayer = ${addAdj};`);
 
     lines.push('\n// --- Back Alignment ---');
     lines.push(`var cardBack = ${config.cardBack};`);

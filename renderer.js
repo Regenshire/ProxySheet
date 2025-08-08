@@ -145,7 +145,8 @@ window.addEventListener('DOMContentLoaded', () => {
     window._toggleCutMarkFields();
   });
 
-  document.getElementById('paperTypeSelect').addEventListener('change', () => {
+  document.getElementById('paperTypeSelect').addEventListener('change', (e) => {
+    if (window.restoringConfig) return; // <-- skip preset logic during restore
     const select = document.getElementById('paperTypeSelect');
     const width = document.querySelector('input[name="pageWidthInches"]');
     const height = document.querySelector('input[name="pageHeightInches"]');
@@ -161,8 +162,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const val = select.value;
     if (presets[val]) {
-      width.value = presets[val][0];
-      height.value = presets[val][1];
+      const units = document.getElementById('pageUnits')?.value || 'in';
+      const wIn = presets[val][0];
+      const hIn = presets[val][1];
+      width.value = toDisplay(wIn, units).toFixed(units === 'mm' ? 2 : 3);
+      height.value = toDisplay(hIn, units).toFixed(units === 'mm' ? 2 : 3);
+    }
+    // Persist the new size (in inches) and the selected paper type right away
+    {
+      const { wIn: wInches, hIn: hInches } = getPageSizeInches();
+      localStorage.setItem('lastPageWidthInches', wInches);
+      localStorage.setItem('lastPageHeightInches', hInches);
+      localStorage.setItem('lastPaperType', val);
     }
 
     updateLayoutOptions();
@@ -183,12 +194,116 @@ window.addEventListener('DOMContentLoaded', () => {
     } catch {}
 
     // Refresh layout options when page size changes by hand
-    document.querySelector('input[name="pageWidthInches"]').addEventListener('input', updateLayoutOptions);
-    document.querySelector('input[name="pageHeightInches"]').addEventListener('input', updateLayoutOptions);
+    document.querySelector('input[name="pageWidthInches"]').addEventListener('input', () => {
+      const { wIn, hIn } = getPageSizeInches();
+      localStorage.setItem('lastPageWidthInches', wIn);
+      localStorage.setItem('lastPageHeightInches', hIn);
+      updateLayoutOptions();
+    });
+
+    document.querySelector('input[name="pageHeightInches"]').addEventListener('input', () => {
+      const { wIn, hIn } = getPageSizeInches();
+      localStorage.setItem('lastPageWidthInches', wIn);
+      localStorage.setItem('lastPageHeightInches', hIn);
+      updateLayoutOptions();
+    });
 
     // Also refresh when toggling Silhouette checkbox so unsupported layouts get disabled
-    document.querySelector('input[name="useSilhouette"]').addEventListener('change', updateLayoutOptions);
+
+    document.querySelector('input[name="useSilhouette"]').addEventListener('change', (e) => {
+      updateLayoutOptions(e);
+    });
   });
+
+  // === Always save last page size in inches when width/height change ===
+  document.querySelector('input[name="pageWidthInches"]').addEventListener('input', () => {
+    const { wIn, hIn } = getPageSizeInches();
+    localStorage.setItem('lastPageWidthInches', wIn);
+    localStorage.setItem('lastPageHeightInches', hIn);
+  });
+
+  document.querySelector('input[name="pageHeightInches"]').addEventListener('input', () => {
+    const { wIn, hIn } = getPageSizeInches();
+    localStorage.setItem('lastPageWidthInches', wIn);
+    localStorage.setItem('lastPageHeightInches', hIn);
+  });
+
+  // Units toggle (in <-> mm). UI reflects selected units; backend always inches.
+  const pageUnitsSel = document.getElementById('pageUnits');
+  if (pageUnitsSel) {
+    const savedUnits = localStorage.getItem('pageUnits') || 'in';
+    pageUnitsSel.value = savedUnits;
+
+    // On first load, inputs are in inches (from HTML defaults) -> display in savedUnits
+    //renderPageSizeForUnits(savedUnits, 'in');
+
+    // Restore last saved page size in inches (fallback to defaults if none)
+    let lastWIn = parseFloat(localStorage.getItem('lastPageWidthInches')) || 8.5;
+    let lastHIn = parseFloat(localStorage.getItem('lastPageHeightInches')) || 11;
+
+    // Show them in the saved units
+    const widthEl = document.querySelector('input[name="pageWidthInches"]');
+    const heightEl = document.querySelector('input[name="pageHeightInches"]');
+    widthEl.value = toDisplay(lastWIn, savedUnits).toFixed(savedUnits === 'mm' ? 2 : 3);
+    heightEl.value = toDisplay(lastHIn, savedUnits).toFixed(savedUnits === 'mm' ? 2 : 3);
+
+    // Apply last used paper type if available (handles the “no submit” case)
+    {
+      const lastPaper = localStorage.getItem('lastPaperType');
+      const paperSelect = document.getElementById('paperTypeSelect');
+      if (lastPaper && paperSelect) {
+        paperSelect.value = lastPaper;
+      }
+    }
+
+    window.electronAPI.writeLog(`[Startup] savedUnits=${savedUnits} lastPageWidthInches=${localStorage.getItem('lastPageWidthInches')} lastPageHeightInches=${localStorage.getItem('lastPageHeightInches')}`);
+
+    // DEBUG: startup page size + paper type (no await here)
+    try {
+      const lastPaper = localStorage.getItem('lastPaperType') || '(none)';
+      window.electronAPI.writeLog(`[Startup] lastPaper=${lastPaper} lastWIn=${lastWIn} lastHIn=${lastHIn}`);
+    } catch (e) {
+      // swallow logging errors
+    }
+
+    // Ensure inches equivalents are saved even if starting in mm mode
+    localStorage.setItem('lastPageWidthInches', lastWIn);
+    localStorage.setItem('lastPageHeightInches', lastHIn);
+
+    // Update unit labels and tracker
+    const wLab = document.getElementById('pageUnitLabelW');
+    const hLab = document.getElementById('pageUnitLabelH');
+    if (wLab) wLab.textContent = savedUnits;
+    if (hLab) hLab.textContent = savedUnits;
+    currentDisplayUnits = savedUnits;
+
+    const { wIn, hIn } = getPageSizeInches();
+    localStorage.setItem('lastPageWidthInches', wIn);
+    localStorage.setItem('lastPageHeightInches', hIn);
+
+    pageUnitsSel.addEventListener('change', () => {
+      const prevUnits = currentDisplayUnits; // what’s in the inputs right now
+      const newUnits = pageUnitsSel.value; // what user wants to see
+      renderPageSizeForUnits(newUnits, prevUnits); // convert numbers to new units
+      localStorage.setItem('pageUnits', newUnits); // save preference for future
+      currentDisplayUnits = newUnits; // update tracker
+
+      // Persist the converted values in inches for next startup
+      const { wIn, hIn } = getPageSizeInches();
+      localStorage.setItem('lastPageWidthInches', wIn);
+      localStorage.setItem('lastPageHeightInches', hIn);
+
+      try {
+        window.electronAPI.writeLog(`[IN pageUnitsSel.addEventListener('change' AFTER:  localStorage.setItem'lastPageHeightInches'] wIn=${wIn} hIn=${hIn}`);
+      } catch (e) {
+        // swallow logging errors
+      }
+      try {
+        window.electronAPI.writeLog(`[FIRE updateLayoutOptions] - pageUnitsSel.addEventListener('change')`);
+      } catch (e) {}
+      updateLayoutOptions();
+    });
+  }
 
   // === Open PDF Output Folder ===
   document.getElementById('pdfOutputBtn').addEventListener('click', async () => {
@@ -261,10 +376,30 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     const config = JSON.parse(saved);
     const form = document.getElementById('createForm');
+    window.restoringConfig = true; // prevent paperTypeSelect change handler from running
+
+    // Explicitly restore paperType before looping so dropdown is correct
+    {
+      const paperSelect = document.getElementById('paperTypeSelect');
+      if (paperSelect) {
+        const lastPaper = localStorage.getItem('lastPaperType');
+        paperSelect.value = lastPaper || config.paperType || paperSelect.value;
+      }
+    }
 
     for (const [key, value] of Object.entries(config)) {
       const field = form.elements[key];
       if (!field) continue;
+
+      // Do not let old config override current page size or paper type
+      if (key === 'paperType' || key === 'pageWidthInches' || key === 'pageHeightInches') {
+        continue;
+      }
+
+      // Do NOT overwrite page size here; we already restored from lastPageWidth/Height.
+      if (key === 'pageWidthInches' || key === 'pageHeightInches') {
+        continue;
+      }
 
       if (field.type === 'checkbox') {
         field.checked = value;
@@ -272,6 +407,8 @@ window.addEventListener('DOMContentLoaded', () => {
         field.value = value;
       }
     }
+
+    window.restoringConfig = false; // allow paperTypeSelect changes again
 
     // Config may have showCropMarks = false — reflect it in the UI
     window._toggleCutMarkFields?.();
@@ -574,6 +711,9 @@ document.querySelector('input[name="pageHeightInches"]').addEventListener('input
 document.querySelector('select[name="layout"]').addEventListener('change', (e) => {
   // remember last used layout
   localStorage.setItem('lastLayout', e.target.value);
+  try {
+    window.electronAPI.writeLog(`[FIRE updateLayoutOptions] - document.querySelector('select[name="layout"]').addEventListener('change')`);
+  } catch (e) {}
   updateLayoutOptions();
 });
 
@@ -587,11 +727,12 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const form = e.target;
+  const { wIn, hIn } = getPageSizeInches();
 
   const config = {
     layout: form.layout.value,
-    pageWidthInches: parseFloat(form.pageWidthInches.value),
-    pageHeightInches: parseFloat(form.pageHeightInches.value),
+    pageWidthInches: wIn,
+    pageHeightInches: hIn,
     dpi: parseInt(form.dpi.value),
     paperType: form.paperType.value,
     cardFormat: form.cardFormat.value,
@@ -618,6 +759,7 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     noteFontSize: parseInt(form.noteFontSize.value),
     separateBackPDF: form.separateBackPDF.checked,
     //excludeCardSlots: form.excludeCardSlots.value.trim(),
+    addPerCardAdjustLayer: form.addPerCardAdjustLayer.checked,
     manualNote: form.manualNote.value,
     noBackImage: form.noBackImage.checked
   };
@@ -1207,16 +1349,34 @@ const loadUserConfigs = async () => {
         document.querySelector('[data-tab="create"]').click();
         const form = document.getElementById('createForm');
 
+        // --- Restore Units preference before populating size fields ---
+        const savedUnits = localStorage.getItem('pageUnits') || 'in';
+        const unitsDropdown = document.getElementById('pageUnits');
+        if (unitsDropdown) {
+          unitsDropdown.value = savedUnits;
+          currentDisplayUnits = savedUnits;
+        }
+
         // STEP 1: Apply dimension-related values first
         const order = ['pageWidthInches', 'pageHeightInches', 'cardWidthMM', 'cardHeightMM'];
         order.forEach((key) => {
           if (key in config) {
             const field = form.elements[key];
-            if (field) field.value = config[key];
+            if (field) {
+              if (key === 'pageWidthInches' || key === 'pageHeightInches') {
+                // Config stores inches; convert to savedUnits for display
+                field.value = toDisplay(config[key], savedUnits).toFixed(savedUnits === 'mm' ? 2 : 3);
+              } else {
+                field.value = config[key];
+              }
+            }
           }
         });
 
         // STEP 2: Update layout options based on dimensions
+        try {
+          window.electronAPI.writeLog(`[FIRE updateLayoutOptions] - editBtn.onclick = async ()`);
+        } catch (e) {}
         updateLayoutOptions();
 
         // STEP 3: Apply remaining fields (but layout goes LAST)
@@ -1242,6 +1402,10 @@ const loadUserConfigs = async () => {
         if ('layout' in config) {
           const layoutField = form.elements['layout'];
           if (layoutField) layoutField.value = config['layout'];
+        }
+
+        if ('addPerCardAdjustLayer' in config) {
+          form.addPerCardAdjustLayer.checked = !!config.addPerCardAdjustLayer;
         }
 
         // Ensure Cut Mark fields match the config's Print Cut Marks value
@@ -1722,12 +1886,82 @@ function monitorSentinelStatus(onUpdate, onComplete) {
   return () => clearInterval(interval); // return cleanup function
 }
 
+let currentDisplayUnits = 'in'; // Tracks what units the numbers in the inputs currently represent
+
+// === Units Helpers (UI only) ===
+const IN_PER_MM = 1 / 25.4;
+const MM_PER_IN = 25.4;
+
+function toInches(val, units) {
+  const n = parseFloat(val || '0');
+  return units === 'mm' ? n * IN_PER_MM : n;
+}
+
+function toDisplay(valInches, units) {
+  return units === 'mm' ? valInches * MM_PER_IN : valInches;
+}
+
+function getPageSizeInchesFromUnits(interpretUnits) {
+  const wStr = document.querySelector('input[name="pageWidthInches"]').value;
+  const hStr = document.querySelector('input[name="pageHeightInches"]').value;
+  const w = parseFloat(wStr || '0');
+  const h = parseFloat(hStr || '0');
+  if (interpretUnits === 'mm') {
+    return { wIn: w / 25.4, hIn: h / 25.4 };
+  }
+  return { wIn: w, hIn: h };
+}
+
+function getPageSizeInches() {
+  const units = document.getElementById('pageUnits')?.value || 'in';
+  return getPageSizeInchesFromUnits(units);
+}
+
+// Update displayed values when units change.
+function renderPageSizeForUnits(targetUnits, interpretFromUnits) {
+  const interpret = interpretFromUnits || document.getElementById('pageUnits')?.value || 'in';
+
+  const widthEl = document.querySelector('input[name="pageWidthInches"]');
+  const heightEl = document.querySelector('input[name="pageHeightInches"]');
+
+  // Read current numbers as "interpret" units -> inches
+  const wNow = parseFloat(widthEl.value || '0');
+  const hNow = parseFloat(heightEl.value || '0');
+  const wIn = interpret === 'mm' ? wNow / 25.4 : wNow;
+  const hIn = interpret === 'mm' ? hNow / 25.4 : hNow;
+
+  // Write them back in target units
+  widthEl.value = (targetUnits === 'mm' ? wIn * 25.4 : wIn).toFixed(targetUnits === 'mm' ? 2 : 3);
+  heightEl.value = (targetUnits === 'mm' ? hIn * 25.4 : hIn).toFixed(targetUnits === 'mm' ? 2 : 3);
+
+  // Update unit labels
+  const wLab = document.getElementById('pageUnitLabelW');
+  const hLab = document.getElementById('pageUnitLabelH');
+  if (wLab) wLab.textContent = targetUnits;
+  if (hLab) hLab.textContent = targetUnits;
+}
+
 function updateLayoutOptions() {
+  try {
+    window.electronAPI.writeLog(`[IN updateLayoutOptions - START] wIn=${wIn} hIn=${hIn}`);
+  } catch (e) {
+    // swallow logging errors
+  }
   const layoutSelect = document.querySelector('select[name="layout"]');
   const cardwidthMM = parseFloat(document.querySelector('input[name="cardWidthMM"]').value || '69');
   const cardheightMM = parseFloat(document.querySelector('input[name="cardHeightMM"]').value || '94');
-  const width = parseFloat(document.querySelector('input[name="pageWidthInches"]').value);
-  const height = parseFloat(document.querySelector('input[name="pageHeightInches"]').value);
+  //const width = parseFloat(document.querySelector('input[name="pageWidthInches"]').value);
+  //const height = parseFloat(document.querySelector('input[name="pageHeightInches"]').value);
+
+  const { wIn, hIn } = getPageSizeInches();
+  const width = wIn;
+  const height = hIn;
+
+  try {
+    window.electronAPI.writeLog(`[IN updateLayoutOptions - AFTER: const { wIn, hIn } = getPageSizeInches()] wIn=${wIn} hIn=${hIn} layoutSelect=${layoutSelect}`);
+  } catch (e) {
+    // swallow logging errors
+  }
 
   let availableLayouts;
 
@@ -1735,6 +1969,8 @@ function updateLayoutOptions() {
     availableLayouts = [
       { value: 'horizontal', label: 'Horizontal (2x4)', minW: 0, minH: 0, silSupport: true },
       { value: 'vertical', label: 'Vertical (3x3)', minW: 0, minH: 0, silSupport: true },
+      { value: 'horizontalAuto', label: 'Horizontal (Auto)', minW: 0, minH: 0, silSupport: false },
+      { value: 'verticalAuto', label: 'Vertical (Auto)', minW: 0, minH: 0, silSupport: false },
       { value: 'SevenCard', label: 'SevenCard', minW: 0, minH: 0, silSupport: true },
       { value: 'horizontal2x5', label: 'Horizontal (2x5)', minW: 8, minH: 13, silSupport: false },
       { value: 'horizontal2x6', label: 'Horizontal (2x6)', minW: 11, minH: 16, silSupport: false },
@@ -1749,6 +1985,8 @@ function updateLayoutOptions() {
     availableLayouts = [
       { value: 'horizontal', label: 'Horizontal (2x4)', minW: 0, minH: 0, silSupport: true },
       { value: 'vertical', label: 'Vertical (3x3)', minW: 0, minH: 0, silSupport: true },
+      { value: 'horizontalAuto', label: 'Horizontal (Auto)', minW: 0, minH: 0, silSupport: false },
+      { value: 'verticalAuto', label: 'Vertical (Auto)', minW: 0, minH: 0, silSupport: false },
       { value: 'SevenCard', label: 'SevenCard', minW: 0, minH: 0, silSupport: true },
       {
         value: 'horizontal2x5',
@@ -1779,11 +2017,23 @@ function updateLayoutOptions() {
     ];
   }
 
+  // If Silhouette Registration is ON, hide the Auto layouts for THIS render only.
+  // Work on a local copy so we don’t mutate the base list across calls.
+  const silhouetteChecked = document.querySelector('input[name="useSilhouette"]').checked;
+  let list = availableLayouts.slice();
+
+  if (silhouetteChecked) {
+    list = list.filter((opt) => opt.value !== 'horizontalAuto' && opt.value !== 'verticalAuto');
+  }
+
+  // Dedupe by value in case any upstream builder appended duplicates earlier
+  list = list.filter((opt, idx, arr) => arr.findIndex((o) => o.value === opt.value) === idx);
+
   // Preserve current selection
   const current = layoutSelect.value;
   layoutSelect.innerHTML = '';
 
-  availableLayouts.forEach((opt) => {
+  list.forEach((opt) => {
     if (width >= opt.minW && height >= opt.minH) {
       const o = document.createElement('option');
       o.value = opt.value;

@@ -1038,3 +1038,66 @@ function logError(message) {
     alert('⚠️ Logging error: ' + e.message);
   }
 }
+
+// === Auto-Layout Slot Calculator ===
+// Determines rows/cols that fit on the current page, honoring
+// card format, bleed/trim, gap, DPI, and Silhouette inset.
+function CalculatePageSlots(orientation /* 'horizontal' | 'vertical' */) {
+  try {
+    // 1) Page size (px). Mirror how RE_PhotoEngine computes inches->px.
+    var pageWpx = Math.round(pageWidthInches * dpi);
+    var pageHpx = Math.round(pageHeightInches * dpi);
+
+    // If orientation is "horizontal", landscape flip to match your existing landscape handling
+    /*if (orientation === 'horizontal') {
+      var t = pageWpx;
+      pageWpx = pageHpx;
+      pageHpx = t;
+    }*/
+
+    // 2) Silhouette inset (≈10mm each side) if enabled
+    var insetPx = useSilhouette ? mmToPixels(10.0) : 0;
+    var availW = useSilhouette ? pageWpx - insetPx * 2 : pageWpx;
+    var availH = useSilhouette ? pageHpx - insetPx * 2 : pageHpx;
+
+    // 3) Effective trim/bleed used for display sizing (same rule as engine)
+    var silhouetteBleedAdjust = cropBleed; // default to cropBleed
+    if (useSilhouette && cropBleed === 0.0) {
+      silhouetteBleedAdjust = 2.0; // your default for Silhouette when not set
+    }
+
+    // 4) Base “home” image size (content area), in px
+    var cardWhome = mmToPixels(cardWidthMM - silhouetteBleedAdjust * 2);
+    var cardHhome = mmToPixels(cardHeightMM - silhouetteBleedAdjust * 2);
+
+    // 5) Display cell size (matches your main engine’s logic)
+    var cardDisplayW, cardDisplayH;
+    if (useSilhouette) {
+      // Use trimmed silhouette cell size for both MPC and NoBleed
+      cardDisplayW = mmToPixels(69 - silhouetteBleedAdjust * 2);
+      cardDisplayH = mmToPixels(94 - silhouetteBleedAdjust * 2);
+    } else if (cardFormat === 'NoBleed') {
+      var borderPaddingPx = mmToPixels(1);
+      cardDisplayW = cardWhome + borderPaddingPx * 2;
+      cardDisplayH = cardHhome + borderPaddingPx * 2;
+    } else {
+      cardDisplayW = cardWhome;
+      cardDisplayH = cardHhome;
+    }
+
+    // 6) Gap between cards (px)
+    var gapPx = mmToPixels(cardGap || 0);
+
+    // 7) Fit math: account for gaps between cells (N cells have N-1 gaps)
+    // Rearranged for integer math: floor((avail + gap)/(cell + gap))
+    var cols = Math.max(1, Math.floor((availW + gapPx) / (cardDisplayW + gapPx)));
+    var rows = Math.max(1, Math.floor((availH + gapPx) / (cardDisplayH + gapPx)));
+
+    // 8) Return rows/cols; totalCards will be rows*cols in engine
+    return { rows: rows, cols: cols };
+  } catch (e) {
+    logError('Error - CalculatePageSlots: ' + e.message);
+    // Safe fallback
+    return { rows: orientation === 'vertical' ? 3 : 2, cols: orientation === 'vertical' ? 3 : 4 };
+  }
+}

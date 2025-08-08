@@ -21,6 +21,10 @@
   </folder>
   <folder name="Multipage Batch Export">
     <sortOrder>6</sortOrder>
-    <description/>
+    <description>Multipage Batch Templates - These templates support MultiPage PDF Exports so you can prep and print out entire decks and sets from a single set of files.</description>
+  </folder>
+  <folder name="Print Shop">
+    <sortOrder>7</sortOrder>
+    <description>Print Shop Templates - These templates are for printers most home users don't have access to such as large UV printers.</description>
   </folder>
 </configs>

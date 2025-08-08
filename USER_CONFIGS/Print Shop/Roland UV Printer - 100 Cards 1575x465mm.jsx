@@ -4,8 +4,8 @@
 
 // --- Layout ---
 var layout = "grid5x23";
-var pageWidthInches = 62.00787;
-var pageHeightInches = 18.3071;
+var pageWidthInches = 1575.00;
+var pageHeightInches = 465.00;
 var dpi = 800;
 var paperType = "Custom";
 
@@ -29,6 +29,7 @@ var sat = 0;
 var gmm = 1.05;
 var whitepoint = 255;
 var blackpoint = 0;
+var addPerCardAdjustLayer = false;
 
 // --- Back Alignment ---
 var cardBack = false;
@@ -49,7 +50,7 @@ var noteFontSize = 10;
 var manualNote = "UV Printer";
 
 // --- Meta Info ---
-var configCreateDate = "2025-08-07T19:50:27.826Z";
+var configCreateDate = "2025-08-08T01:59:41.377Z";
 
 // === END CONFIG ===
 

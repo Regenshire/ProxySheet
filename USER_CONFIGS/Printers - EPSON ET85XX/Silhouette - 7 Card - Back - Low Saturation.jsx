@@ -16,7 +16,9 @@ var cardHeightMM = 94;
 
 // --- Cut & Bleed ---
 var cutMarkSize = 4.5;
+var cropBleed = 0;
 var cutOffset = 3.04;
+var cardGap = 0;
 var showCropMarks = false;
 
 // --- Color Adjustments ---
@@ -27,12 +29,13 @@ var sat = 0;
 var gmm = 1.05;
 var whitepoint = 255;
 var blackpoint = 0;
+var addPerCardAdjustLayer = false;
 
 // --- Back Alignment ---
 var cardBack = true;
 var backOffsetXmm = 0;
 var backOffsetYmm = 0;
-var selectEachCard = true;
+var selectEachCard = false;
 
 // --- Silhouette ---
 var useSilhouette = true;
@@ -47,7 +50,7 @@ var noteFontSize = 10;
 var manualNote = "EPSON ET-85XX | BACK | Match MTG Card Back Colors";
 
 // --- Meta Info ---
-var configCreateDate = "2025-07-19T02:57:48.232Z";
+var configCreateDate = "2025-08-07T22:17:56.567Z";
 
 // === END CONFIG ===
 

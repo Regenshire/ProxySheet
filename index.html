@@ -81,17 +81,30 @@
                 <select name="layout">
                   <option value="horizontal">Horizontal (2x4)</option>
                   <option value="vertical">Vertical (3x3)</option>
+                  <option value="horizontalAuto">Horizontal (Auto)</option>
+                  <option value="verticalAuto">Vertical (Auto)</option>
                   <option value="SevenCard">SevenCard</option>
                 </select>
               </label>
+
               <label
-                >Page Width (in)
-                <input type="number" name="pageWidthInches" value="8.5" />
+                >Units
+                <select name="pageUnits" id="pageUnits">
+                  <option value="in" selected>Inches</option>
+                  <option value="mm">Millimeters</option>
+                </select>
               </label>
-              <label
-                >Page Height (in)
-                <input type="number" name="pageHeightInches" value="11" />
-              </label>
+
+              <div class="two-col">
+                <label
+                  >Page Width (<span id="pageUnitLabelW">in</span>)
+                  <input type="number" name="pageWidthInches" value="8.5" />
+                </label>
+                <label
+                  >Page Height (<span id="pageUnitLabelH">in</span>)
+                  <input type="number" name="pageHeightInches" value="11" />
+                </label>
+              </div>
               <label
                 >DPI
                 <input type="number" name="dpi" value="800" />
@@ -147,13 +160,24 @@
             <!-- Color Adjustments -->
             <fieldset>
               <legend>Color Adjustments</legend>
-              <label>Brightness <input type="number" name="bright" value="0" /></label>
-              <label>Contrast <input type="number" name="contr" value="0" /></label>
-              <label>Vibrance <input type="number" name="vib" value="0" /></label>
-              <label>Saturation <input type="number" name="sat" value="0" /></label>
+              <div class="two-col">
+                <label>Brightness <input type="number" name="bright" value="0" /></label>
+                <label>Contrast <input type="number" name="contr" value="0" /></label>
+              </div>
+              <div class="two-col">
+                <label>Vibrance <input type="number" name="vib" value="0" /></label>
+                <label>Saturation <input type="number" name="sat" value="0" /></label>
+              </div>
               <label>Gamma (GMM) <input type="number" name="gmm" value="1.05" step="any" /></label>
-              <label>Whitepoint <input type="number" name="whitepoint" value="255" /></label>
-              <label>Blackpoint <input type="number" name="blackpoint" value="0" /></label>
+              <div class="two-col">
+                <label>Whitepoint <input type="number" name="whitepoint" value="255" /></label>
+                <label>Blackpoint <input type="number" name="blackpoint" value="0" /></label>
+              </div>
+
+              <label>
+                <input type="checkbox" name="addPerCardAdjustLayer" checked />
+                Add Individual Card Adjustment Layers
+              </label>
             </fieldset>
 
             <!-- Back Alignment -->
