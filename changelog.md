@@ -7,11 +7,11 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 ## [1.08 BETA] – 2025-08-07
 
 - Added support for large UV Printers in the form of a Grid (5x23, 115 Cards) layout.
-- Added Card Gap funcationality to add gaps between cards (non-Silhouette prints)
+- Added Card Gap functionality to add gaps between cards (non-Silhouette prints)
 - Added a Crop Bleed (mm) field to allow a user to specify a crop of the bleed to reduce how much bleed is printed (non-Silhouette prints)
 - Renamed the Cut Mark fields and set those fields to be hidden when not using Cut Marks
 - Added support for single back selection when doing back only pages so you can choose one back and have it apply to all card slots
-- Added Hotizontal (Auto) & Vertical (Auto) layouts. These layouts automatically adjust based on your paper size, allowing for custom paper sizes where we don't have pre-built layouts. These layouts are currently only available when not using Silhouette since Silhouette requires very precise layouts to work with provided templates.
+- Added Horizontal (Auto) & Vertical (Auto) layouts. These layouts automatically adjust based on your paper size, allowing for custom paper sizes where we don't have pre-built layouts. These layouts are currently only available when not using Silhouette since Silhouette requires very precise layouts to work with provided templates.
 - Added support for inputting Page Width and Height in either MM or Inches.
 - Updated the layout with two column sections to reduce required screen real estate.
 - Fixed various bugs related to opening the application and loading previous values
