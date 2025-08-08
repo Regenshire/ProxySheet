@@ -29,11 +29,12 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
      ```
      ProxySheet.exe
      ```
+
      ⚠️ When launching ProxySheet.exe for the first time, you may see a Windows SmartScreen warning. Use your best judgement when evaluating any application you download from the internet.
 
      Click “More info” > “Run anyway” to proceed. This happens because the app is unsigned.
 
-     If you do not want to use the executable, but want to use the application, you can also download the repository and use the bash commands below.  NPM install does a vulnerability check of the packages it installs as part of its process.
+     If you do not want to use the executable, but want to use the application, you can also download the repository and use the bash commands below. NPM install does a vulnerability check of the packages it installs as part of its process.
 
    - **macOS / Advanced Users**:\
      Clone the repository and run with Node.js:
@@ -50,7 +51,7 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
    - Requires **Adobe Photoshop 2021 or later**
    - Photoshop scripting must be enabled (default is enabled)
 
-2. **Begin Using ProxySheet**
+1. **Begin Using ProxySheet**
 
    - Use the **Create** tab to build new layouts
    - Use **Configs** to run and manage saved settings
@@ -82,14 +83,14 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
   - Customize cut size and offset (mm)
 - **Color Adjustments**:
   - Brightness, Contrast, Vibrance, Saturation, Gamma, Whitepoint, Blackpoint can all be controlled in the scripts
-  - Cards also receive their own individual Color Adjustment layers for individual adjustment within Photoshop.  This feature is excluded for PDF Batch Exports and Image conversions, but is available for single page configs.
+  - Cards also receive their own individual Color Adjustment layers for individual adjustment within Photoshop. This feature is excluded for PDF Batch Exports and Image conversions, but is available for single page configs.
 - **Back Alignment**:
   - Card Back Offset Support
   - Ability to Prompt for each Card Back
 - **PDF Batch Export**:
   - Multipage Batch Export support
   - Supports Card backs for both standard and double-sided cards
-  - Double-sided cards are automated by matching the filename of the card with the back cards specified using a [Back] or {Back} tag in the filename.  For example: If you have "The Kami War {227}.jpg" and "The Kami War {227} [Back].jpg" in the same folder, it will detect this as a double-sided card with the Back being the file with [Back] in the name.
+  - Double-sided cards are automated by matching the filename of the card with the back cards specified using a [Back] or {Back} tag in the filename. For example: If you have "The Kami War {227}.jpg" and "The Kami War {227} [Back].jpg" in the same folder, it will detect this as a double-sided card with the Back being the file with [Back] in the name.
   - Allows you to select a back for all non-double-sided cards
   - Supports excluding Back images by selecting the No Back Images option
   - Supports combined or seperate files for fronts and backs
@@ -101,9 +102,9 @@ ProxySheet is a powerful desktop application and Photoshop scripting engine for 
 
 ## 📝 PDF Batch Export
 
-ProxySheet includes a powerful **Batch Export system** designed for high-volume printing of proxies. Instead of building a single layout manually, you can automatically split dozens or hundreds of card images into multiple pages — and generate print-ready PDFs in one pass.  Adobe Photoshop does not natively support multi-page workflows.  This batch system creates each page in Adobe Photoshop (allowing for adjustment layers) and then outputs them as individual PDF files.  It then merges those files together into a single document.
+ProxySheet includes a powerful **Batch Export system** designed for high-volume printing of proxies. Instead of building a single layout manually, you can automatically split dozens or hundreds of card images into multiple pages — and generate print-ready PDFs in one pass. Adobe Photoshop does not natively support multi-page workflows. This batch system creates each page in Adobe Photoshop (allowing for adjustment layers) and then outputs them as individual PDF files. It then merges those files together into a single document.
 
-The PDF Batch Export system supports double-sided cards.  It identifies these cards when it searches the folder and detects two cards with the same name, but one with a [Back] or {Back} tag in the filename.  For example, if you have "The Kami War {227}.jpg" and "The Kami War {227} [Back].jpg" in the same folder, it will detect this as a double-sided card with the back of the card being the file with [Back] in the name.  The Batch system seperates Double-Sided cards into their own sheets for printing convenience.
+The PDF Batch Export system supports double-sided cards. It identifies these cards when it searches the folder and detects two cards with the same name, but one with a [Back] or {Back} tag in the filename. For example, if you have "The Kami War {227}.jpg" and "The Kami War {227} [Back].jpg" in the same folder, it will detect this as a double-sided card with the back of the card being the file with [Back] in the name. The Batch system seperates Double-Sided cards into their own sheets for printing convenience.
 
 ### 🚀 How It Works
 
@@ -162,10 +163,10 @@ The PDF Batch Export system supports double-sided cards.  It identifies these ca
 Here is an example of a traditional 9 card Letter batch with both front and back.
 <img width="1878" height="1217" alt="Image" src="https://github.com/user-attachments/assets/dbfcef78-b469-4635-9b99-a3d2d4c5841a" />
 
-Here is an example of a 7 card letter layout for Silhouette with the selected card back.  The seven card layout reduces cutting errors by giving space around the left most registration marks.
+Here is an example of a 7 card letter layout for Silhouette with the selected card back. The seven card layout reduces cutting errors by giving space around the left most registration marks.
 <img width="2075" height="805" alt="Image" src="https://github.com/user-attachments/assets/7f9276dc-704e-40ea-8bd3-b7f1679c1619" />
 
-Here is an example of a 7 card letter layout for Silhouette for douhle sided cards. Both of these sets of sheets came from the same batch.  The batch seperated the double-sided cards into their own segment of pages.
+Here is an example of a 7 card letter layout for Silhouette for douhle sided cards. Both of these sets of sheets came from the same batch. The batch seperated the double-sided cards into their own segment of pages.
 <img width="2074" height="804" alt="Image" src="https://github.com/user-attachments/assets/ee2230b8-ae0b-4e20-b9b6-4ea2ac443499" />
 
 ---
@@ -174,7 +175,7 @@ Here is an example of a 7 card letter layout for Silhouette for douhle sided car
 
 - Launch `.studio3` files from the **Silhouette** tab
 - Edit and sort templates with metadata (Title, Description, Tags, Order)
-- Ready-to-cut files for SevenCard and normal eight card layouts, supports both MPC and No Bleed cards.  Additional templates will be added in the future.
+- Ready-to-cut files for SevenCard and normal eight card layouts, supports both MPC and No Bleed cards. Additional templates will be added in the future.
 - Requires the Silhouette Studio software to use
 
 <img width="1389" height="1196" alt="Image" src="https://github.com/user-attachments/assets/d03adbc6-f54b-46a2-97b6-f2e8d5cee0d1" />
@@ -185,7 +186,7 @@ Here is an example of a 7 card letter layout for Silhouette for douhle sided car
 
 ## 🔄 Image Conversion Tool
 
-Accessed via the **Tools** tab, the Image Conversion tool allows users to convert a directory of cards to a consistent format of cards with a bleed if it does not have one, as well as applying Color Correction adjustments to each card.  Options include:
+Accessed via the **Tools** tab, the Image Conversion tool allows users to convert a directory of cards to a consistent format of cards with a bleed if it does not have one, as well as applying Color Correction adjustments to each card. Options include:
 
 - DPI rescaling
 - Format conversion (JPG, PNG)
@@ -206,6 +207,31 @@ Accessed via the **Tools** tab, the Image Conversion tool allows users to conver
 - Auto Batch Numbering: Each export is timestamped and saved under batchHistory.
 
 ---
+
+## TROUBLESHOOTING
+
+### What to do when you click Run Now it does not open Photoshop and gives an error from another application such as Adobe Illustrator.
+
+This means that your system does not have Adobe Photoshop set as the default application for opening .jsx. .JSX files are Extendscript files that run scripting in Adobe Photoshop. These are the heart of how ProxySheet works and they need to be opened by Photoshop. Here are instructions for setting Adobe Photshop as the default application for .jsx files.
+
+#### For Windows
+
+1. Locate a JSX file: Open File Explorer and go to the installation folder for ProxySheet and go to the \app\USER_CONFIGS\MPC Bleed subfolder.
+2. Right-click on one of the .jsx files there and choose "Open With" from the context menu.
+3. Choose "Photoshop":
+4. If Photoshop appears in the list, select it. If it's not listed, click "Choose another app" (or similar). You may need to click "More apps" at the bottom of the list and then scroll to find Photoshop or navigate to the Photoshop executable file.
+5. Check "Always use this app to open .jsx files": Make sure the checkbox for "Always use this app to open .jsx files" is checked. This ensures that all future JSX files will open in Photoshop by default.
+6. Click "OK": Click OK to save the changes.
+
+#### For Mac
+
+1. Locate a JSX file: Open Finder and find a .jsx file on your computer.
+2. Right-click and choose "Get Info": Right-click (or Control-click) on the JSX file and choose "Get Info" from the context menu.
+3. Expand "Open with": In the Info window, expand the "Open with" section if it's not already open.
+4. Choose "Photoshop": Select the most recent version of Photoshop installed on your computer from the dropdown menu.
+5. Click "Change All": Click "Change All" to apply this setting to all .jsx files on your Mac.
+6. Click "Continue": When prompted, click "Continue" to confirm the change.
+7. Close the Info window: Close the Info window by clicking the red "x" icon in the top left corner.
 
 ## 📘 License
 
