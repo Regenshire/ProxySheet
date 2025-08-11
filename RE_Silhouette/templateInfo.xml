@@ -5,28 +5,47 @@
     <description>8 Card Silhouette cutting template for MTG cards on Standard size paper. This template maximizes yield.  It is recommended that you use the post-it trick with 8 card templates to avoid registration issues.</description>
     <tags>Letter, 8 Card</tags>
   </template>
-  <template fileName="silh_letter_sevencard.studio3">
+  <template fileName="silh_letter_ninecard_edgetoedge.studio3">
     <sortOrder>2</sortOrder>
+    <title>Standard - Silhouette 9 Card Edge-to-Edge Template</title>
+    <description>9 Card Silhouette cutting template for MTG cards on Standard size paper printed with a borderless setting. This template maximizes yield, allowing you to print 9 cards on a Standard sized piece of paper.  This Template is used with the "Edge-to-Edge" option and requires Borderless printing and adjusting the location on the cutting matt.</description>
+    <tags>Letter, 9 Card, Edge-to-Edge</tags>
+  </template>
+  <template fileName="silh_letter_eightcard_edgetoedge.studio3">
+    <sortOrder>3</sortOrder>
+    <title>Standard - Silhouette 8 Card Edge-to-Edge Template</title>
+    <description>8 Card Silhouette cutting template for MTG cards on Standard size paper printed with a borderless setting. This template increases the amount of space around the registration marks.  This Template is used with the "Edge-to-Edge" option.</description>
+    <tags>Letter, 8 Card, Edge-to-Edge</tags>
+  </template>
+  <template fileName="silh_letter_sevencard.studio3">
+    <sortOrder>4</sortOrder>
     <title>Standard - Silhouette 7 Card MTG Card Template</title>
     <description>7 Card Silhouette cutting template for MTG cards on Standard size paper. This template is more reliable for some users than the traditional 8 card template because it allows more room around the registration marks and improves registration detection.</description>
     <tags>Letter, 7 Card</tags>
   </template>
+  <template fileName="silh_letter_sevencard_reversed.studio3">
+    <sortOrder>4</sortOrder>
+    <title>REVERSED - Standard - Silhouette 7 Card MTG Card Template</title>
+    <description>This is a Reversed version of the 7 Card Silhouette cutting template for MTG cards on Standard size paper. This template has none of the advantages of the standard 7 card template and is offered in case you need to cut a 7 card back sheet.</description>
+    <tags>Letter, 7 Card, Reversed</tags>
+  </template>
   <template fileName="silh_A4_horizontal.studio3">
-    <sortOrder>3</sortOrder>
+    <sortOrder>5</sortOrder>
     <title>A4 - Silhouette 8 Card MTG Card Template</title>
     <description>8 Card Silhouette cutting template for MTG cards on A4 size paper. This template maximizes yield.  It is recommended that you use the post-it trick with 8 card templates to avoid registration issues.</description>
     <tags>Letter, 8 Card</tags>
   </template>
   <template fileName="silh_A4_sevencard.studio3">
-    <sortOrder>4</sortOrder>
+    <sortOrder>6</sortOrder>
     <title>A4 - Silhouette 7 Card MTG Card Template</title>
     <description>7 Card Silhouette cutting template for MTG cards on A4 size paper. This template is more reliable for some users than the traditional 8 card template because it allows more room around the registration marks and improves registration detection.</description>
     <tags>Letter, 7 Card</tags>
   </template>
   <template fileName="silh_legal_tencard.studio3">
-    <sortOrder>5</sortOrder>
+    <sortOrder>7</sortOrder>
     <title>Legal - Silhouette 10 Card MTG Card Template</title>
     <description>10 Card Silhouette cutting template for MTG cards on Legal size paper. This template maximizes the space available on Legal sized paper while keeping space around the key lower left and upper right registration marks.</description>
     <tags>Legal, 10 Card</tags>
   </template>
+
 </templates>

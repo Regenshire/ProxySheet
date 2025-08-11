@@ -116,6 +116,18 @@ window.addEventListener('DOMContentLoaded', () => {
     cardGapInput.value = '0.00';
   }
 
+  // Show/hide Magic Registration on initial load based on Silhouette checkbox
+  const _magicContainerInit = document.getElementById('useMagicVersionContainer');
+  if (_magicContainerInit) {
+    if (useSilhouetteCheckbox.checked) {
+      _magicContainerInit.style.display = '';
+    } else {
+      _magicContainerInit.style.display = 'none';
+      const _magicChk = document.querySelector('input[name="useMagicVersion"]');
+      if (_magicChk) _magicChk.checked = false;
+    }
+  }
+
   // When Silhouette is checked, uncheck Show Crop Marks
   document.querySelector('input[name="useSilhouette"]').addEventListener('change', (e) => {
     const cropMarksCheckbox = document.querySelector('input[name="showCropMarks"]');
@@ -127,6 +139,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const cardGapLabel = cardGapInput.closest('label');
 
     if (e.target.checked) {
+      document.getElementById('useMagicVersionContainer').style.display = '';
+
       // Disable and hide both fields
       cropBleedLabel.style.display = 'none';
       cardGapLabel.style.display = 'none';
@@ -135,10 +149,17 @@ window.addEventListener('DOMContentLoaded', () => {
       cardGapInput.value = '0.00';
 
       cropMarksCheckbox.checked = false;
+
+      // Show Magic Registration option when Silhouette is ON
+      const _magicContainer = document.getElementById('useMagicVersionContainer');
+      if (_magicContainer) _magicContainer.style.display = '';
     } else {
       // Show both fields again
       cropBleedLabel.style.display = '';
       cardGapLabel.style.display = '';
+
+      document.getElementById('useMagicVersionContainer').style.display = 'none';
+      document.querySelector('input[name="useMagicVersion"]').checked = false;
     }
 
     // Ensure Cut Mark fields hide if Print Cut Marks was just unchecked
@@ -666,6 +687,9 @@ saveConfigForm.addEventListener('submit', async (e) => {
     config[element.name] = element.type === 'checkbox' ? element.checked : element.value;
   }
 
+  // Ensure explicit boolean for Use Magic Registration
+  config.useMagicVersion = !!form.useMagicVersion?.checked;
+
   // Force width/height to be saved in INCHES regardless of current display units
   {
     const { wIn, hIn } = getPageSizeInches(); // converts mm->in when needed
@@ -767,6 +791,7 @@ document.getElementById('createForm').addEventListener('submit', async (e) => {
     backOffsetYmm: parseFloat(form.backOffsetYmm.value),
     selectEachCard: form.selectEachCard.checked,
     useSilhouette: form.useSilhouette.checked,
+    useMagicVersion: form.useMagicVersion?.checked || false,
     notesOn: form.notesOn.checked,
     noteFontSize: parseInt(form.noteFontSize.value),
     separateBackPDF: form.separateBackPDF.checked,
@@ -1410,6 +1435,13 @@ const loadUserConfigs = async () => {
           }
         }
 
+        // Ensure Use Magic Registration reflects the config (string/number/boolean safe)
+        if (form.useMagicVersion) {
+          const v = config.useMagicVersion;
+          const coerceBool = (x) => x === true || x === 'true' || x === 1 || x === '1';
+          form.useMagicVersion.checked = coerceBool(v);
+        }
+
         // STEP 4: Finally set layout
         if ('layout' in config) {
           const layoutField = form.elements['layout'];
@@ -1422,6 +1454,20 @@ const loadUserConfigs = async () => {
 
         // Ensure Cut Mark fields match the config's Print Cut Marks value
         window._toggleCutMarkFields?.();
+
+        // Ensure Magic Registration visibility matches the (now-applied) Silhouette value
+        (function () {
+          const sil = document.querySelector('input[name="useSilhouette"]')?.checked;
+          const magicContainer = document.getElementById('useMagicVersionContainer');
+          if (!magicContainer) return;
+          if (sil) {
+            magicContainer.style.display = '';
+          } else {
+            magicContainer.style.display = 'none';
+            const magicChk = document.querySelector('input[name="useMagicVersion"]');
+            if (magicChk) magicChk.checked = false;
+          }
+        })();
 
         /*
         for (const [key, value] of Object.entries(config)) {

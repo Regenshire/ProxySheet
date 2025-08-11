@@ -46,6 +46,7 @@ if (typeof showCropMarks === "undefined") showCropMarks = true;
 if (typeof useSilhouette === "undefined") useSilhouette = false;
 if (typeof excludeCardSlots === "undefined") excludeCardSlots = "";
 if (typeof adjustmentMeasureSheet === "undefined") adjustmentMeasureSheet = false;
+if (typeof useMagicVersion === "undefined") userMagicVersion = false;
 
 // Notes
 if (typeof notesOn === "undefined") notesOn = false;
@@ -456,6 +457,27 @@ function main() {
             cardFiles = expanded;
         }
     }
+
+    // === If FRONT Sheet (bulk), allow a single selection to fill all slots ===
+    if (cardBack === false && selectEachCard !== true && cardFiles && cardFiles.length === 1) {
+        var useAllFronts = confirm(
+            "You selected 1 card image.\n\nUse it for all " + (totalCards - excludedCount) + " cards?"
+        );
+        if (useAllFronts) {
+            var singleFront = cardFiles[0];
+            var expandedFronts = [];
+            for (var sf = 0; sf < totalCards; sf++) {
+                var slotNumF = sf + 1;
+                if (excludedSlots[slotNumF] === true) {
+                    expandedFronts.push(null); // preserve index alignment for excluded slots
+                } else {
+                    expandedFronts.push(singleFront); // use the same file for every active slot
+                }
+            }
+            cardFiles = expandedFronts;
+        }
+    }
+
 
     // === Add Silhouette Cameo 5 registration marks ===
     if (useSilhouette) {

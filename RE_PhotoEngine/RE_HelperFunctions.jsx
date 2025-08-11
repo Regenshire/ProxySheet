@@ -396,10 +396,18 @@ function shiftEntireDocumentByOffset(xOffsetPx, yOffsetPx) {
   }
 }
 
-// === Silhouette Suppor ===
+// === Silhouette Support ===
 function placeSilhouettePSDLayer(doc, scriptFolder) {
   try {
     var regFilename = 'SIL_LETTER_REG.psd';
+
+    if (useMagicVersion === true && layout === 'horizontal') {
+      regFilename = 'SIL_LETTER_REG_MAGIC.psd';
+    }
+
+    if (useMagicVersion === true && layout === 'vertical') {
+      regFilename = 'SIL_LETTER_NINECARD_MAGIC.psd';
+    }
 
     if (typeof paperType !== 'undefined') {
       if (paperType === 'A4') {
