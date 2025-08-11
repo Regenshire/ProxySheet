@@ -33,6 +33,30 @@ window._toggleEdgeToEdgeFields = function () {
   }
 };
 
+window._toggleGapBleedFields = function () {
+  const silChk = document.querySelector('input[name="useSilhouette"]');
+  const cropBleedInput = document.querySelector('input[name="cropBleed"]');
+  const cardGapInput = document.querySelector('input[name="cardGap"]');
+
+  if (!cropBleedInput || !cardGapInput) return;
+
+  const cropBleedLabel = cropBleedInput.closest('label');
+  const cardGapLabel = cardGapInput.closest('label');
+
+  const silhouetteOn = !!silChk?.checked;
+
+  if (silhouetteOn) {
+    if (cropBleedLabel) cropBleedLabel.style.display = 'none';
+    if (cardGapLabel) cardGapLabel.style.display = 'none';
+    // Keep current behavior: clear values when hidden
+    cropBleedInput.value = '0.00';
+    cardGapInput.value = '0.00';
+  } else {
+    if (cropBleedLabel) cropBleedLabel.style.display = '';
+    if (cardGapLabel) cardGapLabel.style.display = '';
+  }
+};
+
 // Tab switching logic
 document.querySelectorAll('.tab-button').forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -116,68 +140,26 @@ window.addEventListener('DOMContentLoaded', () => {
   // Watch for changes
   showCropMarksCheckbox.addEventListener('change', toggleCutMarkFields);
 
-  // Hide Card Gap & Crop Bleed if Silhouette is already checked
-  const useSilhouetteCheckbox = document.querySelector('input[name="useSilhouette"]');
-  const cropBleedInput = document.querySelector('input[name="cropBleed"]');
-  const cardGapInput = document.querySelector('input[name="cardGap"]');
-  const cropBleedLabel = cropBleedInput.closest('label');
-  const cardGapLabel = cardGapInput.closest('label');
-
-  if (useSilhouetteCheckbox.checked) {
-    cropBleedLabel.style.display = 'none';
-    cardGapLabel.style.display = 'none';
-    cropBleedInput.value = '0.00';
-    cardGapInput.value = '0.00';
-  }
+  // Initial toggle for Card Gap & Crop Bleed based on Silhouette
+  window._toggleGapBleedFields?.();
 
   // Show/hide Magic Registration on initial load based on Silhouette checkbox
-  const _magicContainerInit = document.getElementById('useMagicVersionContainer');
-  if (_magicContainerInit) {
-    if (useSilhouetteCheckbox.checked) {
-      _magicContainerInit.style.display = '';
-    } else {
-      _magicContainerInit.style.display = 'none';
-      const _magicChk = document.querySelector('input[name="useMagicVersion"]');
-      if (_magicChk) _magicChk.checked = false;
-    }
-  }
-
+  window._toggleEdgeToEdgeFields?.();
   // When Silhouette is checked, uncheck Show Crop Marks
+
   document.querySelector('input[name="useSilhouette"]').addEventListener('change', (e) => {
+    // Keep Edge-to-Edge and Gap/Bleed visibility in sync
+    window._toggleEdgeToEdgeFields?.();
+    window._toggleGapBleedFields?.();
+
+    // If Silhouette is ON, force-hide cut marks (matches prior behavior)
     const cropMarksCheckbox = document.querySelector('input[name="showCropMarks"]');
-    const cropBleedInput = document.querySelector('input[name="cropBleed"]');
-    const cardGapInput = document.querySelector('input[name="cardGap"]');
-
-    // Find their parent label elements so we can hide them
-    const cropBleedLabel = cropBleedInput.closest('label');
-    const cardGapLabel = cardGapInput.closest('label');
-
-    if (e.target.checked) {
-      document.getElementById('useMagicVersionContainer').style.display = '';
-
-      // Disable and hide both fields
-      cropBleedLabel.style.display = 'none';
-      cardGapLabel.style.display = 'none';
-
-      cropBleedInput.value = '0.00';
-      cardGapInput.value = '0.00';
-
+    if (e.target.checked && cropMarksCheckbox) {
       cropMarksCheckbox.checked = false;
-
-      // Show Magic Registration option when Silhouette is ON
-      const _magicContainer = document.getElementById('useMagicVersionContainer');
-      if (_magicContainer) _magicContainer.style.display = '';
-    } else {
-      // Show both fields again
-      cropBleedLabel.style.display = '';
-      cardGapLabel.style.display = '';
-
-      document.getElementById('useMagicVersionContainer').style.display = 'none';
-      document.querySelector('input[name="useMagicVersion"]').checked = false;
     }
 
-    // Ensure Cut Mark fields hide if Print Cut Marks was just unchecked
-    window._toggleCutMarkFields();
+    // Ensure Cut Mark sub-fields match current Print Cut Marks value
+    window._toggleCutMarkFields?.();
   });
 
   document.getElementById('paperTypeSelect').addEventListener('change', (e) => {
@@ -445,11 +427,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     window.restoringConfig = false; // allow paperTypeSelect changes again
 
-    // Config may have showCropMarks = false — reflect it in the UI
+    // Toggle UI Options
     window._toggleCutMarkFields?.();
-
-    // Keep Edge-to-Edge toggle in sync with Silhouette on load
     window._toggleEdgeToEdgeFields?.();
+    window._toggleGapBleedFields?.();
   } catch (err) {
     console.warn('⚠️ Failed to restore previous settings:', err);
   }
@@ -1074,43 +1055,6 @@ const loadUserConfigs = async () => {
   const collapseState = JSON.parse(localStorage.getItem('configCollapse') || '{}');
 
   // --- apply search filter ---
-  /*const query = document.getElementById('configSearch').value.trim().toLowerCase();
-  const dataToRender = query
-    ? data.filter(fd => {
-        // 1) Match folder name or description
-        const folderText = `${fd.folder} ${(fd.description||'')}`.toLowerCase();
-        if (folderText.includes(query)) return true;
-
-        // 2) Match any script’s fileName, infoText, or the rendered layout string (including “Card Back”)
-        return fd.scripts.some(s => {
-          // recreate exactly what you display in the UI
-          const layoutString = [
-            s.layout,
-            s.cardFormat,
-            `DPI ${s.dpi}`,
-            s.cardBack ? 'Card Back' : ''
-          ]
-            .filter(Boolean)
-            .join(' ');
-
-          // combine fileName, infoText, and that layoutString into one search string
-          const haystack = [
-            s.fileName,
-            s.infoText,
-            layoutString
-          ]
-            .filter(Boolean)
-            .join(' ')
-            .toLowerCase();
-
-          return haystack.includes(query);
-        });
-
-      })
-    : data;
-*/
-
-  // --- apply search filter ---
   const query = document.getElementById('configSearch').value.trim().toLowerCase();
   const terms = query.split(/\s+/).filter(Boolean);
 
@@ -1469,20 +1413,10 @@ const loadUserConfigs = async () => {
           form.addPerCardAdjustLayer.checked = !!config.addPerCardAdjustLayer;
         }
 
-        // Ensure Cut Mark fields match the config's Print Cut Marks value
+        // Toggle UI Options
         window._toggleCutMarkFields?.();
-
-        // Ensure Magic Registration visibility matches the (now-applied) Silhouette value
         window._toggleEdgeToEdgeFields?.();
-
-        /*
-        for (const [key, value] of Object.entries(config)) {
-          const field = form.elements[key];
-          if (!field) continue;
-          if (field.type === 'checkbox') field.checked = value;
-          else field.value = value;
-        }
-        */
+        window._toggleGapBleedFields?.();
 
         document.getElementById('configName').value = script.fileName.replace('.jsx', '');
         document.getElementById('configFolder').value = folderData.folder;
@@ -1773,13 +1707,6 @@ async function runBatchPages(config) {
     }
   }
 
-  /*
-  if (config.separateBackPDF && pageBatches.length > 0) {
-    const firstBackName = `${outputBase}_1_Back.jsx`;
-    firstBackScript = buildConfigPath(firstBackName);
-  }
-    */
-
   for (let i = 0; i < pageBatches.length; i++) {
     const batch = pageBatches[i];
 
@@ -1852,14 +1779,9 @@ async function runBatchPages(config) {
     await window.electronAPI.writeLog(` - Loop ${i} Completed | Ready for next record`);
   }
 
-  //statusBox.textContent = `✅ All batch config pages generated successfully.`;
-  //await window.electronAPI.runBatchFile(backPath);
-  //await delay(1500);
-  //statusBox.textContent = 'First script to run: ' + firstFrontScript;
   await window.electronAPI.writeLog(`Launching first batch script: ${firstFrontScript}`);
 
   if (firstFrontScript) {
-    //statusBox.textContent = `▶️ Launching batch in Photoshop...`;
     await window.electronAPI.writeLog(`▶️ Launching batch in Photoshop...`);
     await window.electronAPI.runBatchFile(firstFrontScript);
   }
