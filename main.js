@@ -177,8 +177,9 @@ ipcMain.handle('save-user-config', async (_, { folderName, configName, config })
 
     lines.push('\n// --- Silhouette ---');
     lines.push(`var useSilhouette = ${config.useSilhouette};`);
+    lines.push(`var useMagicVersion = ${Boolean(config.useMagicVersion)};`);
 
-    lines.push('// --- Batch PDF Settings ---');
+    lines.push('\n// --- Batch PDF Settings ---');
     lines.push(`var batchMultiPage = ${config.batchMultiPage};`);
     lines.push(`var noBackImage = ${config.noBackImage};`);
     lines.push(`var separateBackPDF = ${config.separateBackPDF};`);

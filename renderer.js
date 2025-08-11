@@ -19,6 +19,20 @@ window._toggleCutMarkFields = function () {
   if (cutOffsetLabel) cutOffsetLabel.style.display = show ? '' : 'none';
 };
 
+window._toggleEdgeToEdgeFields = function () {
+  const sil = document.querySelector('input[name="useSilhouette"]')?.checked;
+  const magicContainer = document.getElementById('useMagicVersionContainer');
+
+  if (!magicContainer) return;
+  if (sil) {
+    magicContainer.style.display = '';
+  } else {
+    magicContainer.style.display = 'none';
+    const magicChk = document.querySelector('input[name="useMagicVersion"]');
+    if (magicChk) magicChk.checked = false;
+  }
+};
+
 // Tab switching logic
 document.querySelectorAll('.tab-button').forEach((btn) => {
   btn.addEventListener('click', () => {
@@ -433,6 +447,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Config may have showCropMarks = false — reflect it in the UI
     window._toggleCutMarkFields?.();
+
+    // Keep Edge-to-Edge toggle in sync with Silhouette on load
+    window._toggleEdgeToEdgeFields?.();
   } catch (err) {
     console.warn('⚠️ Failed to restore previous settings:', err);
   }
@@ -1456,18 +1473,7 @@ const loadUserConfigs = async () => {
         window._toggleCutMarkFields?.();
 
         // Ensure Magic Registration visibility matches the (now-applied) Silhouette value
-        (function () {
-          const sil = document.querySelector('input[name="useSilhouette"]')?.checked;
-          const magicContainer = document.getElementById('useMagicVersionContainer');
-          if (!magicContainer) return;
-          if (sil) {
-            magicContainer.style.display = '';
-          } else {
-            magicContainer.style.display = 'none';
-            const magicChk = document.querySelector('input[name="useMagicVersion"]');
-            if (magicChk) magicChk.checked = false;
-          }
-        })();
+        window._toggleEdgeToEdgeFields?.();
 
         /*
         for (const [key, value] of Object.entries(config)) {
