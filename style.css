@@ -884,6 +884,19 @@ main {
 .hint-popover .hint-body {
   font-size: 0.95rem;
   line-height: 1.35;
+  white-space: normal; /* HTML controls wrapping */
+  word-break: break-word;
+}
+.hint-popover .hint-body p {
+  margin: 0.25rem 0;
+}
+.hint-popover .hint-body ul,
+.hint-popover .hint-body ol {
+  margin: 0.25rem 0 0.25rem 0;
+  padding-left: 1.25rem;
+}
+.hint-popover .hint-body li {
+  margin: 0.15rem 0;
 }
 .hint-instructions {
   padding: 5px;

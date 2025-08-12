@@ -483,15 +483,68 @@ window.addEventListener('DOMContentLoaded', () => {
     el.style.top = `${top}px`;
   }
 
+  function hideHint() {
+    try {
+      clearTimeout(hoverTimer);
+    } catch {}
+    hoverTimer = null;
+    hoverTarget = null;
+    if (hintEl) hintEl.style.display = 'none';
+  }
+
+  // === Hint HTML helpers (allow-listed) ===
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+
+  // If no tags are present, treat as plaintext and convert newlines to <br>
+  function prepareHintHtml(s) {
+    if (!s) return '';
+    const hasTag = /<[^>]+>/.test(s);
+    return hasTag ? s : escapeHtml(s).replace(/\r?\n/g, '<br>');
+  }
+
+  // Tiny sanitizer: keep only a small whitelist of tags; strip all attributes.
+  function sanitizeHintHtml(html) {
+    const allowed = new Set(['b', 'strong', 'i', 'em', 'u', 'code', 'br', 'ul', 'ol', 'li', 'p']);
+    const tpl = document.createElement('template');
+    tpl.innerHTML = html;
+
+    function sanitizeNode(node) {
+      let child = node.firstChild;
+      while (child) {
+        const next = child.nextSibling;
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          const tag = child.tagName.toLowerCase();
+          if (!allowed.has(tag)) {
+            // unwrap disallowed element: keep its children, drop the tag
+            while (child.firstChild) node.insertBefore(child.firstChild, child);
+            node.removeChild(child);
+          } else {
+            // strip ALL attributes (no styles/events)
+            for (const attr of Array.from(child.attributes)) child.removeAttribute(attr.name);
+            sanitizeNode(child);
+          }
+        } else if (child.nodeType === Node.COMMENT_NODE) {
+          node.removeChild(child);
+        }
+        child = next;
+      }
+    }
+
+    sanitizeNode(tpl.content);
+    const div = document.createElement('div');
+    div.appendChild(tpl.content.cloneNode(true));
+    return div.innerHTML;
+  }
+
   function showHintAt(x, y, title, body) {
     const el = ensureHintEl();
     el.querySelector('.hint-title').textContent = title || 'Hint';
-    el.querySelector('.hint-body').textContent = body || '';
+    const html = prepareHintHtml(body || '');
+    el.querySelector('.hint-body').innerHTML = sanitizeHintHtml(html);
     el.style.display = 'block';
     positionHint(x, y);
-  }
-  function hideHint() {
-    if (hintEl) hintEl.style.display = 'none';
   }
 
   function resolveHintKey(target) {
@@ -563,9 +616,38 @@ window.addEventListener('DOMContentLoaded', () => {
   );
 
   // Dismiss on click or ESC
-  document.addEventListener('click', hideHint);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') hideHint();
+  // Dismiss on click or ESC (use capturing so nothing can swallow it)
+  // Also cancel any pending hover timer so it doesn't immediately re-show
+  document.addEventListener(
+    'click',
+    () => {
+      try {
+        cancelHoverHint();
+      } catch {}
+      hideHint();
+    },
+    true
+  );
+
+  document.addEventListener(
+    'keydown',
+    (e) => {
+      if (e.key === 'Escape') {
+        try {
+          cancelHoverHint();
+        } catch {}
+        hideHint();
+      }
+    },
+    true
+  );
+
+  // Extra safety: hide when window loses focus
+  window.addEventListener('blur', () => {
+    try {
+      cancelHoverHint();
+    } catch {}
+    hideHint();
   });
 
   // === Hover-to-hint (2s)

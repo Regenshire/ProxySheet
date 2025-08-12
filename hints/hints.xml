@@ -53,8 +53,18 @@
   </hint>
 
   <hint key="useMagicVersion">
-    <title>Edge-to-Edge Registration</title>
-    <text>This is an advanced option that places the registration marks for Silhouette cutters near the edge of the paper.  This requires borderless edge-to-edge printing be supported and enabled on your printer. This may also require you to position your paper on your cutting matt with a slight offset of several MM from the left edge to be detected.  This allows you to maximize the print area and allows for 9 card support on Letter sized paper.</text>
+    <title>Experimental: Edge-to-Edge Registration</title>
+    <text><![CDATA[
+  <p>This is an <i>experimental option</i> that places the registration marks for Silhouette cutters near the edge of the paper. This option allows you to maximize the print area and allows for 9 card support on Letter-sized paper.</p><br>
+  <p><b>WARNING - READ FIRST</b></p>
+  <ul>
+  <li>This requires that borderless edge-to-edge printing be supported and enabled on your printer.</li>
+  <li>This option only works for Letter size paper at this time for 9 and 8 card layout.  If selected for other layouts it will not do anything.</li>
+  <li>This may require you to position your paper on your cutting mat with a slight offset of several mm from the left edge to be detected.</li>
+  <li>For the 9 Card layout, cards with a dark upper-left corner in the upper-left slot may cause difficulty with registration.</li> 
+  <li>For cutting, make sure to use the correct Silhouette Templates.</li>
+  </ul>
+  ]]></text>
   </hint>
 
   <hint key="showCropMarks">
@@ -178,8 +188,8 @@
 
   <!-- ===== Photoshop Help ===== -->
   <hint key="photoshop.units">
-    <title>Photoshop Units & Rulers</title>
-    <text>ProxySheet requires Rulers = Pixels and Type = Points. In Photoshop: Edit → Preferences → Units & Rulers (macOS: Photoshop → Settings → Units & Rulers). Set Rulers to Pixels and Type to Points.</text>
+    <title>Photoshop Units and Rulers</title>
+    <text>ProxySheet requires Rulers = Pixels and Type = Points. In Photoshop: Edit → Preferences → Units and Rulers (macOS: Photoshop → Settings → Units and Rulers). Set Rulers to Pixels and Type to Points.</text>
     <image>photoshop_units_pixels_points.png</image>
   </hint>
   <hint key="system.jsx.association.win">
