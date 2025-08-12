@@ -6,6 +6,10 @@ const xml2js = require('xml2js');
 const CONFIG_INFO_PATH = path.join(USER_CONFIGS_DIR, 'configInfo.xml');
 const TEMPLATE_INFO_PATH = path.resolve(__dirname, 'RE_Silhouette/templateInfo.xml');
 
+// === Hint System paths ===
+const HINTS_DIR = path.resolve(__dirname, 'hints');
+const HINTS_XML_PATH = path.join(HINTS_DIR, 'hints.xml');
+
 const logPath = path.join(__dirname, 'logs', 'logs.txt');
 
 function writeHelperLog(message) {
@@ -369,6 +373,53 @@ const updateFolderExpandedState = (folderName, isExpanded) => {
   fs.writeFileSync(CONFIG_INFO_PATH, xml, 'utf-8');
 };
 
+// === Hint System: internal cache + loader ===
+let _hintsCache = null;
+let _hintsMtime = 0;
+
+function loadHintsSync() {
+  try {
+    if (!fs.existsSync(HINTS_XML_PATH)) return {};
+    const stat = fs.statSync(HINTS_XML_PATH);
+    if (_hintsCache && stat.mtimeMs === _hintsMtime) return _hintsCache;
+
+    const xml = fs.readFileSync(HINTS_XML_PATH, 'utf-8');
+    let out = {};
+    xml2js.parseString(xml, (err, res) => {
+      if (err || !res || !res.hints || !res.hints.hint) {
+        out = {};
+        return;
+      }
+      for (const h of res.hints.hint) {
+        const key = (h.$?.key || '').trim();
+        if (!key) continue;
+        out[key] = {
+          title: h.title?.[0] || key,
+          text: (h.text?.[0] || '').trim()
+        };
+      }
+    });
+    _hintsCache = out;
+    _hintsMtime = stat.mtimeMs;
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function getHint(key) {
+  const map = loadHintsSync();
+  const k = String(key || '').trim();
+  const hit = map[k] || map[k.toLowerCase()];
+  if (hit) return { found: true, key: k, title: hit.title, text: hit.text };
+  return { found: false, key: k };
+}
+
+function getAllHintKeys() {
+  const map = loadHintsSync();
+  return Object.keys(map);
+}
+
 module.exports = {
   isValidName,
   buildJsxContent,
@@ -382,5 +433,7 @@ module.exports = {
   getSilhouetteTemplates,
   saveTemplateMetadata,
   updateFolderExpandedState,
-  updateFolderDescription
+  updateFolderDescription,
+  getHint,
+  getAllHintKeys
 };

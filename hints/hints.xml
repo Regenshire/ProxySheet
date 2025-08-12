@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hints>
+  <!-- ===== Layout ===== -->
+  <hint key="paperType">
+    <title>Paper Size</title>
+    <text>Select a preset page size. Choose “Custom” to enter your own width/height below.</text>
+  </hint>
+
+  <hint key="layout">
+    <title>Layout</title>
+    <text>Controls the grid of cards per sheet. “Horizontal (2x4)” and “Vertical (3x3)” are fixed; “Auto” layouts fit as many cards as possible for the page and card size; “SevenCard” places 7 active slots on a 2x4 grid.  Silhouette cutting is only available on fixed size grids.</text>
+  </hint>
+
+  <hint key="pageUnits">
+    <title>Units</title>
+    <text>Changes how width/height are displayed and entered (in or mm).</text>
+  </hint>
+
+  <hint key="pageWidthInches">
+    <title>Page Width</title>
+    <text>Width of the generated document.</text>
+  </hint>
+
+  <hint key="pageHeightInches">
+    <title>Page Height</title>
+    <text>Height of the generated document.</text>
+  </hint>
+
+  <hint key="dpi">
+    <title>DPI (Resolution)</title>
+    <text>Dots per inch used to size the document in pixels. Higher DPI increases quality and file size.  We recommend 800 dpi.</text>
+  </hint>
+
+  <!-- ===== Card Format ===== -->
+  <hint key="cardFormat">
+    <title>Card Format</title>
+    <text>“MPC (with bleed)” expects full-bleed card images (typically 69×94 mm). “NoBleed” uses the default card size (about 63×88 mm).</text>
+  </hint>
+
+  <hint key="cardWidthMM">
+    <title>Card Width (mm)</title>
+    <text>Single card width in millimeters. For MPC full bleed, 69 mm is typical. For NoBleed, ~63 mm is typical.</text>
+  </hint>
+
+  <hint key="cardHeightMM">
+    <title>Card Height (mm)</title>
+    <text>Single card height in millimeters. For MPC full bleed, 94 mm is typical. For NoBleed, ~88 mm is typical.</text>
+  </hint>
+
+  <hint key="useSilhouette">
+    <title>Silhouette Registration</title>
+    <text>Adds Silhouette registration marks and generates a file layed out for use on Silhouette cutting machines.</text>
+  </hint>
+
+  <hint key="useMagicVersion">
+    <title>Edge-to-Edge Registration</title>
+    <text>This is an advanced option that places the registration marks for Silhouette cutters near the edge of the paper.  This requires borderless edge-to-edge printing be supported and enabled on your printer. This may also require you to position your paper on your cutting matt with a slight offset of several MM from the left edge to be detected.  This allows you to maximize the print area and allows for 9 card support on Letter sized paper.</text>
+  </hint>
+
+  <hint key="showCropMarks">
+    <title>Print Cut Marks</title>
+    <text>Draws corner cut marks around each card slot for manual trimming. Enable to configure size and offset below.</text>
+  </hint>
+
+  <hint key="cutMarkSize">
+    <title>Cut Mark Size (mm)</title>
+    <text>Length of each cut line from the card corner. Increase for easier visibility when trimming.</text>
+  </hint>
+
+  <hint key="cutOffset">
+    <title>Cut Mark Offset (mm)</title>
+    <text>Distance the cut mark begins from the card corner. Larger values push marks farther away from the card edges.</text>
+  </hint>
+
+  <hint key="cardGap">
+    <title>Card Gap (mm)</title>
+    <text>Space between adjacent cards on the sheet. Zero packs cards tightly; increasing creates separation.</text>
+  </hint>
+
+  <hint key="cropBleed">
+    <title>Crop Bleed (mm)</title>
+    <text>Amount trimmed from each card edge to hide slight alignment errors. Typical range is 0.5–2.0 mm.</text>
+  </hint>
+
+  <!-- ===== Color Adjustments ===== -->
+  <hint key="bright">
+    <title>Brightness</title>
+    <text>Adjusts brightness for the entire sheet or batch. Positive brightens the image; negative darkens the image.</text>
+  </hint>
+
+  <hint key="contr">
+    <title>Contrast</title>
+    <text>Adjusts contrast for the entire sheet or batch. Positive increases contrast; negative reduces it.</text>
+  </hint>
+
+  <hint key="vib">
+    <title>Vibrance</title>
+    <text>Boosts muted colors more than already-saturated ones, useful for effecting skintones and softer shades.</text>
+  </hint>
+
+  <hint key="sat">
+    <title>Saturation</title>
+    <text>Uniformly increases or decreases color intensity across the image.</text>
+  </hint>
+
+  <hint key="gmm">
+    <title>Gamma</title>
+    <text>Midtone correction. Values below 1.0 darken midtones; above 1.0 lighten them. Small changes (e.g., 0.90–1.10) are typical.</text>
+  </hint>
+
+  <hint key="whitepoint">
+    <title>White Point</title>
+    <text>Levels highlight clamp (0–255). Lower values brighten highlights sooner; higher preserves more highlight detail. The default value is 255.</text>
+  </hint>
+
+  <hint key="blackpoint">
+    <title>Black Point</title>
+    <text>Levels shadow clamp (0–255). Higher values deepen blacks sooner; lower preserves more shadow detail. The default value is 0.</text>
+  </hint>
+
+  <hint key="addPerCardAdjustLayer">
+    <title>Per-Card Adjustment Layers</title>
+    <text>Adds color and levels adjustments layers for each card, allowing you to easily fine-tune each card after generation within Photoshop.  This option does not work with Batch PDF generation.</text>
+  </hint>
+
+  <!-- ===== Back Alignment ===== -->
+  <hint key="cardBack">
+    <title>Generate Card Back Page</title>
+    <text>Creates a sheet designed for Card Backs.  If this setting is selected then any Back Offset values will be used.  This can also be important to use for layouts with odd symetry like the seven card layout so that it mittors the layout. </text>
+  </hint>
+
+  <hint key="selectEachCard">
+    <title>Prompt for Each Card</title>
+    <text>When enabled, you’ll be prompted to choose an image for every slot. When disabled, one selection can fill matching slots.</text>
+  </hint>
+
+  <hint key="backOffsetXmm">
+    <title>Back Offset X (mm)</title>
+    <text>Shifts the back sheet horizontally to align with your printed fronts. Positive shifts right; negative shifts left.</text>
+  </hint>
+
+  <hint key="backOffsetYmm">
+    <title>Back Offset Y (mm)</title>
+    <text>Shifts the back sheet vertically to align with your printed fronts. Positive shifts down; negative shifts up.</text>
+  </hint>
+
+  <!-- ===== PDF Batch Export ===== -->
+  <hint key="batchMultiPage">
+    <title>Combine into Multi-page PDF</title>
+    <text>Batch mode: combines generated sheets into a single multi-page batch PDF (fronts and, if used, backs).</text>
+  </hint>
+
+  <hint key="noBackImage">
+    <title>No Back Image</title>
+    <text>Creates a Batch PDF with Card Fronts only. Skips selecting/placing a back image when preparing batches.</text>
+  </hint>
+
+  <hint key="separateBackPDF">
+    <title>Separate Back PDF</title>
+    <text>Creates two seperate PDFs, one for the Front, and one for the Back.</text>
+  </hint>
+
+  <!-- ===== Notes ===== -->
+  <hint key="notesOn">
+    <title>Show Notes on Sheet</title>
+    <text>Add a small NOTE text layer with helpful info (e.g., batch/offset context) on the generated sheet.  Some layouts do not have room for notes to appear, so you might want to turn this off on layouts with limited room at the bottom of the page.</text>
+  </hint>
+
+  <hint key="manualNote">
+    <title>Note Text</title>
+    <text>Optional free-form note to include on the sheet for labeling or reminders.</text>
+  </hint>
+
+  <hint key="noteFontSize">
+    <title>Note Font Size</title>
+    <text>Font size (pt) for the NOTE text. Decrease to help fit on the page.</text>
+  </hint>
+</hints>

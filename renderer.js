@@ -454,6 +454,143 @@ window.addEventListener('DOMContentLoaded', () => {
       alert(`❌ Failed to update configs:\n${result.message}`);
     }
   });
+
+  // === Hint popover (created once)
+  let hintEl = null;
+  function ensureHintEl() {
+    if (hintEl) return hintEl;
+    hintEl = document.createElement('div');
+    hintEl.className = 'hint-popover';
+    hintEl.style.display = 'none';
+    hintEl.innerHTML = `
+      <div class="hint-title"></div>
+      <div class="hint-body"></div>
+    `;
+    document.body.appendChild(hintEl);
+    return hintEl;
+  }
+
+  function positionHint(x, y) {
+    const el = ensureHintEl();
+    const pad = 8;
+    const { innerWidth: vw, innerHeight: vh } = window;
+    const rect = el.getBoundingClientRect();
+    let left = x + 12;
+    let top = y + 12;
+    if (left + rect.width + pad > vw) left = Math.max(pad, x - rect.width - 12);
+    if (top + rect.height + pad > vh) top = Math.max(pad, y - rect.height - 12);
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+  }
+
+  function showHintAt(x, y, title, body) {
+    const el = ensureHintEl();
+    el.querySelector('.hint-title').textContent = title || 'Hint';
+    el.querySelector('.hint-body').textContent = body || '';
+    el.style.display = 'block';
+    positionHint(x, y);
+  }
+  function hideHint() {
+    if (hintEl) hintEl.style.display = 'none';
+  }
+
+  function resolveHintKey(target) {
+    if (!target) return null;
+    // Allow explicit override
+    const override = target.getAttribute('data-hint-key') || target.closest('[data-hint-key]')?.getAttribute('data-hint-key');
+    if (override) return override;
+
+    // Prefer input/select/textarea name; fall back to id
+    const el = target.matches('input, select, textarea, button') ? target : target.closest('label')?.querySelector('input, select, textarea, button');
+
+    return el?.name || el?.id || null;
+  }
+
+  // Global right-click handler: show hint when a field is targeted
+  document.addEventListener(
+    'contextmenu',
+    async (e) => {
+      const key = resolveHintKey(e.target);
+      if (!key) return; // no field → let native menu open
+
+      try {
+        const res = await window.electronAPI.getHint(key);
+        if (res?.found) {
+          e.preventDefault(); // only block native menu when we show a hint
+          showHintAt(e.pageX, e.pageY, res.title || key, res.text || '');
+        } else {
+          // No hint found: do nothing (don’t show a placeholder bubble)
+          hideHint();
+        }
+      } catch {
+        // On error, do nothing—allow native context menu to appear
+      }
+    },
+    true
+  );
+
+  // Dismiss on click or ESC
+  document.addEventListener('click', hideHint);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideHint();
+  });
+
+  // === Hover-to-hint (2s)
+  let hoverTimer = null;
+  let hoverTarget = null;
+
+  function scheduleHoverHint(target) {
+    clearTimeout(hoverTimer);
+    hoverTarget = target;
+    hoverTimer = setTimeout(async () => {
+      const key = resolveHintKey(hoverTarget);
+      if (!key) return;
+      try {
+        const res = await window.electronAPI.getHint(key);
+        if (res?.found) {
+          const rect = hoverTarget.getBoundingClientRect();
+          const x = rect.left + window.scrollX + rect.width - 8;
+          const y = rect.top + window.scrollY + 8;
+          showHintAt(x, y, res.title || key, res.text || '');
+        }
+      } catch {
+        /* ignore */
+      }
+    }, 2000); // 2 seconds
+  }
+
+  function cancelHoverHint() {
+    clearTimeout(hoverTimer);
+    hoverTimer = null;
+    hoverTarget = null;
+    hideHint();
+  }
+
+  // Start timer when pointer enters a hintable element
+  document.addEventListener(
+    'pointerover',
+    (e) => {
+      const el = e.target?.closest('input, select, textarea, button, [data-hint-key]');
+      if (!el) return;
+      scheduleHoverHint(el);
+    },
+    true
+  );
+
+  // Cancel when pointer leaves the currently targeted element
+  document.addEventListener(
+    'pointerout',
+    (e) => {
+      if (!hoverTarget) return;
+      const stillInside = e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('input, select, textarea, button, [data-hint-key]');
+      if (!stillInside) cancelHoverHint();
+    },
+    true
+  );
+
+  // Cancel on interactions that imply user moved on
+  document.addEventListener('pointerdown', cancelHoverHint, true);
+  document.addEventListener('scroll', cancelHoverHint, true);
 });
 
 // Handle "Run Now" form submission

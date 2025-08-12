@@ -85,6 +85,15 @@ ipcMain.handle('generate-jsx', async (_, config) => {
   }
 });
 
+// === Hint System
+ipcMain.handle('get-hint', async (_event, key) => {
+  try {
+    return helpers.getHint(key);
+  } catch (e) {
+    return { found: false, key, error: e.message };
+  }
+});
+
 ipcMain.handle('save-user-config', async (_, { folderName, configName, config }) => {
   try {
     if (!helpers.isValidName(folderName, 40)) {
