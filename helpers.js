@@ -395,7 +395,8 @@ function loadHintsSync() {
         if (!key) continue;
         out[key] = {
           title: h.title?.[0] || key,
-          text: (h.text?.[0] || '').trim()
+          text: (h.text?.[0] || '').trim(),
+          image: (h.image?.[0] || '').trim()
         };
       }
     });
@@ -411,7 +412,7 @@ function getHint(key) {
   const map = loadHintsSync();
   const k = String(key || '').trim();
   const hit = map[k] || map[k.toLowerCase()];
-  if (hit) return { found: true, key: k, title: hit.title, text: hit.text };
+  if (hit) return { found: true, key: k, title: hit.title, text: hit.text, image: hit.image || '' };
   return { found: false, key: k };
 }
 

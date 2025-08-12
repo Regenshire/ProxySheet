@@ -28,5 +28,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   openFileWithDefaultApp: (path) => ipcRenderer.invoke('open-file-with-default-app', path),
   applyOffsetToAllConfigs: (offsetX, offsetY) => ipcRenderer.invoke('apply-offset-to-all-configs', { offsetX, offsetY }),
   getHint: (key) => ipcRenderer.invoke('get-hint', key),
-  openPdfOutputFolder: () => ipcRenderer.invoke('open-pdf-output-folder')
+  openPdfOutputFolder: () => ipcRenderer.invoke('open-pdf-output-folder'),
+  checkJsxAssociation: () => ipcRenderer.invoke('check-jsx-association')
 });

@@ -506,6 +506,39 @@ window.addEventListener('DOMContentLoaded', () => {
     return el?.name || el?.id || null;
   }
 
+  // === Modal used for system notices (optional image) ===
+  function showSystemHintModal(title, body, imageRelPath) {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    const wrap = document.createElement('div');
+    wrap.className = 'modal-content';
+    const h2 = document.createElement('h2');
+    h2.textContent = title || 'Notice';
+    const p = document.createElement('p');
+    p.textContent = body || '';
+    wrap.appendChild(h2);
+    if (imageRelPath) {
+      const img = document.createElement('img');
+      img.src = imageRelPath; // put things under /hints/
+      img.alt = '';
+      img.style.maxWidth = '100%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 14px';
+      wrap.appendChild(img);
+    }
+    wrap.appendChild(p);
+    const btns = document.createElement('div');
+    btns.className = 'modal-buttons';
+    const ok = document.createElement('button');
+    ok.className = 'ok';
+    ok.textContent = 'OK';
+    ok.onclick = () => document.body.removeChild(overlay);
+    btns.appendChild(ok);
+    wrap.appendChild(btns);
+    overlay.appendChild(wrap);
+    document.body.appendChild(overlay);
+  }
+
   // Global right-click handler: show hint when a field is targeted
   document.addEventListener(
     'contextmenu',
@@ -591,6 +624,20 @@ window.addEventListener('DOMContentLoaded', () => {
   // Cancel on interactions that imply user moved on
   document.addEventListener('pointerdown', cancelHoverHint, true);
   document.addEventListener('scroll', cancelHoverHint, true);
+
+  // Check if .jsx defaults to Photoshop
+  (async () => {
+    try {
+      const res = await window.electronAPI.checkJsxAssociation();
+      if (res && res.isPhotoshop === false) {
+        const key = res.platform === 'darwin' ? 'system.jsx.association.mac' : 'system.jsx.association.win';
+        const hint = await window.electronAPI.getHint(key);
+        const title = hint?.title || 'Photoshop is not set as Default app for .jsx';
+        const text = hint?.text || 'ProxySheet requires that JSX files be associated with Adobe Photoshop as the default application. Associate .jsx files with Adobe Photoshop so that ProxySheet can launch scripts in Photoshop. Please set Photoshop as the default app for .jsx files.';
+        showSystemHintModal(title, text, null);
+      }
+    } catch {}
+  })();
 });
 
 // Handle "Run Now" form submission

@@ -175,4 +175,19 @@
     <title>Note Font Size</title>
     <text>Font size (pt) for the NOTE text. Decrease to help fit on the page.</text>
   </hint>
+
+  <!-- ===== Photoshop Help ===== -->
+  <hint key="photoshop.units">
+    <title>Photoshop Units & Rulers</title>
+    <text>ProxySheet requires Rulers = Pixels and Type = Points. In Photoshop: Edit → Preferences → Units & Rulers (macOS: Photoshop → Settings → Units & Rulers). Set Rulers to Pixels and Type to Points.</text>
+    <image>photoshop_units_pixels_points.png</image>
+  </hint>
+  <hint key="system.jsx.association.win">
+    <title>Make Photoshop the default app for .jsx (Windows)</title>
+    <text>Right-click any .jsx → Open with → Choose another app → Adobe Photoshop → ✓ Always use this app → OK.</text>
+  </hint>
+  <hint key="system.jsx.association.mac">
+    <title>Make Photoshop the default app for .jsx (macOS)</title>
+    <text>Finder: select a .jsx → File → Get Info → Open with → Adobe Photoshop → Change All… → Continue.</text>
+  </hint>
 </hints>

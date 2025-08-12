@@ -4,6 +4,15 @@ All notable changes to ProxySheet are documented in this file. This changelog fo
 
 ---
 
+## [1.09 BETA] – 2025-08-11
+
+- Added Silhouette support for Edge-to-Edge Registration marks. If this option is checked, you can use a 9 card layout on Letter sized paper. This is an advanced feature that requires your printer to support and be configured for borderless printing. Furthermore, the placement on the cutting mat is a little more finicky as it expects more spacing between the paper and the side of the matt. Using this option may require some trial and error.
+- Added a hint system that will give details about the purpose of various fields.
+- Added checks for JSX being associated with Adobe Photoshop
+- Added checks for Photoshop measurement units
+
+---
+
 ## [1.08 BETA] – 2025-08-07
 
 - Added support for large UV Printers in the form of a Grid (5x23, 115 Cards) layout.

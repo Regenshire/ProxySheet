@@ -94,6 +94,69 @@ ipcMain.handle('get-hint', async (_event, key) => {
   }
 });
 
+// --- Default app check for .jsx (Windows & macOS)
+const { exec, execFile } = require('child_process');
+
+async function checkJsxAssociationWindows() {
+  function queryReg(args) {
+    return new Promise((resolve) => {
+      execFile('reg', args, { windowsHide: true }, (_e, out) => resolve(out || ''));
+    });
+  }
+  // 1) UserChoice (per-user)
+  const userChoice = await queryReg(['query', 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.jsx\\UserChoice', '/v', 'ProgId']);
+  let m = userChoice.match(/ProgId\s+REG_SZ\s+([^\r\n]+)/i);
+  let progId = m ? m[1] : null;
+
+  // 2) Fallback global association
+  if (!progId) {
+    const ext = await queryReg(['query', 'HKCR\\.jsx', '/ve']);
+    m = ext.match(/\(Default\)\s+REG_SZ\s+([^\r\n]+)/i);
+    progId = m ? m[1] : null;
+  }
+
+  // 3) Resolve open command
+  let command = null;
+  if (progId) {
+    const cmdOut = await queryReg(['query', `HKCR\\${progId}\\shell\\open\\command`, '/ve']);
+    const mc = cmdOut.match(/\(Default\)\s+REG_SZ\s+([^\r\n]+)/i);
+    command = mc ? mc[1] : null;
+  }
+  const isPhotoshop = !!(command && /photoshop\.exe/i.test(command));
+  return { platform: 'win32', progId, command, isPhotoshop };
+}
+
+async function checkJsxAssociationMac() {
+  // Read Launch Services default handlers and look for .jsx
+  const plist = `${process.env.HOME}/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist`;
+  return new Promise((resolve) => {
+    exec(`plutil -convert json -o - "${plist}"`, (_e, json) => {
+      try {
+        const data = JSON.parse(json || '{}');
+        const ls = data.LSHandlers || [];
+        // Prefer extension-based entry; fallback to UTI if present
+        const byExt = ls.find((h) => h.LSHandlerContentTagClass === 'public.filename-extension' && h.LSHandlerContentTag === 'jsx');
+        const byUti = ls.find((h) => h.LSHandlerContentType && /photoshop\.javascript/i.test(h.LSHandlerContentType));
+        const bundleId = (byExt && byExt.LSHandlerRoleAll) || (byUti && byUti.LSHandlerRoleAll) || null;
+        const isPhotoshop = !!(bundleId && /com\.adobe\.Photoshop/i.test(bundleId));
+        resolve({ platform: 'darwin', bundleId, isPhotoshop });
+      } catch {
+        resolve({ platform: 'darwin', bundleId: null, isPhotoshop: false });
+      }
+    });
+  });
+}
+
+ipcMain.handle('check-jsx-association', async () => {
+  try {
+    if (process.platform === 'win32') return await checkJsxAssociationWindows();
+    if (process.platform === 'darwin') return await checkJsxAssociationMac();
+    return { platform: process.platform, unsupported: true };
+  } catch (e) {
+    return { error: e.message };
+  }
+});
+
 ipcMain.handle('save-user-config', async (_, { folderName, configName, config }) => {
   try {
     if (!helpers.isValidName(folderName, 40)) {

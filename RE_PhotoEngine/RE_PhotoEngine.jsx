@@ -97,6 +97,13 @@ var initialConfigVars = getInitialConfigSnapshot();
 
 function main() {
 
+    // === Verify Photoshop Units & Rulers before doing anything ===
+    if (!ensureRequiredUnits(scriptFolder)) {
+        // User canceled
+        return;
+    }
+
+
     if (adjustmentMeasureSheet === true) {
         generateAlignmentBackWithOffset(backOffsetXmm, backOffsetYmm);
         return;

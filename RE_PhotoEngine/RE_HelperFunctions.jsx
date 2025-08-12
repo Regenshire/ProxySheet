@@ -1,3 +1,67 @@
+// === Verify Photoshop units and show instructions (no auto-change) ===
+function showUnitsReminderDialog(scriptFolder, currentRuler, currentType) {
+  var dlg = new Window('dialog', 'ProxySheet - Photoshop Preferences Required');
+  dlg.orientation = 'column';
+  dlg.alignChildren = 'fill';
+
+  var text = dlg.add('statictext', undefined, 'ProxySheet works best when Preferences → Units and Rulers are: \n\n' + 'Rulers = Pixels,  Type = Points \n\n' + 'Your current settings are different. \n\n' + 'Open Preferences and set them per the instructions and then restart your script.', {
+    multiline: true
+  });
+  text.preferredSize.width = 520;
+
+  // Resolve /hints folder next to the script or one level up
+  var hintDir = new Folder(scriptFolder.fullName + '/hints');
+  if (!hintDir.exists) hintDir = new Folder(scriptFolder.fullName + '/../hints');
+  var imgFile = File(hintDir.fullName + '/photoshop_units_pixels_points.png');
+  if (imgFile.exists) {
+    dlg.add('image', undefined, imgFile);
+  }
+
+  var btns = dlg.add('group');
+  btns.alignment = 'right';
+  var openPrefs = btns.add('button', undefined, 'View Instructions…');
+  var continueBtn = btns.add('button', undefined, 'Continue Anyway');
+  var cancelBtn = btns.add('button', undefined, 'Cancel');
+
+  openPrefs.onClick = function () {
+    dlg.close(4);
+  }; // 4 = open prefs requested
+  continueBtn.onClick = function () {
+    dlg.close(2);
+  }; // code 2 = continue
+  cancelBtn.onClick = function () {
+    dlg.close(0);
+  }; // code 0 = cancel
+
+  return dlg.show(); // 0 cancel, 2 continue, 3 re-check
+}
+
+function openPreferencesDialog(scriptFolder) {
+  // Short, platform-specific guidance
+  var msg = 'Open Preferences manually:\n' + '• Windows: Edit → Preferences → Units & Rulers  (shortcut: Ctrl+K)\n' + '• macOS:   Photoshop → Settings → Units & Rulers (shortcut: Cmd+K)\n\n' + 'Set: Rulers = Pixels,  Type = Points.';
+  alert(msg);
+}
+
+function ensureRequiredUnits(scriptFolder) {
+  while (true) {
+    var ok = app.preferences.rulerUnits === Units.PIXELS && app.preferences.typeUnits === TypeUnits.POINTS;
+    if (ok) return true;
+
+    var code = showUnitsReminderDialog(scriptFolder, app.preferences.rulerUnits, app.preferences.typeUnits);
+    if (code === 0) return false; // Cancel
+    if (code === 2) return true; // Continue anyway
+    if (code === 4) {
+      // “Open Preferences…” (now: show instructions)
+      // Brief pause so the dialog is fully gone before the OS viewer opens
+      $.sleep(150);
+      openPreferencesDialog(scriptFolder);
+      //continue; // Loop so user can hit “Check Again”
+      return false;
+    }
+    // code === 3 → "Check Again": loop re-checks immediately
+  }
+}
+
 // === Convert MM to Pixels ===
 function mmToPixels(mm) {
   return Math.round((mm / 25.4) * dpi);
