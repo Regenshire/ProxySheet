@@ -460,6 +460,24 @@ function shiftEntireDocumentByOffset(xOffsetPx, yOffsetPx) {
   }
 }
 
+// Shift only per-card groups (e.g., "Card Group 1", "Card Group 2", ...).
+// This avoids moving the Silhouette template or global adjustment groups.
+function shiftCardGroupsByOffset(xOffsetPx, yOffsetPx) {
+  var doc = app.activeDocument;
+  for (var i = 0; i < doc.layerSets.length; i++) {
+    var group = doc.layerSets[i];
+    var name = group && group.name ? group.name : '';
+    if (name.indexOf('Card Group ') === 0) {
+      try {
+        group.translate(xOffsetPx, yOffsetPx);
+      } catch (e) {
+        logError('Error - shiftCardGroupsByOffset on ' + name);
+        logError('e: ' + e.message);
+      }
+    }
+  }
+}
+
 // === Silhouette Support ===
 function placeSilhouettePSDLayer(doc, scriptFolder) {
   try {

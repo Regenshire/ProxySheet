@@ -46,7 +46,7 @@ if (typeof showCropMarks === "undefined") showCropMarks = true;
 if (typeof useSilhouette === "undefined") useSilhouette = false;
 if (typeof excludeCardSlots === "undefined") excludeCardSlots = "";
 if (typeof adjustmentMeasureSheet === "undefined") adjustmentMeasureSheet = false;
-if (typeof useMagicVersion === "undefined") userMagicVersion = false;
+if (typeof useMagicVersion === "undefined") useMagicVersion = false;
 
 // Notes
 if (typeof notesOn === "undefined") notesOn = false;
@@ -926,6 +926,11 @@ function main() {
                     }
                 }
             }        
+    }
+
+    // Apply 2mm global card shift for Magic vertical layout (do not move Silhouette template)
+    if (useSilhouette === true && useMagicVersion === true && layout === "vertical") {
+        shiftCardGroupsByOffset(mmToPixels(2.8), mmToPixels(2.2));
     }
 
     // === Sheet Adjustment Layers ===
