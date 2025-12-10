@@ -797,7 +797,7 @@ function exportSinglesFromFolder(config) {
       doc.close(SaveOptions.DONOTSAVECHANGES);
     } catch (err) {
       logError('Error - gexportSinglesFromFolder');
-      logError('e: ' + e.message);
+      logError('e: ' + err.message);
       alert('⚠️ Failed to process: ' + imgFile.name + '\n' + err.message);
       if (app.documents.length > 0) {
         try {
